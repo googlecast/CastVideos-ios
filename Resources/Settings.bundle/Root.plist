@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>General</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Enable media notifications</string>
+			<key>Key</key>
+			<string>enable_media_notifications</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Show stream time remaining</string>
+			<key>Key</key>
+			<string>show_stream_time_remaining</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Enable Cast SDK logging</string>
+			<key>Key</key>
+			<string>enable_sdk_logging</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Use CAF container VC</string>
+			<key>Key</key>
+			<string>use_caf_container_vc</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Preload Time (sec)</string>
+			<key>DefaultValue</key>
+			<integer>30</integer>
+			<key>Key</key>
+			<string>preload_time_sec</string>
+			<key>Titles</key>
+			<array>
+				<string>5s</string>
+				<string>10s</string>
+				<string>15s</string>
+				<string>20s</string>
+				<string>30s</string>
+				<string>40s</string>
+				<string>50s</string>
+				<string>60s</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>5</integer>
+				<integer>10</integer>
+				<integer>15</integer>
+				<integer>20</integer>
+				<integer>30</integer>
+				<integer>40</integer>
+				<integer>50</integer>
+				<integer>60</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Media Sources</string>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Media List URLs</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+			<key>File</key>
+			<string>MediaListURLs</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Media List</string>
+			<key>Key</key>
+			<string>media_list_url</string>
+			<key>DefaultValue</key>
+			<string>media_list_1_url</string>
+			<key>Titles</key>
+			<array>
+				<string>Media List #1</string>
+				<string>Media List #2</string>
+				<string>Media List #3</string>
+				<string>Media List #4</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>media_list_1_url</string>
+				<string>media_list_2_url</string>
+				<string>media_list_3_url</string>
+				<string>media_list_4_url</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Receiver App</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Receiver App ID</string>
+			<key>Key</key>
+			<string>receiver_app_id</string>
+			<key>DefaultValue</key>
+			<string>4F8B3483</string>
+			<key>Titles</key>
+			<array>
+				<string>Prod (4F8B3483)</string>
+				<string>ReferencePlayer (4F8B3483)</string>
+				<string>Staging (4F8B3483)</string>
+				<string>Custom</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>4F8B3483</string>
+				<string>4F8B3483</string>
+				<string>4F8B3483</string>
+				<string>4F8B3483</string>
+				<string>use_custom_receiver_app_id</string>
+			</array>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>4F8B3483</string>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>Custom Receiver App ID</string>
+			<key>Key</key>
+			<string>custom_receiver_app_id</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>About</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>3.0</string>
+			<key>Key</key>
+			<string>app_version</string>
+			<key>Title</key>
+			<string>App Version</string>
+			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+		</dict>
+		<dict>
+			<key>DefaultValue</key>
+			<string>?</string>
+			<key>Key</key>
+			<string>sdk_version</string>
+			<key>Title</key>
+			<string>Cast SDK Version</string>
+			<key>Type</key>
+			<string>PSTitleValueSpecifier</string>
+		</dict>
+	</array>
+	<key>StringsTable</key>
+	<string>Root</string>
+</dict>
+</plist>

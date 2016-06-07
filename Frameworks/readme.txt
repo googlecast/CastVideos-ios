@@ -1,0 +1,1 @@
+Place Google Cast SDK framework here: https://developers.google.com/cast/docs/developers.html#ios
