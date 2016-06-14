@@ -36,8 +36,6 @@
 		6F233F781CA4791000E484F1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F233F771CA4791000E484F1 /* Foundation.framework */; };
 		6F3F70BD1CB5CFAE006AF097 /* logo_castvideos.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F3F70BB1CB5CFAE006AF097 /* logo_castvideos.png */; };
 		6F3F70BE1CB5CFAE006AF097 /* logo_castvideos@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F3F70BC1CB5CFAE006AF097 /* logo_castvideos@2x.png */; };
-		6F4480D21CC950BF0029F0F0 /* GoogleCastResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6F4480D11CC950BF0029F0F0 /* GoogleCastResources.bundle */; };
-		6F510A951CD7F955006CDC2B /* GoogleCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F510A911CD7F937006CDC2B /* GoogleCast.framework */; };
 		6F510AC61CD93C7A006CDC2B /* ExpandedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F510AC41CD93C7A006CDC2B /* ExpandedViewController.m */; };
 		6FAEDDF61CF77F8100E1691F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FAEDDF51CF77F8000E1691F /* libc++.tbd */; };
 		6FBC43E41CA3138500AAB267 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FBC43E31CA3138500AAB267 /* main.m */; };
@@ -121,9 +119,6 @@
 		6F233F771CA4791000E484F1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6F3F70BB1CB5CFAE006AF097 /* logo_castvideos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo_castvideos.png; path = Resources/logo_castvideos.png; sourceTree = "<group>"; };
 		6F3F70BC1CB5CFAE006AF097 /* logo_castvideos@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "logo_castvideos@2x.png"; path = "Resources/logo_castvideos@2x.png"; sourceTree = "<group>"; };
-		6F4480CF1CC950320029F0F0 /* GoogleCast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleCast.framework; path = Frameworks/GoogleCast.framework; sourceTree = "<group>"; };
-		6F4480D11CC950BF0029F0F0 /* GoogleCastResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleCastResources.bundle; path = Frameworks/GoogleCast.framework/Versions/A/Resources/GoogleCastResources.bundle; sourceTree = "<group>"; };
-		6F510A911CD7F937006CDC2B /* GoogleCast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleCast.framework; path = Frameworks/GoogleCast.framework; sourceTree = "<group>"; };
 		6F510AC41CD93C7A006CDC2B /* ExpandedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExpandedViewController.m; path = Classes/ExpandedViewController.m; sourceTree = "<group>"; };
 		6F510AC51CD93C7A006CDC2B /* ExpandedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExpandedViewController.h; path = Classes/ExpandedViewController.h; sourceTree = "<group>"; };
 		6FAEDDF51CF77F8000E1691F /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
@@ -175,7 +170,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6FAEDDF61CF77F8100E1691F /* libc++.tbd in Frameworks */,
-				6F510A951CD7F955006CDC2B /* GoogleCast.framework in Frameworks */,
 				6FCE60AA1CC57BFF000129A3 /* QuartzCore.framework in Frameworks */,
 				6F233F781CA4791000E484F1 /* Foundation.framework in Frameworks */,
 				6F233F761CA4790200E484F1 /* UIKit.framework in Frameworks */,
@@ -229,7 +223,6 @@
 			isa = PBXGroup;
 			children = (
 				6FAEDDF51CF77F8000E1691F /* libc++.tbd */,
-				6F4480CF1CC950320029F0F0 /* GoogleCast.framework */,
 				6FCE60A91CC57BFF000129A3 /* QuartzCore.framework */,
 				6F233F771CA4791000E484F1 /* Foundation.framework */,
 				6F233F751CA4790200E484F1 /* UIKit.framework */,
@@ -299,8 +292,6 @@
 		6FBC43D61CA3138500AAB267 = {
 			isa = PBXGroup;
 			children = (
-				6F510A911CD7F937006CDC2B /* GoogleCast.framework */,
-				6F4480D11CC950BF0029F0F0 /* GoogleCastResources.bundle */,
 				6F233EB91CA460BB00E484F1 /* Resources */,
 				6F233EB81CA460B100E484F1 /* Frameworks */,
 				6F233EB71CA460AC00E484F1 /* Classes */,
@@ -388,7 +379,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F4480D21CC950BF0029F0F0 /* GoogleCastResources.bundle in Resources */,
 				6F3F70BE1CB5CFAE006AF097 /* logo_castvideos@2x.png in Resources */,
 				6FE3DCFB1CC056690064C1E9 /* volume3@2x.png in Resources */,
 				6FCE60C41CC6CB24000129A3 /* pause@3.png in Resources */,
@@ -602,10 +592,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.sample.ChromeCast.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "CastVideos-ios";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -624,10 +610,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.sample.ChromeCast.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "CastVideos-ios";
 				TARGETED_DEVICE_FAMILY = 1;
