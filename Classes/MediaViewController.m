@@ -92,6 +92,20 @@ static NSString *const kPrefShowStreamTimeRemaining =
               style:UIBarButtonItemStylePlain
              target:self
              action:@selector(didTapQueueButton:)];
+
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+        selector:@selector(castDeviceDidChange:)
+            name:kGCKCastStateDidChangeNotification
+          object:[GCKCastContext sharedInstance]];
+}
+
+- (void)castDeviceDidChange:(NSNotification *)notification {
+  if ([GCKCastContext sharedInstance].castState != GCKCastStateNoDevicesAvailable) {
+    // You can present the instructions on how to use Google Cast on
+    // the first time the user uses you app
+    [[GCKCastContext sharedInstance] presentCastInstructionsViewControllerOnce];
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated {

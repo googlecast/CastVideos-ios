@@ -92,6 +92,20 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
              name:UIDeviceOrientationDidChangeNotification
            object:nil];
   [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self
+        selector:@selector(castDeviceDidChange:)
+            name:kGCKCastStateDidChangeNotification
+          object:[GCKCastContext sharedInstance]];
+}
+
+- (void)castDeviceDidChange:(NSNotification *)notification {
+  if ([GCKCastContext sharedInstance].castState != GCKCastStateNoDevicesAvailable) {
+    // You can present the instructions on how to use Google Cast on
+    // the first time the user uses you app
+    [[GCKCastContext sharedInstance] presentCastInstructionsViewControllerOnce];
+  }
 }
 
 - (void)deviceOrientationDidChange:(NSNotification *)notification {
@@ -146,9 +160,6 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
-  // You can present the instructions on how to use Google Cast on
-  // the first time the user uses you app
-  [[GCKCastContext sharedInstance] presentCastInstructionsViewControllerOnce];
 }
 
 #pragma mark - Table View
