@@ -487,7 +487,7 @@ didFailToResumeSession:(GCKSession *)session
                                        style:UIBarButtonItemStylePlain
                                       target:nil
                                       action:nil];
-  [self performSegueWithIdentifier:@"expandedController" sender:self];
+  [[GCKCastContext sharedInstance] presentDefaultExpandedMediaControls];
 }
 
 - (void)enqueueSelectedItemRemotely {

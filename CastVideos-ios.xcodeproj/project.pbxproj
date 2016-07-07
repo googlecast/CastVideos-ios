@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11DC8223F6BF0EE5C276821C /* libPods-CastVideos-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 337171A4425B5B9AFF40B587 /* libPods-CastVideos-ios.a */; };
 		6F1300891CB427810015E8D4 /* RootContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1300881CB427810015E8D4 /* RootContainerViewController.m */; };
 		6F13008E1CB478C40015E8D4 /* MediaItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F13008B1CB478C40015E8D4 /* MediaItem.m */; };
 		6F13008F1CB478C40015E8D4 /* MediaListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F13008D1CB478C40015E8D4 /* MediaListModel.m */; };
@@ -36,7 +37,6 @@
 		6F233F781CA4791000E484F1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F233F771CA4791000E484F1 /* Foundation.framework */; };
 		6F3F70BD1CB5CFAE006AF097 /* logo_castvideos.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F3F70BB1CB5CFAE006AF097 /* logo_castvideos.png */; };
 		6F3F70BE1CB5CFAE006AF097 /* logo_castvideos@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F3F70BC1CB5CFAE006AF097 /* logo_castvideos@2x.png */; };
-		6F510AC61CD93C7A006CDC2B /* ExpandedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F510AC41CD93C7A006CDC2B /* ExpandedViewController.m */; };
 		6FAEDDF61CF77F8100E1691F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FAEDDF51CF77F8000E1691F /* libc++.tbd */; };
 		6FBC43E41CA3138500AAB267 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FBC43E31CA3138500AAB267 /* main.m */; };
 		6FCE60AA1CC57BFF000129A3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FCE60A91CC57BFF000129A3 /* QuartzCore.framework */; };
@@ -79,6 +79,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		337171A4425B5B9AFF40B587 /* libPods-CastVideos-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CastVideos-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F1300871CB427810015E8D4 /* RootContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RootContainerViewController.h; path = Classes/RootContainerViewController.h; sourceTree = "<group>"; };
 		6F1300881CB427810015E8D4 /* RootContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RootContainerViewController.m; path = Classes/RootContainerViewController.m; sourceTree = "<group>"; };
 		6F13008A1CB478C40015E8D4 /* MediaItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaItem.h; path = Classes/MediaItem.h; sourceTree = "<group>"; };
@@ -119,8 +120,6 @@
 		6F233F771CA4791000E484F1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6F3F70BB1CB5CFAE006AF097 /* logo_castvideos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo_castvideos.png; path = Resources/logo_castvideos.png; sourceTree = "<group>"; };
 		6F3F70BC1CB5CFAE006AF097 /* logo_castvideos@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "logo_castvideos@2x.png"; path = "Resources/logo_castvideos@2x.png"; sourceTree = "<group>"; };
-		6F510AC41CD93C7A006CDC2B /* ExpandedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExpandedViewController.m; path = Classes/ExpandedViewController.m; sourceTree = "<group>"; };
-		6F510AC51CD93C7A006CDC2B /* ExpandedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExpandedViewController.h; path = Classes/ExpandedViewController.h; sourceTree = "<group>"; };
 		6FAEDDF51CF77F8000E1691F /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		6FBC43DF1CA3138500AAB267 /* CastVideos-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CastVideos-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FBC43E31CA3138500AAB267 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -162,6 +161,8 @@
 		6FEF798A1CB8222E001211D3 /* playlist@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "playlist@3x.png"; path = "Resources/playlist@3x.png"; sourceTree = "<group>"; };
 		6FEF79B21CBC340B001211D3 /* play_circle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play_circle@2x.png"; path = "Resources/play_circle@2x.png"; sourceTree = "<group>"; };
 		6FEF79B31CBC340B001211D3 /* play_circle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play_circle@3x.png"; path = "Resources/play_circle@3x.png"; sourceTree = "<group>"; };
+		77A2498B3DEBC4D0806F53B8 /* Pods-CastVideos-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-ios/Pods-CastVideos-ios.debug.xcconfig"; sourceTree = "<group>"; };
+		F15FDD49D892A86590BC0866 /* Pods-CastVideos-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-ios/Pods-CastVideos-ios.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,6 +184,7 @@
 				6F233F621CA4776B00E484F1 /* AVFoundation.framework in Frameworks */,
 				6F233F601CA4776600E484F1 /* AudioToolbox.framework in Frameworks */,
 				6F233F5E1CA4776100E484F1 /* Accelerate.framework in Frameworks */,
+				11DC8223F6BF0EE5C276821C /* libPods-CastVideos-ios.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,8 +194,6 @@
 		6F233EB71CA460AC00E484F1 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				6F510AC41CD93C7A006CDC2B /* ExpandedViewController.m */,
-				6F510AC51CD93C7A006CDC2B /* ExpandedViewController.h */,
 				6F13008A1CB478C40015E8D4 /* MediaItem.h */,
 				6F13008B1CB478C40015E8D4 /* MediaItem.m */,
 				6F13008C1CB478C40015E8D4 /* MediaListModel.h */,
@@ -236,6 +236,7 @@
 				6F233F611CA4776B00E484F1 /* AVFoundation.framework */,
 				6F233F5F1CA4776600E484F1 /* AudioToolbox.framework */,
 				6F233F5D1CA4776100E484F1 /* Accelerate.framework */,
+				337171A4425B5B9AFF40B587 /* libPods-CastVideos-ios.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -296,6 +297,7 @@
 				6F233EB81CA460B100E484F1 /* Frameworks */,
 				6F233EB71CA460AC00E484F1 /* Classes */,
 				6FBC43E01CA3138500AAB267 /* Products */,
+				DAF185FAA45BA381F5A3BD69 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -317,6 +319,15 @@
 			);
 			name = "Supporting Files";
 			path = "CastVideos-ios";
+			sourceTree = "<group>";
+		};
+		DAF185FAA45BA381F5A3BD69 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				77A2498B3DEBC4D0806F53B8 /* Pods-CastVideos-ios.debug.xcconfig */,
+				F15FDD49D892A86590BC0866 /* Pods-CastVideos-ios.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -440,7 +451,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos/Pods-CastVideos-frameworks.sh\"";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-ios/Pods-CastVideos-ios-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6F124A221D0788C500F972FF /* Copy Pods Resources */ = {
@@ -455,7 +466,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos/Pods-CastVideos-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-ios/Pods-CastVideos-ios-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6FFD0DF31D0F17C7000F1901 /* Check Pods Manifest.lock */ = {
@@ -470,7 +481,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\ncat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\nexit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -487,7 +498,6 @@
 				6F233F4E1CA4612C00E484F1 /* LocalPlayerView.m in Sources */,
 				6F233F561CA4612C00E484F1 /* Toast.m in Sources */,
 				6FBC43E41CA3138500AAB267 /* main.m in Sources */,
-				6F510AC61CD93C7A006CDC2B /* ExpandedViewController.m in Sources */,
 				6F233F491CA4612C00E484F1 /* ActionSheet.m in Sources */,
 				6F233F4A1CA4612C00E484F1 /* AppDelegate.m in Sources */,
 				6F233F511CA4612C00E484F1 /* MediaTableViewController.m in Sources */,
@@ -582,6 +592,7 @@
 		};
 		6FBC43F71CA3138500AAB267 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 77A2498B3DEBC4D0806F53B8 /* Pods-CastVideos-ios.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -600,6 +611,7 @@
 		};
 		6FBC43F81CA3138500AAB267 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F15FDD49D892A86590BC0866 /* Pods-CastVideos-ios.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (

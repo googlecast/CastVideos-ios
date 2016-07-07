@@ -327,7 +327,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 - (void)playSelectedItemRemotely {
   [self loadSelectedItemByAppending:NO];
-  [self performSegueWithIdentifier:@"expandedController" sender:self];
+  [[GCKCastContext sharedInstance] presentDefaultExpandedMediaControls];
 }
 
 - (void)enqueueSelectedItemRemotely {

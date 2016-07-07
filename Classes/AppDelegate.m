@@ -65,7 +65,7 @@ static NSString *const kPrefEnableMediaNotifications =
   GCKCastOptions *options =
       [[GCKCastOptions alloc] initWithReceiverApplicationID:applicationID];
   [GCKCastContext setSharedInstanceWithOptions:options];
-  //[context clearCastInstructionsShownFlag];
+  [GCKCastContext sharedInstance].useDefaultExpandedMediaControls = YES;
 
   self.window.clipsToBounds = YES;
 
@@ -220,8 +220,9 @@ static NSString *const kPrefEnableMediaNotifications =
 - (void)syncWithUserDefaults {
   NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
-  _enableSDKLogging = [userDefaults boolForKey:kPrefEnableSDKLogging];
-  //_enableSDKLogging = NO;
+  // Forcing no logging from the SDK
+  // _enableSDKLogging = [userDefaults boolForKey:kPrefEnableSDKLogging];
+  _enableSDKLogging = NO;
 
   BOOL mediaNotificationsEnabled =
       [userDefaults boolForKey:kPrefEnableMediaNotifications];
@@ -310,8 +311,7 @@ static NSString *const kPrefEnableMediaNotifications =
   if (appDelegate.castControlBarsEnabled) {
     appDelegate.castControlBarsEnabled = NO;
   }
-  [navigationController performSegueWithIdentifier:@"expandedController"
-                                            sender:navigationController];
+  [[GCKCastContext sharedInstance] presentDefaultExpandedMediaControls];
 }
 
 #pragma mark - GCKSessionManagerListener
