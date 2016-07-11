@@ -18,9 +18,10 @@ Here is the list of other reference apps:
 can be used to run the app without using your own ID but if you need to do any console debugging, you would need
 to have your own ID.
 * Setup the project dependencies in Xcode using Cocoapods.
-** If necessary, install Cocoapods: See this [guide](http://guides.cocoapods.org/using/getting-started.html)
-** In the CastVideos-ios directory, run `pod install`
-** Open CastVideos-ios.xcodeproj
+⋅⋅* If necessary, install Cocoapods: See this [guide](http://guides.cocoapods.org/using/getting-started.html)
+⋅⋅* In the CastVideos-ios directory, run `pod install`
+⋅⋅⋅⋅* If you already have the previous version of google-cast-sdk installed, run `pod repo update` before `pod install`
+⋅⋅* Open CastVideos-ios.xcodeproj
 * This sample includes a published app id in the user defaults so the project can be built and run without a need
    to register an app id. If you want to use your own receiver (which is required if you need to debug the receiver),
     update the user defaults or AppDelegate.m with your own app id.
