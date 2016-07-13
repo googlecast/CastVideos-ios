@@ -496,11 +496,6 @@ didFailToResumeSession:(GCKSession *)session
 
 - (void)playSelectedItemRemotely {
   [self loadSelectedItemByAppending:NO];
-  self.navigationItem.backBarButtonItem =
-      [[UIBarButtonItem alloc] initWithTitle:@""
-                                       style:UIBarButtonItemStylePlain
-                                      target:nil
-                                      action:nil];
   [[GCKCastContext sharedInstance] presentDefaultExpandedMediaControls];
 }
 
