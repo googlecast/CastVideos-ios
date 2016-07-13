@@ -17,10 +17,7 @@ Here is the list of other reference apps:
 * [Optional] Register an application on the Developers Console [http://cast.google.com/publish](http://cast.google.com/publish "Google Cast Developer Console"). The easiest would be to use the Styled Media Receiver option there. You will get an App ID when you finish registering your application. This project uses a published Application ID that
 can be used to run the app without using your own ID but if you need to do any console debugging, you would need
 to have your own ID.
-* Setup the project dependencies in Xcode using Cocoapods.
-** If necessary, install Cocoapods: See this [guide](http://guides.cocoapods.org/using/getting-started.html)
-** In the CastVideos-ios directory, run `pod repo update` and then `pod install`
-** Open CastVideos-ios.xcodeproj
+* Setup the project dependencies in Xcode using Cocoapods. If necessary, install Cocoapods: See this [guide](http://guides.cocoapods.org/using/getting-started.html). In the CastVideos-ios directory, run `pod repo update` and then `pod install`. Open CastVideos-ios.xcworkspace
 * This sample includes a published app id in the user defaults so the project can be built and run without a need
    to register an app id. If you want to use your own receiver (which is required if you need to debug the receiver),
     update the user defaults or AppDelegate.m with your own app id.
