@@ -403,7 +403,7 @@ class LocalPlayerView: UIView {
   // MARK: - Controls
   /* Prefer the toolbar for touches when in control view. */
 
-  override func hitTest(_ point: CGPoint, with event: UIEvent) -> UIView? {
+  override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
     if isFullscreen {
       print("TOUCH TEST")
       if controlView.isHidden {

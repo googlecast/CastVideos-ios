@@ -175,24 +175,24 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   }
 
   func didTapQueueButton(_ sender: Any) {
-    appDelegate.castControlBarsEnabled = false
+    appDelegate.isCastControlBarsEnabled = false
     self.performSegue(withIdentifier: "MediaQueueSegue", sender: self)
   }
   // MARK: - Mode switching
 
   func switchToLocalPlayback() {
     print("switchToLocalPlayback")
-    if self.playbackMode == PlaybackModeLocal {
+    if self.playbackMode == .local {
       return
     }
     self.setQueueButtonVisible(false)
     var playPosition: TimeInterval = 0
     var paused: Bool = false
     var ended: Bool = false
-    if self.playbackMode == PlaybackModeRemote {
+    if self.playbackMode == .remote {
       playPosition = self.castMediaController.lastKnownStreamPosition
-      paused = (self.castMediaController.lastKnownPlayerState == GCKMediaPlayerStatePaused)
-      ended = (self.castMediaController.lastKnownPlayerState == GCKMediaPlayerStateIdle)
+      paused = (self.castMediaController.lastKnownPlayerState == .paused)
+      ended = (self.castMediaController.lastKnownPlayerState == .idle)
       print("last player state: \(Int(self.castMediaController.lastKnownPlayerState)), ended: \(ended)")
     }
     self.populateMediaInfo((!paused && !ended), playPosition: playPosition)

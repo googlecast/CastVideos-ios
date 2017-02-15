@@ -194,15 +194,14 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
   func connectionDidFinishLoading(_ connection: NSURLConnection) {
     GCKLog("httpRequest completed with %ld", Int(self.responseStatus))
     if self.responseStatus == 200 {
-      var error: Error?
-      var jsonData: [AnyHashable: Any]? = (try? JSONSerialization.jsonObject(withData: self.responseData, options: kNilOptions))
+      var jsonData: [AnyHashable: Any]? = (try? JSONSerialization.jsonObject(withData: self.responseData, options: JSONSerialization.ReadingOptions.MutableContainers))
       self.rootItem = self.decodeMediaTree(fromJSON: jsonData!)
       self.isLoaded = true
       self.delegate?.mediaListModelDidLoad(self)
     }
     else {
-      var error = Error(domain: "HTTP", code: self.responseStatus, userInfo: nil)
-      self.delegate.mediaListModel(self, didFailToLoadWithError: error)
+      let error = NSError.init(domain: "HTTP", code: self.responseStatus, userInfo: nil)
+      self.delegate?.mediaListModel(self, didFailToLoadWithError: error)
     }
   }
   // MARK: - JSON decoding

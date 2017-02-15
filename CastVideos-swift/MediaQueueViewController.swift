@@ -151,7 +151,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     if sourceIndexPath.row == destinationIndexPath.row {
       return
     }
-    var sourceItem: GCKMediaQueueItem? = self.mediaClient.mediaStatus.queueItem(atIndex: sourceIndexPath.row)
+    var sourceItem = self.mediaClient.mediaStatus.queueItem(atIndex: sourceIndexPath.row)
     var insertBeforeID = kGCKMediaQueueInvalidItemID
     if destinationIndexPath.row < Int((self.mediaClient.mediaStatus?.queueItemCount())!) - 1 {
       var beforeItem: GCKMediaQueueItem? = self.mediaClient.mediaStatus.queueItem(atIndex: destinationIndexPath.row)

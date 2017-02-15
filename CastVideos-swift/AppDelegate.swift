@@ -144,10 +144,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
   }
 
   func loadDefaults(_ appDefaults: [AnyHashable: Any], fromSettingsPage plistName: String, inSettingsBundleAt settingsBundleURL: URL) {
-    var plistFileName: String? = plistName.appendingPathExtension("plist")
-    var settingsDict = [AnyHashable: Any](contentsOfURL: settingsBundleURL.appendingPathComponent(plistFileName!))
-    var prefSpecifierArray: [Any]? = (settingsDict["PreferenceSpecifiers"] as? String)
-    for prefItem: [AnyHashable: Any] in prefSpecifierArray {
+    let plistFileName = URL(fileURLWithPath: plistName).appendingPathExtension("plist").absoluteString
+    let settingsDict = NSDictionary(contentsOf: settingsBundleURL.appendingPathComponent(plistFileName))
+    var prefSpecifierArray = (settingsDict?["PreferenceSpecifiers"] as? Array)
+    for prefItem in prefSpecifierArray {
       var prefItemType: String = prefItem["Type"]
       var prefItemKey: String = prefItem["Key"]
       var prefItemDefaultValue: String = prefItem["DefaultValue"]

@@ -65,7 +65,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   func castDeviceDidChange(_ notification: Notification) {
-    if GCKCastContext.sharedInstance().castState != GCKCastStateNoDevicesAvailable {
+    if GCKCastContext.sharedInstance().castState != .noDevicesAvailable {
       // You can present the instructions on how to use Google Cast on
       // the first time the user uses you app
       GCKCastContext.sharedInstance().presentCastInstructionsViewControllerOnce()
@@ -100,7 +100,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     super.viewWillAppear(animated)
     print("viewWillAppear - Table view")
     self.navigationController?.navigationBar.isTranslucent = false
-    self.navigationController?.navigationBar?.setBackgroundImage(nil, for: UIBarMetricsDefault)
+    self.navigationController?.navigationBar?.setBackgroundImage(nil, for: .default)
     self.navigationController?.navigationBar.shadowImage = nil
     UIApplication.shared.setStatusBarHidden(false, with: .fade)
     self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
@@ -163,7 +163,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       mediaOwner?.text = detail
     }
     if item?.mediaInfo != nil {
-      cell?.accessoryType = []
+      cell?.accessoryType = .none
     }
     else {
       cell?.accessoryType = .disclosureIndicator
@@ -186,10 +186,10 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   @IBAction func playButtonClicked(_ sender: Any) {
-    var tableViewCell = ((sender as AnyObject).superview??.superview? as? UITableViewCell)
+    let tableViewCell = ((sender as AnyObject).superview??.superview as? UITableViewCell)
     var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell!)
     selectedItem = (self.rootItem.items[(indexPathForCell?.row)!] as? MediaItem)
-    var hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
+    let hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
     if (selectedItem.mediaInfo != nil) && hasConnectedCastSession {
       // Display an popover to allow the user to add to queue or play
       // immediately.
@@ -204,9 +204,9 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   // TODO
 
   @IBAction func playButtonClickedOld(_ sender: Any) {
-    var tableViewCell: UITableViewCell? = (sender.superview?.superview as? UITableViewCell)
+    var tableViewCell: UITableViewCell? = ((sender as AnyObject).superview?.superview as? UITableViewCell)
     var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell!)
-    selectedItem = (self.rootItem.items[indexPathForCell?.row] as? MediaItem)
+    selectedItem = (self.rootItem.items[(indexPathForCell?.row)!] as? MediaItem)
     var isHasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.isHasConnectedCastSession
     if (selectedItem.mediaInfo != nil) && isHasConnectedCastSession {
       // Display an alert box to allow the user to add to queue or play
@@ -274,7 +274,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
         }
         else {
           var repeatMode: GCKMediaRepeatMode? = castSession?.remoteMediaClient?.mediaStatus ? castSession?.remoteMediaClient?.mediaStatus?.queueRepeatMode : GCKMediaRepeatModeOff
-          var request: GCKRequest? = castSession?.remoteMediaClient?.queueLoadItems([item], startIndex: 0, playPosition: 0, repeatMode: repeatMode!, customData: nil)
+          var request: GCKRequest? = castSession?.remoteMediaClient?.queueLoadItems([item!], startIndex: 0, playPosition: 0, repeatMode: repeatMode!, customData: nil)
           request?.delegate = self
         }
       }
@@ -286,7 +286,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     var indexPath: IndexPath? = self.tableView.indexPathForSelectedRow
     if indexPath != nil {
       print("selected row is \(indexPath)")
-      item = (self.rootItem.items[indexPath?.row] as? MediaItem)
+      item = (self.rootItem.items[(indexPath?.row)!] as? MediaItem)
     }
     return item!
   }
@@ -310,7 +310,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     var urlKey: String? = userDefaults.string(forKey: kPrefMediaListURL)
     var urlText: String? = userDefaults.string(forKey: urlKey!)
     var mediaListURL = URL(string: urlText!)
-    if self.mediaListURL && mediaListURL?.isEqual(self.mediaListURL) {
+    if (self.mediaListURL != nil) && mediaListURL?.isEqual(self.mediaListURL) {
       // The URL hasn't changed; do nothing.
       return
     }
@@ -339,7 +339,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
     print("session ended with error: \(error)")
     var message: String? = "The Casting session has ended.\n\(error?.description)"
-    Toast.displayMessage(message, for: 3, in: UIApplication.shared.delegate?.window)
+    Toast.displayMessage(message, for: 3, in: (UIApplication.shared.delegate?.window)!)
     self.setQueueButtonVisible(false)
     self.tableView.reloadData()
   }
@@ -351,7 +351,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   func sessionManager(_ sessionManager: GCKSessionManager, didFailToResumeSession session: GCKSession, withError error: Error?) {
-    Toast.displayMessage("The Casting session could not be resumed.", for: 3, in: UIApplication.shared.delegate?.window)
+    Toast.displayMessage("The Casting session could not be resumed.", for: 3, in: (UIApplication.shared.delegate?.window)!)
     self.setQueueButtonVisible(false)
     self.tableView.reloadData()
   }
