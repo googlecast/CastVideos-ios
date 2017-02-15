@@ -13,6 +13,28 @@
 // limitations under the License.
 import UIKit
 
+import AVFoundation
+import GoogleCast
+/* Time to wait before hiding the toolbar. UX is that this number is effectively
+ * doubled. */
+var kToolbarDelay: Int = 3
+
+/* The height of the toolbar view. */
+var kToolbarHeight: Int = 44
+
+/* Protocol for callbacks from the LocalPlayerView. */
+protocol LocalPlayerViewDelegate: NSObjectProtocol {
+  /* Signal the requested style for the view. */
+  func setNavigationBarStyle(_ style: LPVNavBarStyle)
+  /* Request the navigation bar to be hidden or shown. */
+
+  func hideNavigationBar(_ hide: Bool)
+  /* Play has beeen pressed in the LocalPlayerView.
+   * Return NO to halt default actions, YES to continue as normal.
+   */
+  func continueAfterPlayButtonClicked() -> Bool
+}
+
 /* Navigation Bar styles/ */
 enum LPVNavBarStyle : Int {
   case lpvNavBarTransparent
@@ -211,8 +233,8 @@ class LocalPlayerView: UIView {
   // MARK: - Layout Managment
 
   override func layoutSubviews() {
-    var frame: CGRect = fullscreen ? UIScreen.main.bounds : fullFrame()
-    if (NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1) && fullscreen {
+    var frame: CGRect = isFullscreen ? UIScreen.main.bounds : fullFrame()
+    if (NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1) && isFullscreen {
       // Below iOS 8 the bounds don't change with orientation changes.
       frame.size = CGSize(width: CGFloat(frame.size.height), height: CGFloat(frame.size.width))
     }
@@ -237,7 +259,7 @@ class LocalPlayerView: UIView {
     super.updateConstraints()
     // Active is iOS 8 only, so only do this if available.
     if viewAspectRatio.responds(to: #selector(setActive)) {
-      viewAspectRatio.active = !fullscreen
+      viewAspectRatio.active = !isFullscreen
     }
   }
   // MARK: - Public interface
@@ -263,14 +285,14 @@ class LocalPlayerView: UIView {
     var images: [Any] = media.metadata().images
     if images && images.count > 0 {
       var image: GCKImage? = images[0]
-      GCKCastContext.sharedInstance().imageCache.fetchImage(forURL: image?.url, completion: {(_ image: UIImage) -> Void in
+      GCKCastContext.sharedInstance().imageCache?.fetchImage(forURL: image?.url, completion: {(_ image: UIImage) -> Void in
         splashImage.image = image
       })
     }
   }
 
   func loadMediaPlayer() {
-    if !mediaPlayer {
+    if let mediaPlayer = mediaPlayer {
       var mediaURL = URL(string: media.contentID)
       mediaPlayer = AVPlayer.withURL(mediaURL)
       mediaPlayerLayer = AVPlayerLayer(mediaPlayer)
@@ -400,7 +422,7 @@ class LocalPlayerView: UIView {
 
   @IBAction func playButtonClicked(_ sender: Any) {
     print("playButtonClicked \(pendingPlay)")
-    var delegate: LocalPlayerViewDelegate = delegate
+    var delegate: LocalPlayerViewDelegate = self.delegate
     if playerState == .stopped && delegate && delegate.responds(to: #selector(continueAfterPlayButtonClicked)) {
       if !delegate.continueAfterPlayButtonClicked() {
         return
@@ -643,23 +665,3 @@ class LocalPlayerView: UIView {
 
   }
 }
-/* Protocol for callbacks from the LocalPlayerView. */
-protocol LocalPlayerViewDelegate: NSObjectProtocol {
-  /* Signal the requested style for the view. */
-  func setNavigationBarStyle(_ style: LPVNavBarStyle)
-  /* Request the navigation bar to be hidden or shown. */
-
-  func hideNavigationBar(_ hide: Bool)
-  /* Play has beeen pressed in the LocalPlayerView.
-   * Return NO to halt default actions, YES to continue as normal.
-   */
-  func continueAfterPlayButtonClicked() -> Bool
-}
-import AVFoundation
-import GoogleCast
-/* Time to wait before hiding the toolbar. UX is that this number is effectively
- * doubled. */
-var kToolbarDelay: Int = 3
-
-/* The height of the toolbar view. */
-var kToolbarHeight: Int = 44

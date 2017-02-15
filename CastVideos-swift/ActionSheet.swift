@@ -16,8 +16,10 @@ import UIKit
 
 class ActionSheetAction: NSObject {
   private(set) var title: String = ""
+  var target: Any!
+  var selector = Selector()
 
-  override init(title: String, target: Any, selector: Selector) {
+  init(title: String, target: Any, selector: Selector) {
     super.init()
 
     self.title = title
@@ -26,33 +28,37 @@ class ActionSheetAction: NSObject {
   }
 
   func trigger() {
-    if target && selector && target.responds(to: selector) {
+    if let target=target, let selector = selector, target.responds(to: selector) {
       // See http://stackoverflow.com/questions/7017281
       var imp: IMP = target.method(for: selector)
-      var () = (imp as? Void)
+      var () = (imp as? Void)!
       func(target, selector)
     }
   }
-  var target: Any!
-  var selector = Selector()
 }
 
 class ActionSheet: NSObject, UIAlertViewDelegate {
+  var title: String?
+  var message: String?
+  var cancelButtonText: String?
+  var actions: [ActionSheetAction]!
+  var indexedActions: [Int: ActionSheetAction]?
+
   init(title: String, message: String, cancelButtonText: String) {
     super.init()
-    title = title
-    message = message
-    cancelButtonText = cancelButtonText
-    actions = [ActionSheetAction]()
+    self.title = title
+    self.message = message
+    self.cancelButtonText = cancelButtonText
+    self.actions = [ActionSheetAction]()
   }
 
   func addAction(withTitle title: String, target: Any, selector: Selector) {
-    var action = ActionSheetAction(title: title, target: target, selector: selector)
+    let action = ActionSheetAction(title: title, target: target, selector: selector)
     actions.append(action)
   }
 
   func present(in parent: UIViewController, sourceView: UIView) {
-    if UIAlertController.self {
+    if objc_getClass("UIAlertController") != nil {
       // iOS 8+ approach.
       var controller = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
       for action: ActionSheetAction in actions {
@@ -61,7 +67,7 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
         })
         controller.addAction(alertAction)
       }
-      if cancelButtonText {
+      if let cancelButtonText = cancelButtonText {
         var cancelAction = UIAlertAction(title: cancelButtonText, style: .cancel, handler: {(_ action: UIAlertAction) -> Void in
           controller.dismiss(animated: true)
         })
@@ -70,19 +76,19 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
       // Present the controller in the right location, on iPad. On iPhone, it
       // always displays at the
       // bottom of the screen.
-      guard let presentationController = controller.popoverPresentationController { else return }
+      guard let presentationController = controller.popoverPresentationController else { return }
       presentationController.sourceView = sourceView
       presentationController.sourceRect = sourceView.bounds
-      presentationController.permittedArrowDirections = 0
+      presentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
       parent.present(controller, animated: true)
     }
     else {
       // iOS 7 and below.
-      var alertView = UIAlertView(title: title, message: message, delegate: self, cancelButtonTitle: cancelButtonText, otherButtonTitles: "")
-      indexedActions = [AnyHashable: Any](minimumCapacity: actions.count)
+      var alertView = UIAlertView(title: title!, message: message!, delegate: self, cancelButtonTitle: cancelButtonText, otherButtonTitles: "")
+      indexedActions = [AnyHashable: Any](minimumCapacity: actions.count) as! [Int : ActionSheetAction]
       for action: ActionSheetAction in actions {
-        var position: Int = alertView.addButton(withTitle: action.title)
-        indexedActions[(position)] = action
+        var position = alertView.addButton(withTitle: action.title)
+        indexedActions?[position] = action
       }
       alertView.show()
       // Hold onto this ActionSheet until the UIAlertView is dismissed. This
@@ -93,17 +99,11 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
       objc_setAssociatedObject(alertView, kActionSheetKey, self, OBJC_ASSOCIATION_RETAIN)
     }
   }
-  var title: String = ""
-  var message: String = ""
-  var cancelButtonText: String = ""
-  var actions = [ActionSheetAction]()
-  var indexedActions = [NSNumber: ActionSheetAction]()
 
   // MARK: - UIAlertViewDelegate
 
-  func alertView(_ alertView: UIAlertView, clickedButtonat buttonIndex: Int) {
-    indexedActions = nil
-    var action: ActionSheetAction? = indexedActions[buttonIndex]
+  @objc(alertView:clickedButtonAtIndex:) func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
+    let action: ActionSheetAction? = indexedActions?[buttonIndex]
     action?.trigger()
   }
 

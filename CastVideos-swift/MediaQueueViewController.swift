@@ -31,9 +31,9 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     print("_tableView is \(self.tableView)")
     self.tableView.dataSource = self
     self.tableView.delegate = self
-    self.editing = false
+    self.isEditing = false
     var sessionManager: GCKSessionManager? = GCKCastContext.sharedInstance().sessionManager
-    sessionManager?.addListener(self)
+    sessionManager?.add(self)
     if sessionManager?.hasConnectedCastSession {
       self.attach(to: sessionManager?.currentCastSession)
     }
@@ -53,8 +53,8 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     self.queueRequest = nil
-    self.tableView.userInteractionEnabled = true
-    if self.mediaClient.mediaStatus.queueItemCount() == 0 {
+    self.tableView.isUserInteractionEnabled = true
+    if self.mediaClient.mediaStatus?.queueItemCount() == 0 {
       self.editButton.isEnabled = false
     }
     else {
@@ -69,18 +69,18 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   // MARK: - UI Actions
 
   @IBAction func toggleEditing(_ sender: Any) {
-    if self.editing {
+    if self.isEditing {
       self.editButton.title = "Edit"
       self.tableView.setEditing(false, animated: true)
-      self.editing = false
-      if self.mediaClient.mediaStatus.queueItemCount() == 0 {
+      self.isEditing = false
+      if self.mediaClient.mediaStatus?.queueItemCount() == 0 {
         self.editButton.isEnabled = false
       }
     }
     else {
       self.editButton.title = "Done"
       self.tableView.setEditing(true, animated: true)
-      self.editing = true
+      self.isEditing = true
     }
   }
 
@@ -106,36 +106,36 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if !self.mediaClient || !self.mediaClient.mediaStatus {
+    if (self.mediaClient == nil) || (self.mediaClient.mediaStatus == nil) {
       return 0
     }
-    return self.mediaClient.mediaStatus.queueItemCount
+    return self.mediaClient.mediaStatus!.queueItemCount
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     var cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
     var item: GCKMediaQueueItem? = self.mediaClient.mediaStatus.queueItem(atIndex: indexPath.row)
-    var title: String? = item?.mediaInformation?.metadata()?.string(forKey: kGCKMetadataKeyTitle)
-    var artist: String? = item?.mediaInformation?.metadata()?.string(forKey: kGCKMetadataKeyArtist)
+    var title: String? = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
+    var artist: String? = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyArtist)
     if artist == nil {
-      artist = item?.mediaInformation?.metadata()?.string(forKey: kGCKMetadataKeyStudio)
+      artist = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyStudio)
     }
-    var detail: String? = "(\(GCKUIUtils.timeInterval(asString: item?.mediaInformation?.streamDuration))) \(artist)"
+    var detail: String? = "(\(GCKUIUtils.timeInterval(asString: (item?.mediaInformation.streamDuration)!))) \(artist)"
     var mediaTitle: UILabel? = (cell?.viewWithTag(1) as? UILabel)
     mediaTitle?.text = title
     var mediaOwner: UILabel? = (cell?.viewWithTag(2) as? UILabel)
     mediaOwner?.text = detail
-    if self.mediaClient.mediaStatus.currentItemID == item?.itemID {
+    if self.mediaClient.mediaStatus?.currentItemID == item?.itemID {
       cell?.backgroundColor = UIColor(red: CGFloat(15.0 / 255), green: CGFloat(153.0 / 255), blue: CGFloat(242.0 / 255), alpha: CGFloat(0.1))
     }
     else {
       cell?.backgroundColor = nil
     }
-    var imageView: UIImageView? = (cell?.contentView?.viewWithTag(3) as? UIImageView)
-    var images: [Any]? = item?.mediaInformation?.metadata()?.images
-    if images && images?.count > 0 {
+    var imageView: UIImageView? = (cell?.contentView.viewWithTag(3) as? UIImageView)
+    var images: [Any]? = item?.mediaInformation.metadata()?.images
+    if let images = images, images.images?.count > 0 {
       var image: GCKImage? = images?[0]
-      GCKCastContext.sharedInstance().imageCache.fetchImage(forURL: image?.url, completion: {(_ image: UIImage) -> Void in
+      GCKCastContext.sharedInstance().imageCache?.fetchImage(forURL: image?.url, completion: {(_ image: UIImage) -> Void in
         imageView?.image = image
         cell?.setNeedsLayout()
       })
@@ -154,7 +154,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     }
     var sourceItem: GCKMediaQueueItem? = self.mediaClient.mediaStatus.queueItem(atIndex: sourceIndexPath.row)
     var insertBeforeID: Int = kGCKMediaQueueInvalidItemID
-    if destinationIndexPath.row < Int(self.mediaClient.mediaStatus.queueItemCount()) - 1 {
+    if destinationIndexPath.row < Int(self.mediaClient.mediaStatus?.queueItemCount()) - 1 {
       var beforeItem: GCKMediaQueueItem? = self.mediaClient.mediaStatus.queueItem(atIndex: destinationIndexPath.row)
       insertBeforeID = beforeItem?.itemID
     }
@@ -175,19 +175,19 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     }
   }
 
-  override func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath) {
+  override func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
     // No-op.
   }
   // MARK: - Session handling
 
   func attach(to castSession: GCKCastSession) {
     self.mediaClient = castSession.remoteMediaClient
-    self.mediaClient.addListener(self)
+    self.mediaClient.add(self)
     self.tableView.reloadData()
   }
 
   func detachFromCastSession() {
-    self.mediaClient.removeListener(self)
+    self.mediaClient.remove(self)
     self.mediaClient = nil
     self.tableView.reloadData()
   }
@@ -222,21 +222,21 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   func start(_ request: GCKRequest) {
     self.queueRequest = request
     self.queueRequest.delegate = self
-    self.tableView.userInteractionEnabled = false
+    self.tableView.isUserInteractionEnabled = false
   }
   // MARK: - GCKRequestDelegate
 
   func requestDidComplete(_ request: GCKRequest) {
     if request == self.queueRequest {
       self.queueRequest = nil
-      self.tableView.userInteractionEnabled = true
+      self.tableView.isUserInteractionEnabled = true
     }
   }
 
   func request(_ request: GCKRequest, didFailWithError error: GCKError) {
     if request == self.queueRequest {
       self.queueRequest = nil
-      self.tableView.userInteractionEnabled = true
+      self.tableView.isUserInteractionEnabled = true
       self.showErrorMessage("Queue request failed:\n\(error.description)")
     }
   }
@@ -244,8 +244,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   func requestWasReplaced(_ request: GCKRequest) {
     if request == self.queueRequest {
       self.queueRequest = nil
-      self.tableView.userInteractionEnabled = true
+      self.tableView.isUserInteractionEnabled = true
     }
   }
 }
-import GoogleCast

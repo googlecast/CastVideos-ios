@@ -12,6 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import UIKit
+import GoogleCast
+/* The player state. */
+enum PlaybackMode : Int {
+  case none = 0
+  case local
+  case remote
+}
+
+let kPrefShowStreamTimeRemaining: String = "show_stream_time_remaining"
+
 
 class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemoteMediaClientListener, LocalPlayerViewDelegate, GCKRequestDelegate {
 
@@ -50,7 +60,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
 
   required init?(coder: NSCoder) {
-    super.init((coder as? NSCoder))
+    super.init(coder: coder)
 
     self.sessionManager = GCKCastContext.sharedInstance().sessionManager
     self.castMediaController = GCKUIMediaController()
@@ -65,7 +75,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     self.castButton = GCKUICastButton(frame: CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(24), height: CGFloat(24)))
     self.castButton.tintColor = UIColor.white
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.castButton)
-    self.playbackMode = PlaybackModeNone
+    self.playbackMode = .None
     self.queueButton = UIBarButtonItem(image: UIImage(named: "playlist_white.png"), style: .plain, target: self, action: #selector(self.didTapQueueButton))
     NotificationCenter.default.addObserver(self, selector: #selector(self.castDeviceDidChange), name: kGCKCastStateDidChangeNotification, object: GCKCastContext.sharedInstance())
   }
@@ -88,7 +98,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     // Do we need to switch modes? If we're in remote playback mode but no longer
     // have a session, then switch to local playback mode. If we're in local mode
     // but now have a session, then switch to remote playback mode.
-    var hasConnectedSession: Bool = (self.sessionManager.hasConnectedSession)
+    var hasConnectedSession: Bool = (self.sessionManager.hasConnectedSession())
     if hasConnectedSession && (self.playbackMode != PlaybackModeRemote) {
       self.populateMediaInfo(false, playPosition: 0)
       self.switchToRemotePlayback()
@@ -142,10 +152,10 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       }
     default:
       // Do nothing.
-
+      break
     }
 
-    self.sessionManager.removeListener(self)
+    self.sessionManager.remove(self)
     UIDevice.current.endGeneratingDeviceOrientationNotifications()
     NotificationCenter.default.removeObserver(self, name: UIDeviceOrientationDidChangeNotification, object: nil)
     super.viewWillDisappear(animated)
@@ -413,12 +423,3 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     print("request \(Int(request.requestID)) failed with error \(error)")
   }
 }
-import GoogleCast
-/* The player state. */
-enum PlaybackMode : Int {
-  case none = 0
-  case local
-  case remote
-}
-
-let kPrefShowStreamTimeRemaining: String = "show_stream_time_remaining"

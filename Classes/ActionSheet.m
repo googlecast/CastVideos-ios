@@ -160,7 +160,6 @@
 
 - (void)alertView:(UIAlertView *)alertView
     clickedButtonAtIndex:(NSInteger)buttonIndex {
-  _indexedActions = nil;
   ActionSheetAction *action = _indexedActions[@(buttonIndex)];
   if (action) {
     [action trigger];

@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import UIKit
+// Coordinate to ensure two toasts are never active at once.
+var isToastActive: Bool = false
+
+var activeToast: Toast?
+
 class Toast: UIView {
 
   var messageLabel: UILabel!
@@ -56,19 +61,15 @@ class Toast: UIView {
     return super.init(frame: frame)
   }
 
-  override func touchesEnded(_ touches: Set<UITouch>, withEvent event: UIEvent) {
+  override func touchesEnded(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
     self.removeFromSuperview()
     isToastActive = false
   }
 
   class func orientationChanged(_ notification: Notification) {
     if isToastActive {
-      activeToast.removeFromSuperview()
+      activeToast?.removeFromSuperview()
       isToastActive = false
     }
   }
 }
-// Coordinate to ensure two toasts are never active at once.
-var isToastActive: Bool = false
-
-var activeToast: Toast?

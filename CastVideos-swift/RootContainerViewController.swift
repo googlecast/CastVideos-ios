@@ -22,14 +22,13 @@ class RootContainerViewController: UIViewController, GCKUIMiniMediaControlsViewC
   @IBOutlet weak var miniMediaControlsContainerView: UIView!
   @IBOutlet weak var miniMediaControlsHeightConstraint: NSLayoutConstraint!
   var miniMediaControlsViewController: GCKUIMiniMediaControlsViewController!
-  weak var navigationController: UINavigationController?
   var isMiniMediaControlsViewEnabled: Bool {
     get {
       // TODO: add getter implementation
     }
     set(miniMediaControlsViewEnabled) {
-      self.isMiniMediaControlsViewEnabled = isMiniMediaControlsViewEnabled
-      if self.isViewLoaded() {
+      self.isMiniMediaControlsViewEnabled = miniMediaControlsViewEnabled
+      if self.isViewLoaded {
         self.updateControlBarsVisibility()
       }
     }
@@ -62,8 +61,8 @@ class RootContainerViewController: UIViewController, GCKUIMiniMediaControlsViewC
     self.view.setNeedsLayout()
   }
 
-  func installViewController(_ viewController: UIViewController, inContainerView containerView: UIView) {
-    if viewController {
+  func installViewController(_ viewController: UIViewController?, inContainerView containerView: UIView) {
+    if let viewController = viewController {
       self.addChildViewController(viewController)
       viewController.view.frame = containerView.bounds
       containerView.addSubview(viewController.view)
@@ -74,7 +73,7 @@ class RootContainerViewController: UIViewController, GCKUIMiniMediaControlsViewC
   func uninstallViewController(_ viewController: UIViewController) {
     viewController.willMove(toParentViewController: nil)
     viewController.view.removeFromSuperview()
-    viewController.removeFromParent()
+    viewController.removeFromParentViewController()
   }
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

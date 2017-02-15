@@ -92,6 +92,26 @@ let kPosterWidth: Int = 780
 let kPosterHeight: Int = 1200
 
 /**
+ * The delegate protocol for receiving notifications from the model.
+ */
+protocol MediaListModelDelegate: NSObjectProtocol {
+  /**
+   * Called when the media list has loaded.
+   *
+   * @param list The media list.
+   */
+  func mediaListModelDidLoad(_ list: MediaListModel)
+  /**
+   * Called when the media list has failed to load.
+   *
+   * @param list The media list.
+   * @param error The error.
+   */
+
+  func mediaListModel(_ list: MediaListModel, didFailToLoadWithError error: Error?)
+}
+
+/**
  * An object representing a hierarchy of media items.
  */
 class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDelegate {
@@ -176,7 +196,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
     if self.responseStatus == 200 {
       var error: Error?
       var jsonData: [AnyHashable: Any]? = (try? JSONSerialization.jsonObject(withData: self.responseData, options: kNilOptions))
-      self.rootItem = self.decodeMediaTree(fromJSON: jsonData)
+      self.rootItem = self.decodeMediaTree(fromJSON: jsonData!)
       self.isLoaded = true
       self.delegate.mediaListModelDidLoad(self)
     }
@@ -280,7 +300,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
           if mediaTracks?.count == 0 {
             mediaTracks = nil
           }
-          var mediaInfo = GCKMediaInformation(contentID: url!.absoluteString, streamType: .buffered, contentType: mimeType!, metadata: metadata, streamDuration: TimeInterval(duration!), mediaTracks: mediaTracks, textTrackStyle: self.trackStyle, customData: nil)
+          var mediaInfo = GCKMediaInformation(contentID: url!.absoluteString, streamType: .buffered, contentType: mimeType!, metadata: metadata, streamDuration: TimeInterval(duration!), mediaTracks: mediaTracks as! [GCKMediaTrack]?, textTrackStyle: self.trackStyle, customData: nil)
           var childItem = MediaItem(mediaInfo, parent: item)
           item.items().append(childItem)
 
@@ -320,23 +340,4 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
     }
     return .unknown
   }
-}
-/**
- * The delegate protocol for receiving notifications from the model.
- */
-protocol MediaListModelDelegate: NSObjectProtocol {
-  /**
-   * Called when the media list has loaded.
-   *
-   * @param list The media list.
-   */
-  func mediaListModelDidLoad(_ list: MediaListModel)
-  /**
-   * Called when the media list has failed to load.
-   *
-   * @param list The media list.
-   * @param error The error.
-   */
-
-  func mediaListModel(_ list: MediaListModel, didFailToLoadWithError error: Error?)
 }

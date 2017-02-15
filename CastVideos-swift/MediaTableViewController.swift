@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import UIKit
+import GoogleCast
+let kPrefMediaListURL: String = "media_list_url"
+
 
 class MediaTableViewController: UITableViewController, GCKSessionManagerListener, MediaListModelDelegate, GCKRequestDelegate {
   var sessionManager: GCKSessionManager!
@@ -44,11 +47,11 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     print("MediaTableViewController - viewDidLoad")
     super.viewDidLoad()
     self.sessionManager = GCKCastContext.sharedInstance().sessionManager
-    self.sessionManager.addListener(self)
+    self.sessionManager.add(self)
     self.titleView = self.navigationItem.titleView
     self.rootTitleView = UIImageView(image: UIImage(named: "logo_castvideos.png"))
     NotificationCenter.default.addObserver(self, selector: #selector(self.loadMediaList), name: UserDefaults.didChangeNotification, object: nil)
-    if !self.rootItem {
+    if self.rootItem == nil {
       self.loadMediaList()
     }
     self.castButton = GCKUICastButton(frame: CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(24), height: CGFloat(24)))
@@ -56,9 +59,9 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.castButton)
     self.queueButton = UIBarButtonItem(image: UIImage(named: "playlist_white.png"), style: .plain, target: self, action: #selector(self.didTapQueueButton))
     self.tableView.separatorColor = UIColor.clear
-    NotificationCenter.default.addObserver(self, selector: #selector(self.deviceOrientationDidChange), name: UIDeviceOrientationDidChangeNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(self.deviceOrientationDidChange), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-    NotificationCenter.default.addObserver(self, selector: #selector(self.castDeviceDidChange), name: kGCKCastStateDidChangeNotification, object: GCKCastContext.sharedInstance())
+    NotificationCenter.default.addObserver(self, selector: #selector(self.castDeviceDidChange), name: NSNotification.Name.gckCastStateDidChange, object: GCKCastContext.sharedInstance())
   }
 
   func castDeviceDidChange(_ notification: Notification) {
@@ -96,12 +99,12 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     print("viewWillAppear - Table view")
-    self.navigationController?.navigationBar?.translucent = false
+    self.navigationController?.navigationBar.isTranslucent = false
     self.navigationController?.navigationBar?.setBackgroundImage(nil, for: UIBarMetricsDefault)
-    self.navigationController?.navigationBar?.shadowImage = nil
-    UIApplication.shared.setStatusBarHidden(false, withAnimation: .fade)
+    self.navigationController?.navigationBar.shadowImage = nil
+    UIApplication.shared.setStatusBarHidden(false, with: .fade)
     self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-    if !self.rootItem.parent {
+    if self.rootItem.parent == nil {
       // If this is the root group, show stylized application title in the title
       // view.
       self.navigationItem.titleView = self.rootTitleView
@@ -159,19 +162,19 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       mediaTitle?.text = item?.title
       mediaOwner?.text = detail
     }
-    if item?.mediaInfo {
+    if item?.mediaInfo != nil {
       cell?.accessoryType = []
     }
     else {
       cell?.accessoryType = .disclosureIndicator
     }
-    var imageView: UIImageView? = (cell?.contentView?.viewWithTag(3) as? UIImageView)
-    GCKCastContext.sharedInstance().imageCache.fetchImage(for: item?.imageURL, completion: {(_ image: UIImage) -> Void in
+    var imageView: UIImageView? = (cell?.contentView.viewWithTag(3) as? UIImageView)
+    GCKCastContext.sharedInstance().imageCache?.fetchImage(for: item?.imageURL, completion: {(_ image: UIImage) -> Void in
       imageView?.image = image
       cell?.setNeedsLayout()
     })
     var addButton: UIButton? = (cell?.viewWithTag(4) as? UIButton)
-    var hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession
+    var hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
     if hasConnectedCastSession {
       addButton?.isHidden = false
       addButton?.addTarget(self, action: #selector(self.playButtonClicked), for: .touchDown)
@@ -183,7 +186,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   @IBAction func playButtonClicked(_ sender: Any) {
-    var tableViewCell: UITableViewCell? = (sender.superview?.superview as? UITableViewCell)
+    var tableViewCell: UITableViewCell? = ((sender as AnyObject).superview?.superview as? UITableViewCell)
     var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell)
     selectedItem = (self.rootItem.items()[indexPathForCell?.row] as? MediaItem)
     var hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.isHasConnectedCastSession
@@ -367,5 +370,3 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     print("request \(Int(request.requestID)) failed with error \(error)")
   }
 }
-import GoogleCast
-let kPrefMediaListURL: String = "media_list_url"

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import Foundation
+import GoogleCast
+
 
 /**
  * An object representing a media item (or a container group of media items).
@@ -77,4 +79,3 @@ class MediaItem: NSObject {
     return item
   }
 }
-import GoogleCast
