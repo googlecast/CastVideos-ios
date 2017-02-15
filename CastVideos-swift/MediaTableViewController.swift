@@ -230,8 +230,8 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     print("prepareForSegue")
     if (segue.identifier == "mediaDetails") {
-      var viewController: MediaViewController? = (segue.destination as? MediaViewController)
-      var mediaInfo: GCKMediaInformation? = self.getSelectedItem().mediaInfo
+      let viewController: MediaViewController? = (segue.destination as? MediaViewController)
+      let mediaInfo: GCKMediaInformation? = self.getSelectedItem().mediaInfo
       if mediaInfo != nil {
         viewController?.mediaInfo = mediaInfo
       }
@@ -299,8 +299,8 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   func mediaListModel(_ list: MediaListModel, didFailToLoadWithError error: Error?) {
-    var errorMessage: String = "Unable to load the media list from\n\(self.mediaListURL.absoluteString)."
-    var alert = UIAlertView(title: NSLocalizedString("Cast Error", comment: ""), message: NSLocalizedString(errorMessage, comment: ""), delegate: nil, cancelButtonTitle: NSLocalizedString("OK", comment: ""), otherButtonTitles: "")
+    let errorMessage: String = "Unable to load the media list from\n\(self.mediaListURL.absoluteString)."
+    let alert = UIAlertView(title: NSLocalizedString("Cast Error", comment: ""), message: NSLocalizedString(errorMessage, comment: ""), delegate: nil, cancelButtonTitle: NSLocalizedString("OK", comment: ""), otherButtonTitles: "")
     alert.show()
   }
 
@@ -357,7 +357,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   func showAlert(withTitle title: String, message: String) {
-    var alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
+    let alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
     alert.show()
   }
   // MARK: - GCKRequestDelegate

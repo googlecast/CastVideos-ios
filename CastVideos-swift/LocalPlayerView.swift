@@ -259,7 +259,7 @@ class LocalPlayerView: UIView {
     super.updateConstraints()
     // Active is iOS 8 only, so only do this if available.
     if viewAspectRatio.responds(to: #selector(setActive)) {
-      viewAspectRatio.active = !isFullscreen
+      viewAspectRatio.isActive = !isFullscreen
     }
   }
   // MARK: - Public interface
@@ -285,7 +285,7 @@ class LocalPlayerView: UIView {
     var images: [Any] = media.metadata().images
     if images && images.count > 0 {
       var image: GCKImage? = images[0]
-      GCKCastContext.sharedInstance().imageCache?.fetchImage(forURL: image?.url, completion: {(_ image: UIImage) -> Void in
+      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: image?.url, completion: {(_ image: UIImage) -> Void in
         splashImage.image = image
       })
     }
@@ -404,7 +404,7 @@ class LocalPlayerView: UIView {
   /* Prefer the toolbar for touches when in control view. */
 
   override func hitTest(_ point: CGPoint, withEvent event: UIEvent) -> UIView? {
-    if fullscreen {
+    if isFullscreen {
       print("TOUCH TEST")
       if controlView.isHidden {
         didTouchControl(nil)

@@ -209,7 +209,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       subtitle = self.mediaInfo.metadata().string(forKey: kGCKMetadataKeyStudio)
     }
     self.subtitleLabel.text = subtitle
-    var description: String? = self.mediaInfo.metadata().string(forKey: kMediaKeyDescription)
+    var description: String? = self.mediaInfo.metadata.string(forKey: kMediaKeyDescription)
     self.descriptionTextView.text = description?.replacingOccurrences(of: "\\n", with: "\n")
     self.localPlayerView.loadMedia(self.mediaInfo, autoPlay: autoPlay, playPosition: playPosition)
   }
@@ -401,7 +401,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
         builder.autoplay = true
         builder.preloadTime = UserDefaults.standard.integer(forKey: kPrefPreloadTime)
         var item: GCKMediaQueueItem? = builder.build()
-        if castSession?.remoteMediaClient?.mediaStatus && appending {
+        if ((castSession?.remoteMediaClient?.mediaStatus) != nil) && appending {
           var request: GCKRequest? = castSession?.remoteMediaClient?.queueInsert(item, beforeItemWith: kGCKMediaQueueInvalidItemID)
           request?.delegate = self
         }

@@ -33,13 +33,13 @@ class RootContainerViewController: UIViewController, GCKUIMiniMediaControlsViewC
       }
     }
   }
-  weak private(set) var navigationController: UINavigationController?
+  private(set) var navigationController: UINavigationController?
   var isMiniMediaControlsItemEnabled: Bool = false
 
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    var castContext = GCKCastContext.sharedInstance()
+    let castContext = GCKCastContext.sharedInstance()
     self.miniMediaControlsViewController = castContext.createMiniMediaControlsViewController()
     self.miniMediaControlsViewController.delegate = self
     self.updateControlBarsVisibility()

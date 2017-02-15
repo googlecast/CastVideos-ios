@@ -105,9 +105,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
     NotificationCenter.default.addObserver(self, selector: #selector(syncWithUserDefaults), name: UserDefaults.didChangeNotification, object: nil)
     if useCastContainerViewController {
       let appStoryboard = UIStoryboard(name: "Main", bundle: nil)
-      let navigationController: UINavigationController? = appStoryboard.instantiateViewController(withIdentifier: "MainNavigation")
+      let navigationController = appStoryboard.instantiateViewController(withIdentifier: "MainNavigation") as! UINavigationController
       var castContainerVC: GCKUICastContainerViewController?
-      castContainerVC = GCKCastContext.sharedInstance().createCastContainerController(for: navigationController!)
+      castContainerVC = GCKCastContext.sharedInstance().createCastContainerController(for: navigationController)
       castContainerVC?.miniMediaControlsItemEnabled = true
       window = UIWindow(frame: UIScreen.main.bounds)
       window?.rootViewController = castContainerVC
@@ -134,7 +134,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
   func populateRegistrationDomain() {
     let settingsBundleURL: URL? = Bundle.main.url(forResource: "Settings", withExtension: "bundle")
     let appVersion: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-    let appDefaults = [AnyHashable: Any]()
+    let appDefaults = [String: Any]()
     loadDefaults(appDefaults, fromSettingsPage: "Root", inSettingsBundleAt: settingsBundleURL!)
     let userDefaults = UserDefaults.standard
     userDefaults.register(defaults: appDefaults)
@@ -243,7 +243,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
     }
   }
 
-  func sessionManager(_ sessionManager: GCKSessionManager, didFailToStart session: GCKSession, withError error: Error?) {
+  func sessionManager(_ sessionManager: GCKSessionManager, didFailToStart session: GCKSession, withError error: Error) {
     var message: String? = "Failed to start session:\n\(error?.localizedDescription)"
     showAlert(withTitle: "Session error", message: message)
   }
@@ -254,7 +254,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
   }
   // MARK: - GCKUIImagePicker
 
-  func getImageWith(_ imageHints: GCKUIImageHints, from metadata: GCKMediaMetadata) -> GCKImage {
+  func getImageWith(_ imageHints: GCKUIImageHints, from metadata: GCKMediaMetadata) -> GCKImage? {
     if metadata && metadata.images && (metadata.images.count > 0) {
       if metadata.images.count == 1 {
         return metadata.images[0]

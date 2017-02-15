@@ -32,12 +32,12 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     self.tableView.dataSource = self
     self.tableView.delegate = self
     self.isEditing = false
-    var sessionManager: GCKSessionManager? = GCKCastContext.sharedInstance().sessionManager
-    sessionManager?.add(self)
-    if sessionManager?.hasConnectedCastSession {
-      self.attach(to: sessionManager?.currentCastSession)
+    let sessionManager = GCKCastContext.sharedInstance().sessionManager
+    sessionManager.add(self)
+    if sessionManager.hasConnectedCastSession() {
+      self.attach(to: sessionManager.currentCastSession!)
     }
-    var recognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
+    let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
     recognizer.minimumPressDuration = 2.0
     // 2 seconds
     self.tableView.addGestureRecognizer(recognizer)
@@ -46,7 +46,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   }
 
   override func viewWillAppear(_ animated: Bool) {
-    appDelegate.castControlBarsEnabled = false
+    appDelegate?.isCastControlBarsEnabled = false
     super.viewWillAppear(animated)
   }
 
@@ -85,7 +85,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   }
 
   func showErrorMessage(_ message: String) {
-    var alert = UIAlertView(title: NSLocalizedString("Error", comment: ""), message: message, delegate: nil, cancelButtonTitle: NSLocalizedString("OK", comment: ""), otherButtonTitles: "")
+    let alert = UIAlertView(title: NSLocalizedString("Error", comment: ""), message: message, delegate: nil, cancelButtonTitle: NSLocalizedString("OK", comment: ""), otherButtonTitles: "")
     alert.show()
   }
 
@@ -95,24 +95,24 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     if indexPath != nil {
       var item: GCKMediaQueueItem? = self.mediaClient.mediaStatus.queueItem(atIndex: indexPath?.row)
       if item != nil {
-        self.startRequest(self.mediaClient.queueJumpToItem(with: item?.itemID))
+        self.start(self.mediaClient.queueJumpToItem(withID: (item?.itemID)!))
       }
     }
   }
   // MARK: - UITableViewDataSource
 
-  override func numberOfSections(in tableView: UITableView) -> Int {
+  func numberOfSections(in tableView: UITableView) -> Int {
     return 1
   }
 
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if (self.mediaClient == nil) || (self.mediaClient.mediaStatus == nil) {
       return 0
     }
     return self.mediaClient.mediaStatus!.queueItemCount
   }
 
-  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     var cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
     var item: GCKMediaQueueItem? = self.mediaClient.mediaStatus.queueItem(atIndex: indexPath.row)
     var title: String? = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
@@ -131,11 +131,10 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     else {
       cell?.backgroundColor = nil
     }
-    var imageView: UIImageView? = (cell?.contentView.viewWithTag(3) as? UIImageView)
-    var images: [Any]? = item?.mediaInformation.metadata()?.images
-    if let images = images, images.images?.count > 0 {
-      var image: GCKImage? = images?[0]
-      GCKCastContext.sharedInstance().imageCache?.fetchImage(forURL: image?.url, completion: {(_ image: UIImage) -> Void in
+    let imageView = (cell?.contentView.viewWithTag(3) as? UIImageView)
+    if let images = item?.mediaInformation.metadata?.images(), images.count > 0 {
+      let image = images[0] as? GCKImage
+      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: image?.url, completion: {(_ image: UIImage) -> Void in
         imageView?.image = image
         cell?.setNeedsLayout()
       })
@@ -144,11 +143,11 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   }
   // MARK: - UITableViewDelegate
 
-  override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+  func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
     return true
   }
 
-  override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, toIndexPath destinationIndexPath: IndexPath) {
+  func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
     if sourceIndexPath.row == destinationIndexPath.row {
       return
     }
@@ -161,11 +160,11 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     self.startRequest(self.mediaClient.queueMoveItem(with: sourceItem?.itemID, beforeItemWithID: insertBeforeID))
   }
 
-  override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+  func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
     return .delete
   }
 
-  override func tableView(_ tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
       // Delete row.
       var item: GCKMediaQueueItem? = self.mediaClient.mediaStatus.queueItem(atIndex: indexPath.row)
@@ -175,7 +174,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     }
   }
 
-  override func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
+  func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
     // No-op.
   }
   // MARK: - Session handling

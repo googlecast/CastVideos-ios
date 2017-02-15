@@ -16,10 +16,10 @@ import UIKit
 
 class ActionSheetAction: NSObject {
   private(set) var title: String = ""
-  var target: Any!
-  var selector = Selector()
+  var target: AnyObject!
+  var selector: Selector!
 
-  init(title: String, target: Any, selector: Selector) {
+  init(title: String, target: AnyObject!, selector: Selector) {
     super.init()
 
     self.title = title
@@ -29,10 +29,7 @@ class ActionSheetAction: NSObject {
 
   func trigger() {
     if let target=target, let selector = selector, target.responds(to: selector) {
-      // See http://stackoverflow.com/questions/7017281
-      var imp: IMP = target.method(for: selector)
-      var () = (imp as? Void)!
-      func(target, selector)
+      target.perform(selector)
     }
   }
 }
@@ -52,7 +49,7 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
     self.actions = [ActionSheetAction]()
   }
 
-  func addAction(withTitle title: String, target: Any, selector: Selector) {
+  func addAction(withTitle title: String, target: AnyObject, selector: Selector) {
     let action = ActionSheetAction(title: title, target: target, selector: selector)
     actions.append(action)
   }
@@ -84,10 +81,10 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
     }
     else {
       // iOS 7 and below.
-      var alertView = UIAlertView(title: title!, message: message!, delegate: self, cancelButtonTitle: cancelButtonText, otherButtonTitles: "")
-      indexedActions = [AnyHashable: Any](minimumCapacity: actions.count) as! [Int : ActionSheetAction]
+      let alertView = UIAlertView(title: title!, message: message!, delegate: self, cancelButtonTitle: cancelButtonText, otherButtonTitles: "")
+      indexedActions = [AnyHashable: Any](minimumCapacity: actions.count) as? [Int : ActionSheetAction]
       for action: ActionSheetAction in actions {
-        var position = alertView.addButton(withTitle: action.title)
+        let position = alertView.addButton(withTitle: action.title)
         indexedActions?[position] = action
       }
       alertView.show()
@@ -95,8 +92,7 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
       // ensures that the delegate
       // is not released (as UIAlertView usually only holds a weak reference to
       // us).
-      var kActionSheetKey: CChar
-      objc_setAssociatedObject(alertView, kActionSheetKey, self, OBJC_ASSOCIATION_RETAIN)
+      objc_setAssociatedObject(alertView, "", self, .OBJC_ASSOCIATION_RETAIN)
     }
   }
 
