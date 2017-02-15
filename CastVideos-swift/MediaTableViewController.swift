@@ -127,27 +127,27 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return self.rootItem.items().count
+    return self.rootItem.items.count
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     var cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
-    var item: MediaItem? = (self.rootItem.items()[indexPath.row] as? MediaItem)
+    var item: MediaItem? = (self.rootItem.items[indexPath.row] as? MediaItem)
     var detail: String? = nil
     var mediaInfo: GCKMediaInformation? = item?.mediaInfo
     if mediaInfo != nil {
-      detail = mediaInfo?.metadata()?.string(forKey: kGCKMetadataKeyStudio)
+      detail = mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyStudio)
       if detail == nil {
-        detail = mediaInfo?.metadata()?.string(forKey: kGCKMetadataKeyArtist)
+        detail = mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyArtist)
       }
     }
-    var mediaTitle: UILabel? = (cell?.viewWithTag(1) as? UILabel)
-    var mediaOwner: UILabel? = (cell?.viewWithTag(2) as? UILabel)
+    var mediaTitle = (cell?.viewWithTag(1) as? UILabel)
+    var mediaOwner = (cell?.viewWithTag(2) as? UILabel)
     if mediaTitle?.responds(to: #selector(self.setAttributedText)) {
-      var titleText: String? = item?.title
-      var ownerText: String? = detail
-      var text: String = "\(titleText)\n\(ownerText)"
-      var attribs: [AnyHashable: Any]? = [NSForegroundColorAttributeName: mediaTitle?.textColor, NSFontAttributeName: mediaTitle?.font]
+      var titleText = item?.title
+      var ownerText = detail
+      var text = "\(titleText)\n\(ownerText)"
+      var attribs = [NSForegroundColorAttributeName: mediaTitle?.textColor, NSFontAttributeName: mediaTitle?.font]
       var attributedText = NSMutableAttributedString(string: text, attributes: attribs)
       var blackColor = UIColor.black
       var titleTextRange = NSRange(location: 0, length: (titleText?.characters.count ?? 0))
@@ -190,7 +190,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell)
     selectedItem = (self.rootItem.items()[indexPathForCell?.row] as? MediaItem)
     var hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.isHasConnectedCastSession
-    if selectedItem.mediaInfo && isHasConnectedCastSession {
+    if selectedItem.mediaInfo && hasConnectedCastSession {
       // Display an popover to allow the user to add to queue or play
       // immediately.
       if !self.actionSheet {
@@ -208,10 +208,10 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell)
     selectedItem = (self.rootItem.items()[indexPathForCell?.row] as? MediaItem)
     var isHasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.isHasConnectedCastSession
-    if selectedItem.mediaInfo && isHasConnectedCastSession {
+    if (selectedItem.mediaInfo != nil) && isHasConnectedCastSession {
       // Display an alert box to allow the user to add to queue or play
       // immediately.
-      if !self.actionSheet {
+      if (self.actionSheet == nil) {
         self.actionSheet = ActionSheet(title: "Play Item", message: "Select an action", cancelButtonText: "Cancel")
         self.actionSheet.addAction(withTitle: "Play Now", target: self, selector: #selector(self.playSelectedItemRemotely))
         self.actionSheet.addAction(withTitle: "Add to Queue", target: self, selector: #selector(self.enqueueSelectedItemRemotely))
@@ -246,8 +246,8 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   func enqueueSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: true)
     // selectedItem = [self getSelectedItem];
-    var message: String = "Added \"\(selectedItem.mediaInfo.metadata().string(forKey: kGCKMetadataKeyTitle))\" to queue."
-    Toast.displayMessage(message, forTimeInterval: 3, inView: UIApplication.shared.delegate?.window)
+    var message = "Added \"\(selectedItem.mediaInfo.metadata.string(forKey: kGCKMetadataKeyTitle))\" to queue."
+    Toast.displayMessage(message, for: 3, in: UIApplication.shared.delegate?.window)
     self.setQueueButtonVisible(true)
   }
   /**

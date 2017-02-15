@@ -35,7 +35,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   var castMediaController: GCKUIMediaController!
   var volumeController: GCKUIDeviceVolumeController!
   var streamPositionSliderMoving: Bool = false
-  var playbackMode = PlaybackMode()
+  var playbackMode: PlaybackMode?
   var queueButton: UIBarButtonItem!
   var showStreamTimeRemaining: Bool = false
   var localPlaybackImplicitlyPaused: Bool = false
@@ -107,7 +107,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       self.switchToLocalPlayback()
     }
 
-    self.sessionManager.addListener(self)
+    self.sessionManager.add(self)
     self.gradient = CAGradientLayer()
     self.gradient.colors = [(UIColor.clear.cgColor as? Any), (UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)), blue: CGFloat((50 / 255.0)), alpha: CGFloat((200 / 255.0))).cgColor as? Any)]
     self.gradient.startPoint = CGPoint(x: CGFloat(0), y: CGFloat(1))
@@ -120,7 +120,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       self.navigationBarStyle = LPVNavBarDefault
     }
 
-    NotificationCenter.default.addObserver(self, selector: #selector(self.deviceOrientationDidChange), name: UIDeviceOrientationDidChangeNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(self.deviceOrientationDidChange), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     UIDevice.current.beginGeneratingDeviceOrientationNotifications()
     super.viewWillAppear(animated)
   }
@@ -196,7 +196,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       print("last player state: \(Int(self.castMediaController.lastKnownPlayerState)), ended: \(ended)")
     }
     self.populateMediaInfo((!paused && !ended), playPosition: playPosition)
-    self.castSession.remoteMediaClient.removeListener(self)
+    self.castSession.remoteMediaClient?.remove(self)
     self.castSession = nil
     self.playbackMode = PlaybackModeLocal
   }
@@ -248,7 +248,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   }
 
   func showAlert(withTitle title: String, message: String) {
-    var alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
+    let alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
     alert.show()
   }
   // MARK: - Local playback UI actions
@@ -335,8 +335,8 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       var gradientImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
       UIGraphicsEndImageContext()
       self.navigationController?.navigationBar?.setBackgroundImage(gradientImage, for: UIBarMetricsDefault)
-      self.navigationController?.navigationBar?.shadowImage = UIImage()
-      UIApplication.shared.setStatusBarHidden(true, withAnimation: .fade)
+      self.navigationController?.navigationBar.shadowImage = UIImage()
+      UIApplication.shared.setStatusBarHidden(true, with: .fade)
       // Disable the swipe gesture if we're fullscreen.
       self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
       self.isResetEdgesOnDisappear = true
@@ -352,16 +352,16 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     else {
       print("SHOW NavBar.")
     }
-    self.navigationController?.navigationBar?.isHidden = hide
+    self.navigationController?.navigationBar.isHidden = hide
   }
   /* Play has been pressed in the LocalPlayerView. */
 
   func continueAfterPlayButtonClicked() -> Bool {
-    var hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession
-    if self.mediaInfo && hasConnectedCastSession {
+    let hasConnectedCastSession = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
+    if (self.mediaInfo != nil) && hasConnectedCastSession {
       // Display an alert box to allow the user to add to queue or play
       // immediately.
-      if !self.actionSheet {
+      if self.actionSheet == nil {
         self.actionSheet = ActionSheet(title: "Play Item", message: "Select an action", cancelButtonText: "Cancel")
         self.actionSheet.addAction(withTitle: "Play Now", target: self, selector: #selector(self.playSelectedItemRemotely))
         self.actionSheet.addAction(withTitle: "Add to Queue", target: self, selector: #selector(self.enqueueSelectedItemRemotely))
@@ -379,8 +379,8 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
   func enqueueSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: true)
-    var message: String = "Added \"\(self.mediaInfo.metadata().string(forKey: kGCKMetadataKeyTitle))\" to queue."
-    Toast.displayMessage(message, forTimeInterval: 3, inView: UIApplication.shared.delegate?.window)
+    var message = "Added \"\(self.mediaInfo.metadata.string(forKey: kGCKMetadataKeyTitle))\" to queue."
+    Toast.displayMessage(message, for: 3, in: (UIApplication.shared.delegate?.window)!)
     self.setQueueButtonVisible(true)
   }
   /**
@@ -395,11 +395,11 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     var session: GCKSession? = GCKCastContext.sharedInstance().sessionManager.currentSession
     if (session? is GCKCastSession) {
       var castSession: GCKCastSession? = (session as? GCKCastSession)
-      if castSession?.remoteMediaClient {
+      if ((castSession?.remoteMediaClient) != nil) {
         var builder = GCKMediaQueueItemBuilder()
         builder.mediaInformation = self.mediaInfo
         builder.autoplay = true
-        builder.preloadTime = UserDefaults.standard.integer(forKey: kPrefPreloadTime)
+        builder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
         var item: GCKMediaQueueItem? = builder.build()
         if ((castSession?.remoteMediaClient?.mediaStatus) != nil) && appending {
           var request: GCKRequest? = castSession?.remoteMediaClient?.queueInsert(item, beforeItemWith: kGCKMediaQueueInvalidItemID)
@@ -407,7 +407,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
         }
         else {
           var repeatMode: GCKMediaRepeatMode? = castSession?.remoteMediaClient?.mediaStatus ? castSession?.remoteMediaClient?.mediaStatus?.queueRepeatMode : GCKMediaRepeatModeOff
-          var request: GCKRequest? = castSession?.remoteMediaClient?.queueLoadItems([item], startIndex: 0, playPosition: 0, repeatMode: repeatMode, customData: nil)
+          var request: GCKRequest? = castSession?.remoteMediaClient?.queueLoadItems([item], startIndex: 0, playPosition: 0, repeatMode: repeatMode!, customData: nil)
           request?.delegate = self
         }
       }

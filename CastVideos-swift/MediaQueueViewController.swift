@@ -109,7 +109,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     if (self.mediaClient == nil) || (self.mediaClient.mediaStatus == nil) {
       return 0
     }
-    return self.mediaClient.mediaStatus!.queueItemCount
+    return Int(self.mediaClient.mediaStatus!.queueItemCount())
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

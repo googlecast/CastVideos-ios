@@ -120,7 +120,7 @@ class LocalPlayerView: UIView {
   /* Signal an orientation change has occurred. */
 
   func orientationChanged() {
-    if fullscreen {
+    if isFullscreen {
       setFullscreen()
     }
     didTouchControl(nil)
@@ -411,7 +411,7 @@ class LocalPlayerView: UIView {
         return nil
       }
       else if point.y > frame.size.height - kToolbarHeight {
-        return controlView.hitTest(point, withEvent: event)!
+        return controlView.hitTest(point, with: event)!
       }
     }
     return super.hitTest(point, withEvent: event)!
@@ -648,7 +648,7 @@ class LocalPlayerView: UIView {
 
   override func observeValue(forKeyPath keyPath: String, ofObject object: Any, change: [AnyHashable: Any], context: UnsafeMutableRawPointer) {
     print("observeValueForKeyPath \(keyPath)")
-    if !mediaPlayer.currentItem || (object != mediaPlayer.currentItem) {
+    if !(mediaPlayer.currentItem != nil) || (object != mediaPlayer.currentItem) {
       return
     }
     if (keyPath == "playbackLikelyToKeepUp") {

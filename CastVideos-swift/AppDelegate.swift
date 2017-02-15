@@ -33,7 +33,7 @@ let kPrefCustomReceiverAppID: String = "custom_receiver_app_id"
 
 let kPrefEnableMediaNotifications: String = "enable_media_notifications"
 
-let kApplicationID: String = ""
+let kApplicationID: String? = nil
 
 let appDelegate = (UIApplication.shared.delegate as? AppDelegate)
 
@@ -244,12 +244,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
   }
 
   func sessionManager(_ sessionManager: GCKSessionManager, didFailToStart session: GCKSession, withError error: Error) {
-    var message: String? = "Failed to start session:\n\(error?.localizedDescription)"
+    var message: String? = "Failed to start session:\n\(error.localizedDescription)"
     showAlert(withTitle: "Session error", message: message)
   }
 
   func showAlert(withTitle title: String, message: String) {
-    var alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
+    let alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
     alert.show()
   }
   // MARK: - GCKUIImagePicker

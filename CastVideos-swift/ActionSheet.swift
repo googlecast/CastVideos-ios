@@ -15,7 +15,7 @@ import Foundation
 import UIKit
 
 class ActionSheetAction: NSObject {
-  private(set) var title: String = ""
+  private(set) var title: String?
   var target: AnyObject!
   var selector: Selector!
 
@@ -57,15 +57,15 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
   func present(in parent: UIViewController, sourceView: UIView) {
     if objc_getClass("UIAlertController") != nil {
       // iOS 8+ approach.
-      var controller = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+      let controller = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
       for action: ActionSheetAction in actions {
-        var alertAction = UIAlertAction(title: action.title, style: .default, handler: {(_ unused: UIAlertAction) -> Void in
+        let alertAction = UIAlertAction(title: action.title, style: .default, handler: {(_ unused: UIAlertAction) -> Void in
           action.trigger()
         })
         controller.addAction(alertAction)
       }
       if let cancelButtonText = cancelButtonText {
-        var cancelAction = UIAlertAction(title: cancelButtonText, style: .cancel, handler: {(_ action: UIAlertAction) -> Void in
+        let cancelAction = UIAlertAction(title: cancelButtonText, style: .cancel, handler: {(_ action: UIAlertAction) -> Void in
           controller.dismiss(animated: true)
         })
         controller.addAction(cancelAction)
@@ -98,7 +98,7 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
 
   // MARK: - UIAlertViewDelegate
 
-  @objc(alertView:clickedButtonAtIndex:) func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
+  func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
     let action: ActionSheetAction? = indexedActions?[buttonIndex]
     action?.trigger()
   }

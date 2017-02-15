@@ -198,7 +198,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
       var jsonData: [AnyHashable: Any]? = (try? JSONSerialization.jsonObject(withData: self.responseData, options: kNilOptions))
       self.rootItem = self.decodeMediaTree(fromJSON: jsonData!)
       self.isLoaded = true
-      self.delegate.mediaListModelDidLoad(self)
+      self.delegate?.mediaListModelDidLoad(self)
     }
     else {
       var error = Error(domain: "HTTP", code: self.responseStatus, userInfo: nil)
@@ -301,7 +301,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
             mediaTracks = nil
           }
           var mediaInfo = GCKMediaInformation(contentID: url!.absoluteString, streamType: .buffered, contentType: mimeType!, metadata: metadata, streamDuration: TimeInterval(duration!), mediaTracks: mediaTracks as! [GCKMediaTrack]?, textTrackStyle: self.trackStyle, customData: nil)
-          var childItem = MediaItem(mediaInfo, parent: item)
+          var childItem = MediaItem(mediaInformation: mediaInfo, parent: item)
           item.items().append(childItem)
 
         }

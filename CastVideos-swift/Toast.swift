@@ -24,15 +24,15 @@ class Toast: UIView {
     if !isToastActive {
       isToastActive = true
       // Compute toast frame dimensions.
-      var hostHeight: CGFloat = view.frame.size.height
-      var hostWidth: CGFloat = view.frame.size.width
-      var horizontalOffset: CGFloat = 0
-      var toastHeight: CGFloat = 48
-      var toastWidth: CGFloat = hostWidth
-      var verticalOffset: CGFloat = hostHeight - toastHeight
-      var toastRect = CGRect(x: horizontalOffset, y: verticalOffset, width: toastWidth, height: toastHeight)
+      let hostHeight: CGFloat = view.frame.size.height
+      let hostWidth: CGFloat = view.frame.size.width
+      let horizontalOffset: CGFloat = 0
+      let toastHeight: CGFloat = 48
+      let toastWidth: CGFloat = hostWidth
+      let verticalOffset: CGFloat = hostHeight - toastHeight
+      let toastRect = CGRect(x: horizontalOffset, y: verticalOffset, width: toastWidth, height: toastHeight)
       // Init and stylize the toast and message.
-      var toast = Toast(frame: toastRect)
+      let toast = Toast(frame: toastRect)
       toast.backgroundColor = UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)), blue: CGFloat((50 / 255.0)), alpha: CGFloat(1))
       toast.messageLabel = UILabel(frame: CGRect(x: CGFloat(0), y: CGFloat(0), width: toastWidth, height: toastHeight))
       toast.messageLabel.text = message
@@ -56,12 +56,15 @@ class Toast: UIView {
     }
   }
 
-
   override init(frame: CGRect) {
-    return super.init(frame: frame)
+    super.init(frame: frame)
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
   }
 
-  override func touchesEnded(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     self.removeFromSuperview()
     isToastActive = false
   }
