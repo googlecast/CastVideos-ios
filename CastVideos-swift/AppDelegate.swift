@@ -244,7 +244,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
   }
 
   func sessionManager(_ sessionManager: GCKSessionManager, didFailToStart session: GCKSession, withError error: Error) {
-    var message: String? = "Failed to start session:\n\(error.localizedDescription)"
+    let message = "Failed to start session:\n\(error.localizedDescription)"
     showAlert(withTitle: "Session error", message: message)
   }
 
@@ -256,7 +256,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
 
   func getImageWith(_ imageHints: GCKUIImageHints, from metadata: GCKMediaMetadata) -> GCKImage? {
     if metadata && metadata.images && (metadata.images.count > 0) {
-      if metadata.images.count == 1 {
+      if metadata.images().count == 1 {
         return metadata.images[0]
       }
       else {

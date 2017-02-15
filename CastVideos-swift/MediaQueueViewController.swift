@@ -134,7 +134,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     let imageView = (cell?.contentView.viewWithTag(3) as? UIImageView)
     if let images = item?.mediaInformation.metadata?.images(), images.count > 0 {
       let image = images[0] as? GCKImage
-      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: image?.url, completion: {(_ image: UIImage) -> Void in
+      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (image?.url)!, completion: {(_ image: UIImage) -> Void in
         imageView?.image = image
         cell?.setNeedsLayout()
       })
@@ -152,10 +152,10 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
       return
     }
     var sourceItem: GCKMediaQueueItem? = self.mediaClient.mediaStatus.queueItem(atIndex: sourceIndexPath.row)
-    var insertBeforeID: Int = kGCKMediaQueueInvalidItemID
-    if destinationIndexPath.row < Int(self.mediaClient.mediaStatus?.queueItemCount()) - 1 {
+    var insertBeforeID = kGCKMediaQueueInvalidItemID
+    if destinationIndexPath.row < Int((self.mediaClient.mediaStatus?.queueItemCount())!) - 1 {
       var beforeItem: GCKMediaQueueItem? = self.mediaClient.mediaStatus.queueItem(atIndex: destinationIndexPath.row)
-      insertBeforeID = beforeItem?.itemID
+      insertBeforeID = (beforeItem?.itemID)!
     }
     self.startRequest(self.mediaClient.queueMoveItem(with: sourceItem?.itemID, beforeItemWithID: insertBeforeID))
   }

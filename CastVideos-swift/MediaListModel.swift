@@ -302,7 +302,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
           }
           var mediaInfo = GCKMediaInformation(contentID: url!.absoluteString, streamType: .buffered, contentType: mimeType!, metadata: metadata, streamDuration: TimeInterval(duration!), mediaTracks: mediaTracks as! [GCKMediaTrack]?, textTrackStyle: self.trackStyle, customData: nil)
           var childItem = MediaItem(mediaInformation: mediaInfo, parent: item)
-          item.items().append(childItem)
+          item.items.append(childItem)
 
         }
       }

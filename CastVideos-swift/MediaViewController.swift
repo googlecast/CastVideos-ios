@@ -75,9 +75,9 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     self.castButton = GCKUICastButton(frame: CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(24), height: CGFloat(24)))
     self.castButton.tintColor = UIColor.white
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.castButton)
-    self.playbackMode = .None
+    self.playbackMode = .none
     self.queueButton = UIBarButtonItem(image: UIImage(named: "playlist_white.png"), style: .plain, target: self, action: #selector(self.didTapQueueButton))
-    NotificationCenter.default.addObserver(self, selector: #selector(self.castDeviceDidChange), name: kGCKCastStateDidChangeNotification, object: GCKCastContext.sharedInstance())
+    NotificationCenter.default.addObserver(self, selector: #selector(self.castDeviceDidChange), name: NSNotification.Name.gckCastStateDidChange, object: GCKCastContext.sharedInstance())
   }
 
   func castDeviceDidChange(_ notification: Notification) {
@@ -157,7 +157,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
     self.sessionManager.remove(self)
     UIDevice.current.endGeneratingDeviceOrientationNotifications()
-    NotificationCenter.default.removeObserver(self, name: UIDeviceOrientationDidChangeNotification, object: nil)
+    NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     super.viewWillDisappear(animated)
   }
 
@@ -203,13 +203,13 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
   func populateMediaInfo(_ autoPlay: Bool, playPosition: TimeInterval) {
     print("populateMediaInfo")
-    self.titleLabel.text = self.mediaInfo.metadata().string(forKey: kGCKMetadataKeyTitle)
-    var subtitle: String? = self.mediaInfo.metadata().string(forKey: kGCKMetadataKeyArtist)
+    self.titleLabel.text = self.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyTitle)
+    var subtitle: String? = self.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyArtist)
     if subtitle == nil {
-      subtitle = self.mediaInfo.metadata().string(forKey: kGCKMetadataKeyStudio)
+      subtitle = self.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyStudio)
     }
     self.subtitleLabel.text = subtitle
-    var description: String? = self.mediaInfo.metadata.string(forKey: kMediaKeyDescription)
+    var description: String? = self.mediaInfo.metadata?.string(forKey: kMediaKeyDescription)
     self.descriptionTextView.text = description?.replacingOccurrences(of: "\\n", with: "\n")
     self.localPlayerView.loadMedia(self.mediaInfo, autoPlay: autoPlay, playPosition: playPosition)
   }
@@ -226,19 +226,19 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     if (self.playbackMode == PlaybackModeLocal) && (self.localPlayerView.playerState != LocalPlayerStateStopped) && self.mediaInfo {
       print("loading media: \(self.mediaInfo)")
       var playPosition: TimeInterval = self.localPlayerView.streamPosition
-      var paused: Bool = (self.localPlayerView.playerState == LocalPlayerStatePaused)
+      var paused: Bool = (self.localPlayerView.playerState == .paused)
       var builder = GCKMediaQueueItemBuilder()
       builder.mediaInformation = self.mediaInfo
       builder.autoplay = !paused
-      builder.preloadTime = UserDefaults.standard.integer(forKey: kPrefPreloadTime)
+      builder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
       var item: GCKMediaQueueItem? = builder.build()
       self.castSession.remoteMediaClient.queueLoadItems([item], startIndex: 0, playPosition: playPosition, repeatMode: GCKMediaRepeatModeOff, customData: nil)
     }
     self.localPlayerView.stop()
     self.localPlayerView.showSplashScreen()
     self.setQueueButtonVisible(true)
-    self.castSession.remoteMediaClient.addListener(self)
-    self.playbackMode = PlaybackModeRemote
+    self.castSession.remoteMediaClient?.add(self)
+    self.playbackMode = .remote
   }
 
   func clearMetadata() {
@@ -280,8 +280,8 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
   func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
     print("session ended with error: \(error)")
-    var message: String? = "The Casting session has ended.\n\(error?.description)"
-    Toast.displayMessage(message, forTimeInterval: 3, inView: UIApplication.shared.delegate?.window)
+    var message = "The Casting session has ended.\n\(error?.description)"
+    Toast.displayMessage(message, for: 3, in: UIApplication.shared.delegate?.window)
     self.setQueueButtonVisible(false)
     self.switchToLocalPlayback()
   }
@@ -292,7 +292,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   }
 
   func sessionManager(_ sessionManager: GCKSessionManager, didFailToResumeSession session: GCKSession, withError error: Error?) {
-    Toast.displayMessage("The Casting session could not be resumed.", forTimeInterval: 3, inView: UIApplication.shared.delegate?.window)
+    Toast.displayMessage("The Casting session could not be resumed.", for: 3, in: ((UIApplication.shared.delegate?.window)!)!)
     self.setQueueButtonVisible(false)
     self.switchToLocalPlayback()
   }
@@ -318,20 +318,20 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     if style == LPVNavBarDefault {
       self.edgesForExtendedLayout = .all
       self.hideNavigationBar(false)
-      self.navigationController?.navigationBar?.translucent = false
+      self.navigationController?.navigationBar.isTranslucent = false
       self.navigationController?.navigationBar?.setBackgroundImage(nil, for: UIBarMetricsDefault)
-      self.navigationController?.navigationBar?.shadowImage = nil
-      UIApplication.shared.setStatusBarHidden(false, withAnimation: .fade)
+      self.navigationController?.navigationBar.shadowImage = nil
+      UIApplication.shared.setStatusBarHidden(false, with: .fade)
       self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
       self.isResetEdgesOnDisappear = false
     }
     else if style == LPVNavBarTransparent {
       self.edgesForExtendedLayout = .top
-      self.navigationController?.navigationBar?.translucent = true
+      self.navigationController?.navigationBar.isTranslucent = true
       // Gradient background
-      self.gradient.frame = self.navigationController?.navigationBar?.bounds
+      self.gradient.frame = (self.navigationController?.navigationBar.bounds)!
       UIGraphicsBeginImageContext(self.gradient.bounds.size)
-      self.gradient.render(in: UIGraphicsGetCurrentContext())
+      self.gradient.render(in: UIGraphicsGetCurrentContext()!)
       var gradientImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
       UIGraphicsEndImageContext()
       self.navigationController?.navigationBar?.setBackgroundImage(gradientImage, for: UIBarMetricsDefault)
@@ -379,8 +379,8 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
   func enqueueSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: true)
-    var message = "Added \"\(self.mediaInfo.metadata.string(forKey: kGCKMetadataKeyTitle))\" to queue."
-    Toast.displayMessage(message, for: 3, in: (UIApplication.shared.delegate?.window)!)
+    let message = "Added \"\(self.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyTitle))\" to queue."
+    Toast.displayMessage(message, for: 3, in: ((UIApplication.shared.delegate?.window)!)!)
     self.setQueueButtonVisible(true)
   }
   /**
@@ -407,7 +407,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
         }
         else {
           var repeatMode: GCKMediaRepeatMode? = castSession?.remoteMediaClient?.mediaStatus ? castSession?.remoteMediaClient?.mediaStatus?.queueRepeatMode : GCKMediaRepeatModeOff
-          var request: GCKRequest? = castSession?.remoteMediaClient?.queueLoadItems([item], startIndex: 0, playPosition: 0, repeatMode: repeatMode!, customData: nil)
+          var request: GCKRequest? = castSession?.remoteMediaClient?.queueLoad([item!], start: 0, playPosition: 0, repeatMode: repeatMode!, customData: nil)
           request?.delegate = self
         }
       }

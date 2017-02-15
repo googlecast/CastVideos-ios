@@ -169,7 +169,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       cell?.accessoryType = .disclosureIndicator
     }
     var imageView: UIImageView? = (cell?.contentView.viewWithTag(3) as? UIImageView)
-    GCKCastContext.sharedInstance().imageCache?.fetchImage(for: item?.imageURL, completion: {(_ image: UIImage) -> Void in
+    GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (item?.imageURL)!, completion: {(_ image: UIImage) -> Void in
       imageView?.image = image
       cell?.setNeedsLayout()
     })
@@ -186,27 +186,27 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   @IBAction func playButtonClicked(_ sender: Any) {
-    var tableViewCell: UITableViewCell? = ((sender as AnyObject).superview?.superview as? UITableViewCell)
-    var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell)
-    selectedItem = (self.rootItem.items()[indexPathForCell?.row] as? MediaItem)
-    var hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.isHasConnectedCastSession
-    if selectedItem.mediaInfo && hasConnectedCastSession {
+    var tableViewCell = ((sender as AnyObject).superview??.superview? as? UITableViewCell)
+    var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell!)
+    selectedItem = (self.rootItem.items[(indexPathForCell?.row)!] as? MediaItem)
+    var hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
+    if (selectedItem.mediaInfo != nil) && hasConnectedCastSession {
       // Display an popover to allow the user to add to queue or play
       // immediately.
-      if !self.actionSheet {
+      if !(self.actionSheet != nil) {
         self.actionSheet = ActionSheet(title: "Play Item", message: "Select an action", cancelButtonText: "Cancel")
         self.actionSheet.addAction(withTitle: "Play Now", target: self, selector: #selector(self.playSelectedItemRemotely))
         self.actionSheet.addAction(withTitle: "Add to Queue", target: self, selector: #selector(self.enqueueSelectedItemRemotely))
       }
-      self.actionSheet.present(in: self, sourceView: tableViewCell)
+      self.actionSheet.present(in: self, sourceView: tableViewCell!)
     }
   }
   // TODO
 
   @IBAction func playButtonClickedOld(_ sender: Any) {
     var tableViewCell: UITableViewCell? = (sender.superview?.superview as? UITableViewCell)
-    var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell)
-    selectedItem = (self.rootItem.items()[indexPathForCell?.row] as? MediaItem)
+    var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell!)
+    selectedItem = (self.rootItem.items[indexPathForCell?.row] as? MediaItem)
     var isHasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.isHasConnectedCastSession
     if (selectedItem.mediaInfo != nil) && isHasConnectedCastSession {
       // Display an alert box to allow the user to add to queue or play
@@ -216,13 +216,13 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
         self.actionSheet.addAction(withTitle: "Play Now", target: self, selector: #selector(self.playSelectedItemRemotely))
         self.actionSheet.addAction(withTitle: "Add to Queue", target: self, selector: #selector(self.enqueueSelectedItemRemotely))
       }
-      self.actionSheet.present(in: self, sourceView: tableViewCell)
+      self.actionSheet.present(in: self, sourceView: tableViewCell!)
     }
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    var item: MediaItem? = self.rootItem.items()[indexPath.row]
-    if item?.mediaInfo {
+    var item: MediaItem? = self.rootItem.items[indexPath.row]
+    if ((item?.mediaInfo) != nil) {
       self.performSegue(withIdentifier: "mediaDetails", sender: self)
     }
   }
@@ -246,7 +246,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   func enqueueSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: true)
     // selectedItem = [self getSelectedItem];
-    var message = "Added \"\(selectedItem.mediaInfo.metadata.string(forKey: kGCKMetadataKeyTitle))\" to queue."
+    var message = "Added \"\(selectedItem.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyTitle))\" to queue."
     Toast.displayMessage(message, for: 3, in: UIApplication.shared.delegate?.window)
     self.setQueueButtonVisible(true)
   }
@@ -262,19 +262,19 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     var session: GCKSession? = GCKCastContext.sharedInstance().sessionManager.currentSession
     if (session? is GCKCastSession) {
       var castSession: GCKCastSession? = (session as? GCKCastSession)
-      if castSession?.remoteMediaClient {
+      if ((castSession?.remoteMediaClient) != nil) {
         var builder = GCKMediaQueueItemBuilder()
         builder.mediaInformation = selectedItem.mediaInfo
         builder.autoplay = true
-        builder.preloadTime = UserDefaults.standard.integer(forKey: kPrefPreloadTime)
+        builder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
         var item: GCKMediaQueueItem? = builder.build()
-        if castSession?.remoteMediaClient?.mediaStatus && appending {
+        if ((castSession?.remoteMediaClient?.mediaStatus) != nil) && appending {
           var request: GCKRequest? = castSession?.remoteMediaClient?.queueInsert(item, beforeItemWith: kGCKMediaQueueInvalidItemID)
           request?.delegate = self
         }
         else {
           var repeatMode: GCKMediaRepeatMode? = castSession?.remoteMediaClient?.mediaStatus ? castSession?.remoteMediaClient?.mediaStatus?.queueRepeatMode : GCKMediaRepeatModeOff
-          var request: GCKRequest? = castSession?.remoteMediaClient?.queueLoadItems([item], startIndex: 0, playPosition: 0, repeatMode: repeatMode, customData: nil)
+          var request: GCKRequest? = castSession?.remoteMediaClient?.queueLoadItems([item], startIndex: 0, playPosition: 0, repeatMode: repeatMode!, customData: nil)
           request?.delegate = self
         }
       }
@@ -283,10 +283,10 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func getSelectedItem() -> MediaItem {
     var item: MediaItem? = nil
-    var indexPath: IndexPath? = self.tableView.indexPathForSelectedRow()
+    var indexPath: IndexPath? = self.tableView.indexPathForSelectedRow
     if indexPath != nil {
       print("selected row is \(indexPath)")
-      item = (self.rootItem.items()[indexPath?.row] as? MediaItem)
+      item = (self.rootItem.items[indexPath?.row] as? MediaItem)
     }
     return item!
   }
@@ -308,8 +308,8 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     // Look up the media list URL.
     var userDefaults = UserDefaults.standard
     var urlKey: String? = userDefaults.string(forKey: kPrefMediaListURL)
-    var urlText: String? = userDefaults.string(forKey: urlKey)
-    var mediaListURL = URL(string: urlText)
+    var urlText: String? = userDefaults.string(forKey: urlKey!)
+    var mediaListURL = URL(string: urlText!)
     if self.mediaListURL && mediaListURL?.isEqual(self.mediaListURL) {
       // The URL hasn't changed; do nothing.
       return
@@ -339,7 +339,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
     print("session ended with error: \(error)")
     var message: String? = "The Casting session has ended.\n\(error?.description)"
-    Toast.displayMessage(message, forTimeInterval: 3, inView: UIApplication.shared.delegate?.window)
+    Toast.displayMessage(message, for: 3, in: UIApplication.shared.delegate?.window)
     self.setQueueButtonVisible(false)
     self.tableView.reloadData()
   }
@@ -351,7 +351,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   func sessionManager(_ sessionManager: GCKSessionManager, didFailToResumeSession session: GCKSession, withError error: Error?) {
-    Toast.displayMessage("The Casting session could not be resumed.", forTimeInterval: 3, inView: UIApplication.shared.delegate?.window)
+    Toast.displayMessage("The Casting session could not be resumed.", for: 3, in: UIApplication.shared.delegate?.window)
     self.setQueueButtonVisible(false)
     self.tableView.reloadData()
   }
