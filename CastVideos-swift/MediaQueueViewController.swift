@@ -114,7 +114,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     var cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
-    var item: GCKMediaQueueItem? = self.mediaClient.mediaStatus.queueItem(at: UInt(indexPath.row))
+    var item: GCKMediaQueueItem? = self.mediaClient.mediaStatus?.queueItem(at: UInt(indexPath.row))
     var title: String? = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
     var artist: String? = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyArtist)
     if artist == nil {
@@ -134,7 +134,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     let imageView = (cell?.contentView.viewWithTag(3) as? UIImageView)
     if let images = item?.mediaInformation.metadata?.images(), images.count > 0 {
       let image = images[0] as? GCKImage
-      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (image?.url)!, completion: {(_ image: UIImage) -> Void in
+      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (image?.url)!, completion: {(_ image: UIImage?) -> Void in
         imageView?.image = image
         cell?.setNeedsLayout()
       })

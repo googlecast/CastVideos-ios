@@ -26,7 +26,7 @@ class MediaItem: NSObject {
   private(set) public var imageURL: URL?
   /** The list of child items, if any. If this is not a group, this will be an
    * empty array. */
-  private(set) public var items: [Any]!
+  internal(set) public var items: [Any]!
   /** If this is a media item, the media information object. */
   private(set) public var mediaInfo: GCKMediaInformation!
   /** The parent item of this item, or <code>nil</code> if this is the root item.

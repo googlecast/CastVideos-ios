@@ -74,9 +74,7 @@ class LocalPlayerView: UIView {
   /* Whether there has been a recent touch, for fading controls when playing. */
   var isRecentInteraction: Bool = false
   /* Views dictionary used to the layout management. */
-  var viewsDictionary: [AnyHashable: Any]?
-  /* Views dictionary used to the layout management. */
-  var constraints: [Any]?
+  var viewsDictionary: [String: Any]?
   /* Play/Pause button. */
   var playButton: UIButton!
   /* Splash play button. */
@@ -112,7 +110,7 @@ class LocalPlayerView: UIView {
   /* The media we are playing. */
   private(set) var media: GCKMediaInformation!
   /* The current player state. */
-  private(set) var playerState = LocalPlayerState(rawValue: 0)
+  private(set) var playerState: LocalPlayerState!
   /* Signal an orientation change has occurred. */
 
   func orientationChanged() {
@@ -122,13 +120,13 @@ class LocalPlayerView: UIView {
     didTouchControl(nil)
   }
 
-  func loadMedia(_ media: GCKMediaInformation, autoPlay: Bool, playPosition: TimeInterval) {
+  func loadMedia(_ media: GCKMediaInformation?, autoPlay: Bool, playPosition: TimeInterval) {
     print("loadMedia \(autoPlay)")
-    if media != nil && (media.contentID == media.contentID) {
+    if media != nil && (self.media?.contentID == media?.contentID) {
       // Don't reinit if we already have the media.
       return
     }
-    media = media
+    self.media = media
     if media == nil {
       purgeMediaPlayer()
       return
@@ -145,7 +143,7 @@ class LocalPlayerView: UIView {
     controlView.addGestureRecognizer(singleFingerTap)
     addSubview(controlView)
     // Play overlay that users can tap to get started.
-    var giantPlayButton = UIImage(named: "play_circle")
+    let giantPlayButton = UIImage(named: "play_circle")
     splashPlayButton = UIButton(type: .system)
     splashPlayButton.frame = fullFrame()
     splashPlayButton.contentMode = .center
@@ -187,7 +185,7 @@ class LocalPlayerView: UIView {
   }
 
   func togglePause() {
-    switch playerState {
+    switch playerState! {
     case .paused:
       play()
     case .playing:
@@ -200,7 +198,7 @@ class LocalPlayerView: UIView {
   }
 
   func seek(toTime time: TimeInterval) {
-    switch playerState {
+    switch playerState! {
     case .playing:
       pendingPlay = true
       performSeek(toTime: time)
@@ -243,7 +241,7 @@ class LocalPlayerView: UIView {
   /* Update the frame for the toolbar. */
 
   func layoutToolbar(_ frame: CGRect) {
-    toolbarView.frame = CGRect(x: CGFloat(0), y: CGFloat(frame.size.height - kToolbarHeight), width: CGFloat(frame.size.width), height: CGFloat(kToolbarHeight))
+    toolbarView.frame = CGRect(x: CGFloat(0), y: CGFloat(frame.size.height - CGFloat(kToolbarHeight)), width: CGFloat(frame.size.width), height: CGFloat(kToolbarHeight))
   }
   /* Return the full frame with no offsets. */
 
@@ -253,10 +251,7 @@ class LocalPlayerView: UIView {
 
   override func updateConstraints() {
     super.updateConstraints()
-    // Active is iOS 8 only, so only do this if available.
-    if viewAspectRatio.responds(to: #selector(setActive)) {
-      viewAspectRatio.isActive = !isFullscreen
-    }
+    viewAspectRatio.isActive = !isFullscreen
   }
   // MARK: - Public interface
   /* YES if we the local media is playing or paused, NO if casting or on the
@@ -267,8 +262,8 @@ class LocalPlayerView: UIView {
 
   func setFullscreen() {
     print("setFullscreen")
-    delegate.navigationBarStyle = .lpvNavBarTransparent
-    var screenBounds: CGRect = UIScreen.main.bounds
+    delegate?.setNavigationBarStyle(.lpvNavBarTransparent)
+    let screenBounds: CGRect = UIScreen.main.bounds
     if !screenBounds.equalTo(frame) {
       print("hideNavigationBar: set fullscreen")
       frame = screenBounds
@@ -278,20 +273,19 @@ class LocalPlayerView: UIView {
   /* Asynchronously load the splash screen image. */
 
   func loadMediaImage() {
-    var images: [Any] = media.metadata().images
-    if images && images.count > 0 {
-      var image: GCKImage? = images[0]
-      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (image?.url)!, completion: {(_ image: UIImage) -> Void in
-        splashImage.image = image
+    if let images = media.metadata?.images(), !images.isEmpty {
+      let image = images[0] as? GCKImage
+      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (image?.url)!, completion: {(_ image: UIImage?) -> Void in
+        self.splashImage.image = image
       })
     }
   }
 
   func loadMediaPlayer() {
-    if let mediaPlayer = mediaPlayer {
-      var mediaURL = URL(string: media.contentID)
-      mediaPlayer = AVPlayer.withURL(mediaURL)
-      mediaPlayerLayer = AVPlayerLayer(mediaPlayer)
+    if var mediaPlayer = mediaPlayer {
+      let mediaURL = URL(string: media.contentID)
+      mediaPlayer = AVPlayer.init(url: mediaURL!)
+      mediaPlayerLayer = AVPlayerLayer.init(player: mediaPlayer)
       mediaPlayerLayer.frame = fullFrame()
       mediaPlayerLayer.backgroundColor = UIColor.black.cgColor
       layer.insertSublayer(mediaPlayerLayer, above: splashImage.layer)
@@ -317,13 +311,14 @@ class LocalPlayerView: UIView {
       loadMediaPlayer()
       return
     }
-    if !streamDuration {
-      streamDuration = slider.maximumValue = CMTimeGetSeconds(mediaPlayer.currentItem.duration)
+    if var streamDuration = streamDuration {
+      streamDuration = CMTimeGetSeconds(mediaPlayer.currentItem!.duration)
+      slider.maximumValue = Float(streamDuration)
       slider.minimumValue = 0
       slider.isEnabled = true
       totalTime.text = GCKUIUtils.timeInterval(asString: streamDuration)
     }
-    if !isnan(pendingPlayPosition) && pendingPlayPosition > 0 {
+    if !pendingPlayPosition.isNaN && pendingPlayPosition > 0 {
       print("seeking to pending position \(pendingPlayPosition)")
       performSeek(toTime: pendingPlayPosition)
       pendingPlayPosition = kGCKInvalidTimeInterval
@@ -346,15 +341,11 @@ class LocalPlayerView: UIView {
     print("performSeekToTime")
     activityIndicator.startAnimating()
     seeking = true
-    weak var weakSelf: LocalPlayerView? = self
-    mediaPlayer.seek(toTime: CMTimeMakeWithSeconds(time, 1), completionHandler: {(_ finished: Bool) -> Void in
-      var strongSelf: LocalPlayerView? = weakSelf
-      if strongSelf != nil {
-        if strongSelf?.playerState == .starting {
-          pendingPlay = true
-        }
-        strongSelf?.handleSeekFinished()
+    mediaPlayer.seek(to: CMTimeMakeWithSeconds(time, 1), completionHandler: {[weak self] (_ finished: Bool) -> Void in
+      if self?.playerState == .starting {
+        self?.pendingPlay = true
       }
+      self?.handleSeekFinished()
     })
   }
 
@@ -379,8 +370,8 @@ class LocalPlayerView: UIView {
     streamPosition = 0
     slider.value = 0
     purgeMediaPlayer()
-    delegate.navigationBarStyle = .lpvNavBarDefault
-    mediaPlayer.seek(toTime: CMTimeMake(0, 1))
+    delegate?.setNavigationBarStyle(.lpvNavBarDefault)
+    mediaPlayer.seek(to: CMTimeMake(0, 1))
     configureControls()
   }
 
@@ -388,9 +379,9 @@ class LocalPlayerView: UIView {
     if (mediaPlayer.currentItem?.status != .readyToPlay) || seeking {
       return
     }
-    streamPosition = (CMTimeGetSeconds(time) as? TimeInterval)
-    slider.value = streamPosition
-    var remainingTime: TimeInterval = (streamDuration > streamPosition) ? (streamDuration - streamPosition) : 0
+    streamPosition = CMTimeGetSeconds(time)
+    slider.value = Float(streamPosition!)
+    var remainingTime: TimeInterval = (Float(streamDuration!) > Float(streamPosition!)) ? (streamDuration! - streamPosition!) : 0
     if remainingTime > 0 {
       remainingTime = -remainingTime
     }
@@ -406,7 +397,7 @@ class LocalPlayerView: UIView {
         didTouchControl(nil)
         return nil
       }
-      else if point.y > frame.size.height - kToolbarHeight {
+      else if point.y > frame.size.height - CGFloat(kToolbarHeight) {
         return controlView.hitTest(point, with: event)!
       }
     }
@@ -461,10 +452,10 @@ class LocalPlayerView: UIView {
   /* On slider value change the movie play time. */
 
   @IBAction func onSliderValueChanged(_ sender: Any) {
-    if streamDuration {
+    if (streamDuration != nil) {
       var newTime: CMTime = CMTimeMakeWithSeconds(Float64(slider.value), 1)
       activityIndicator.startAnimating()
-      mediaPlayer.seek(toTime: newTime)
+      mediaPlayer.seek(to: newTime)
     }
     else {
       slider.value = 0
@@ -473,7 +464,7 @@ class LocalPlayerView: UIView {
   /* Config the UIView controls container based on the state of the view. */
 
   func configureControls() {
-    print("configureControls \(Int(playerState))")
+    print("configureControls \(playerState)")
     if playerState == .stopped {
       playButton.setImage(playImage, for: .normal)
       splashPlayButton.isHidden = false
@@ -524,7 +515,7 @@ class LocalPlayerView: UIView {
     gradient.startPoint = CGPoint.zero
     gradient.endPoint = CGPoint(x: CGFloat(0), y: CGFloat(1))
     // Play/Pause button.
-    playButton = UIButton(type: UIButtonTypeSystem)
+    playButton = UIButton(type: .system)
     playButton.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(40), height: CGFloat(40))
     playButton.setImage(playImage, for: .normal)
     playButton.addTarget(self, action: #selector(playButtonClicked), for: .touchUpInside)
@@ -566,8 +557,8 @@ class LocalPlayerView: UIView {
     "-[totalTime(>=40)]-|"
     var vlayout: String = "V:|[playButton(==40)]"
     viewsDictionary = ["slider": slider, "totalTime": totalTime, "playButton": playButton]
-    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: hlayout, options: .alignAllCenterY, metrics: nil, views: viewsDictionary))
-    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: vlayout, options: [], metrics: nil, views: viewsDictionary))
+    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: hlayout, options: .alignAllCenterY, metrics: nil, views: viewsDictionary!))
+    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: vlayout, options: [], metrics: nil, views: viewsDictionary!))
   }
   /* Hide the tool bar, and the navigation controller if in the appropriate state.
    * If there has been a recent interaction, retry in kToolbarDelay seconds. */
@@ -611,12 +602,9 @@ class LocalPlayerView: UIView {
   func addMediaPlayerObservers() {
     print("addMediaPlayerObservers")
     // We take a weak reference to self to avoid retain cycles in the block.
-    weak var weakSelf: LocalPlayerView? = self
-    mediaTimeObserver = mediaPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: nil, using: {(_ time: CMTime) -> Void in
-      var strongSelf: LocalPlayerView? = weakSelf
-      if strongSelf != { _ in } {
-        strongSelf?.notifyStreamPositionChanged(time)
-      }
+
+    mediaTimeObserver = mediaPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: nil, using: {[weak self] (_ time: CMTime) -> Void in
+        self?.notifyStreamPositionChanged(time)
     })
     NotificationCenter.default.addObserver(self, selector: #selector(handleMediaPlaybackEnded), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: mediaPlayer.currentItem)
     mediaPlayer.currentItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)

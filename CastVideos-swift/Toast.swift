@@ -20,7 +20,8 @@ var activeToast: Toast?
 class Toast: UIView {
 
   var messageLabel: UILabel!
-  class func displayMessage(_ message: String, for timeInterval: TimeInterval, in view: UIView) {
+  class func displayMessage(_ message: String, for timeInterval: TimeInterval, in view: UIView?) {
+    guard let view = view else { return }
     if !isToastActive {
       isToastActive = true
       // Compute toast frame dimensions.

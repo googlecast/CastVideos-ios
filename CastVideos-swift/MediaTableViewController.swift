@@ -78,14 +78,14 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func setQueueButtonVisible(_ visible: Bool) {
     if visible && !self.queueAdded {
-      var barItems = [Any](arrayLiteral: self.navigationItem.rightBarButtonItems)
-      barItems.append(self.queueButton)
+      var barItems = (arrayLiteral: self.navigationItem.rightBarButtonItems)
+      barItems?.append(self.queueButton)
       self.navigationItem.rightBarButtonItems = barItems
       self.queueAdded = true
     }
     else if !visible && self.queueAdded {
-      var barItems = [Any](arrayLiteral: self.navigationItem.rightBarButtonItems)
-      barItems.remove(at: barItems.index(of: self.queueButton) ?? -1)
+      var barItems = (arrayLiteral: self.navigationItem.rightBarButtonItems)
+      barItems?.remove(at: barItems?.index(of: self.queueButton) ?? -1)
       self.navigationItem.rightBarButtonItems = barItems
       self.queueAdded = false
     }
@@ -143,7 +143,6 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     }
     var mediaTitle = (cell?.viewWithTag(1) as? UILabel)
     var mediaOwner = (cell?.viewWithTag(2) as? UILabel)
-    if mediaTitle?.responds(to: #selector(self.setAttributedText)) {
       var titleText = item?.title
       var ownerText = detail
       var text = "\(titleText)\n\(ownerText)"
@@ -157,11 +156,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       attributedText.setAttributes([NSForegroundColorAttributeName: lightGrayColor, NSFontAttributeName: UIFont.systemFont(ofSize: CGFloat(12))], range: ownerTextRange)
       mediaTitle?.attributedText = attributedText
       mediaOwner?.isHidden = true
-    }
-    else {
-      mediaTitle?.text = item?.title
-      mediaOwner?.text = detail
-    }
+
     if item?.mediaInfo != nil {
       cell?.accessoryType = .none
     }
@@ -169,7 +164,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       cell?.accessoryType = .disclosureIndicator
     }
     var imageView: UIImageView? = (cell?.contentView.viewWithTag(3) as? UIImageView)
-    GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (item?.imageURL)!, completion: {(_ image: UIImage) -> Void in
+    GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (item?.imageURL)!, completion: {(_ image: UIImage?) -> Void in
       imageView?.image = image
       cell?.setNeedsLayout()
     })
@@ -204,10 +199,10 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   // TODO
 
   @IBAction func playButtonClickedOld(_ sender: Any) {
-    var tableViewCell: UITableViewCell? = ((sender as AnyObject).superview?.superview as? UITableViewCell)
-    var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell!)
+    let tableViewCell = (sender as AnyObject).superview??.superview as! UITableViewCell
+    var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell)
     selectedItem = (self.rootItem.items[(indexPathForCell?.row)!] as? MediaItem)
-    var isHasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
+    let isHasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
     if (selectedItem.mediaInfo != nil) && isHasConnectedCastSession {
       // Display an alert box to allow the user to add to queue or play
       // immediately.
@@ -216,13 +211,12 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
         self.actionSheet.addAction(withTitle: "Play Now", target: self, selector: #selector(self.playSelectedItemRemotely))
         self.actionSheet.addAction(withTitle: "Add to Queue", target: self, selector: #selector(self.enqueueSelectedItemRemotely))
       }
-      self.actionSheet.present(in: self, sourceView: tableViewCell!)
+      self.actionSheet.present(in: self, sourceView: tableViewCell)
     }
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    var item: MediaItem? = self.rootItem.items[indexPath.row]
-    if ((item?.mediaInfo) != nil) {
+    if let item = self.rootItem.items[indexPath.row] as? MediaItem, let _ = item.mediaInfo {
       self.performSegue(withIdentifier: "mediaDetails", sender: self)
     }
   }
@@ -246,8 +240,8 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   func enqueueSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: true)
     // selectedItem = [self getSelectedItem];
-    var message = "Added \"\(selectedItem.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyTitle))\" to queue."
-    Toast.displayMessage(message, for: 3, in: UIApplication.shared.delegate?.window)
+    let message = "Added \"\(selectedItem.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyTitle))\" to queue."
+    Toast.displayMessage(message, for: 3, in: appDelegate?.window)
     self.setQueueButtonVisible(true)
   }
   /**
@@ -338,7 +332,9 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
     print("session ended with error: \(error)")
     let message = "The Casting session has ended.\n\((error as! NSError).description)"
-    Toast.displayMessage(message, for: 3, in: (UIApplication.shared.delegate?.window))
+    if let window = appDelegate?.window {
+      Toast.displayMessage(message, for: 3, in: window)
+    }
     self.setQueueButtonVisible(false)
     self.tableView.reloadData()
   }

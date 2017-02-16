@@ -33,7 +33,7 @@ class RootContainerViewController: UIViewController, GCKUIMiniMediaControlsViewC
       }
     }
   }
-  private(set) var navigationController: UINavigationController?
+  var navigationController: UINavigationController?
   var isMiniMediaControlsItemEnabled: Bool = false
 
 
