@@ -98,7 +98,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     // Do we need to switch modes? If we're in remote playback mode but no longer
     // have a session, then switch to local playback mode. If we're in local mode
     // but now have a session, then switch to remote playback mode.
-    var hasConnectedSession: Bool = (self.sessionManager.hasConnectedSession())
+    let hasConnectedSession: Bool = (self.sessionManager.hasConnectedSession())
     if hasConnectedSession && (self.playbackMode != .remote) {
       self.populateMediaInfo(false, playPosition: 0)
       self.switchToRemotePlayback()
@@ -112,7 +112,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     self.gradient.colors = [(UIColor.clear.cgColor as? Any), (UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)), blue: CGFloat((50 / 255.0)), alpha: CGFloat((200 / 255.0))).cgColor as? Any)]
     self.gradient.startPoint = CGPoint(x: CGFloat(0), y: CGFloat(1))
     self.gradient.endPoint = CGPoint.zero
-    var orientation: UIInterfaceOrientation = UIApplication.shared.statusBarOrientation
+    let orientation: UIInterfaceOrientation = UIApplication.shared.statusBarOrientation
     if UIInterfaceOrientationIsLandscape(orientation) {
       self.setNavigationBarStyle(.lpvNavBarTransparent)
     }
@@ -163,7 +163,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
   func deviceOrientationDidChange(_ notification: Notification) {
     print("Orientation changed.")
-    var orientation: UIInterfaceOrientation = UIApplication.shared.statusBarOrientation
+    let orientation: UIInterfaceOrientation = UIApplication.shared.statusBarOrientation
     if UIInterfaceOrientationIsLandscape(orientation) {
       self.setNavigationBarStyle(.lpvNavBarTransparent)
     }
@@ -334,7 +334,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       self.gradient.frame = (self.navigationController?.navigationBar.bounds)!
       UIGraphicsBeginImageContext(self.gradient.bounds.size)
       self.gradient.render(in: UIGraphicsGetCurrentContext()!)
-      var gradientImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
+      let gradientImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
       UIGraphicsEndImageContext()
       self.navigationController?.navigationBar.setBackgroundImage(gradientImage, for: .default)
       self.navigationController?.navigationBar.shadowImage = UIImage()

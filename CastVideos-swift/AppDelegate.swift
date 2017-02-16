@@ -180,11 +180,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
   // MARK: - NSUserDefaults notification
 
   func syncWithUserDefaults() {
-    var userDefaults = UserDefaults.standard
+    let userDefaults = UserDefaults.standard
     // Forcing no logging from the SDK
     // _enableSDKLogging = [userDefaults boolForKey:kPrefEnableSDKLogging];
     enableSDKLogging = false
-    var mediaNotificationsEnabled: Bool = userDefaults.bool(forKey: kPrefEnableMediaNotifications)
+    let mediaNotificationsEnabled: Bool = userDefaults.bool(forKey: kPrefEnableMediaNotifications)
     GCKLogger.sharedInstance().delegate?.logMessage!("notifications ON? \(mediaNotificationsEnabled)", fromFunction: #function)
     if firstUserDefaultsSync || (self.mediaNotificationsEnabled != mediaNotificationsEnabled) {
       self.mediaNotificationsEnabled = mediaNotificationsEnabled

@@ -90,10 +90,10 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   }
 
   func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
-    var point: CGPoint = gestureRecognizer.location(in: self.tableView)
-    var indexPath: IndexPath? = self.tableView.indexPathForRow(at: point)
+    let point: CGPoint = gestureRecognizer.location(in: self.tableView)
+    let indexPath: IndexPath? = self.tableView.indexPathForRow(at: point)
     if let indexPath = indexPath {
-      var item: GCKMediaQueueItem? = self.mediaClient.mediaStatus?.queueItem(at: UInt(indexPath.row))
+      let item: GCKMediaQueueItem? = self.mediaClient.mediaStatus?.queueItem(at: UInt(indexPath.row))
       if item != nil {
         self.start(self.mediaClient.queueJumpToItem(withID: (item?.itemID)!))
       }
@@ -113,17 +113,17 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    var cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
-    var item: GCKMediaQueueItem? = self.mediaClient.mediaStatus?.queueItem(at: UInt(indexPath.row))
-    var title: String? = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
+    let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
+    let item: GCKMediaQueueItem? = self.mediaClient.mediaStatus?.queueItem(at: UInt(indexPath.row))
+    let title: String? = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
     var artist: String? = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyArtist)
     if artist == nil {
       artist = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyStudio)
     }
-    var detail: String? = "(\(GCKUIUtils.timeInterval(asString: (item?.mediaInformation.streamDuration)!))) \(artist)"
-    var mediaTitle: UILabel? = (cell?.viewWithTag(1) as? UILabel)
+    let detail: String? = "(\(GCKUIUtils.timeInterval(asString: (item?.mediaInformation.streamDuration)!))) \(artist)"
+    let mediaTitle: UILabel? = (cell?.viewWithTag(1) as? UILabel)
     mediaTitle?.text = title
-    var mediaOwner: UILabel? = (cell?.viewWithTag(2) as? UILabel)
+    let mediaOwner: UILabel? = (cell?.viewWithTag(2) as? UILabel)
     mediaOwner?.text = detail
     if self.mediaClient.mediaStatus?.currentItemID == item?.itemID {
       cell?.backgroundColor = UIColor(red: CGFloat(15.0 / 255), green: CGFloat(153.0 / 255), blue: CGFloat(242.0 / 255), alpha: CGFloat(0.1))

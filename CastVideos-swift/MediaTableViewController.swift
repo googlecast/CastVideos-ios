@@ -131,28 +131,28 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    var cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
-    var item: MediaItem? = (self.rootItem.items[indexPath.row] as? MediaItem)
+    let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
+    let item: MediaItem? = (self.rootItem.items[indexPath.row] as? MediaItem)
     var detail: String? = nil
-    var mediaInfo: GCKMediaInformation? = item?.mediaInfo
+    let mediaInfo: GCKMediaInformation? = item?.mediaInfo
     if mediaInfo != nil {
       detail = mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyStudio)
       if detail == nil {
         detail = mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyArtist)
       }
     }
-    var mediaTitle = (cell?.viewWithTag(1) as? UILabel)
-    var mediaOwner = (cell?.viewWithTag(2) as? UILabel)
+    let mediaTitle = (cell?.viewWithTag(1) as? UILabel)
+    let mediaOwner = (cell?.viewWithTag(2) as? UILabel)
       var titleText = item?.title
       var ownerText = detail
-      var text = "\(titleText)\n\(ownerText)"
-      var attribs = [NSForegroundColorAttributeName: mediaTitle?.textColor, NSFontAttributeName: mediaTitle?.font]
-      var attributedText = NSMutableAttributedString(string: text, attributes: attribs)
-      var blackColor = UIColor.black
-      var titleTextRange = NSRange(location: 0, length: (titleText?.characters.count ?? 0))
+      let text = "\(titleText)\n\(ownerText)"
+      let attribs = [NSForegroundColorAttributeName: mediaTitle?.textColor, NSFontAttributeName: mediaTitle?.font]
+      let attributedText = NSMutableAttributedString(string: text, attributes: attribs)
+      let blackColor = UIColor.black
+      let titleTextRange = NSRange(location: 0, length: (titleText?.characters.count ?? 0))
       attributedText.setAttributes([NSForegroundColorAttributeName: blackColor], range: titleTextRange)
-      var lightGrayColor = UIColor.lightGray
-      var ownerTextRange = NSRange(location: (titleText?.characters.count ?? 0) + 1, length: (ownerText?.characters.count ?? 0))
+      let lightGrayColor = UIColor.lightGray
+      let ownerTextRange = NSRange(location: (titleText?.characters.count ?? 0) + 1, length: (ownerText?.characters.count ?? 0))
       attributedText.setAttributes([NSForegroundColorAttributeName: lightGrayColor, NSFontAttributeName: UIFont.systemFont(ofSize: CGFloat(12))], range: ownerTextRange)
       mediaTitle?.attributedText = attributedText
       mediaOwner?.isHidden = true
@@ -163,13 +163,13 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     else {
       cell?.accessoryType = .disclosureIndicator
     }
-    var imageView: UIImageView? = (cell?.contentView.viewWithTag(3) as? UIImageView)
+    let imageView: UIImageView? = (cell?.contentView.viewWithTag(3) as? UIImageView)
     GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (item?.imageURL)!, completion: {(_ image: UIImage?) -> Void in
       imageView?.image = image
       cell?.setNeedsLayout()
     })
-    var addButton: UIButton? = (cell?.viewWithTag(4) as? UIButton)
-    var hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
+    let addButton: UIButton? = (cell?.viewWithTag(4) as? UIButton)
+    let hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
     if hasConnectedCastSession {
       addButton?.isHidden = false
       addButton?.addTarget(self, action: #selector(self.playButtonClicked), for: .touchDown)

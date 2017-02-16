@@ -453,7 +453,7 @@ class LocalPlayerView: UIView {
 
   @IBAction func onSliderValueChanged(_ sender: Any) {
     if (streamDuration != nil) {
-      var newTime: CMTime = CMTimeMakeWithSeconds(Float64(slider.value), 1)
+      let newTime: CMTime = CMTimeMakeWithSeconds(Float64(slider.value), 1)
       activityIndicator.startAnimating()
       mediaPlayer.seek(to: newTime)
     }
@@ -474,7 +474,7 @@ class LocalPlayerView: UIView {
     }
     else if playerState == .playing || playerState == .paused || playerState == .starting {
       // Play or Pause button based on state.
-      var image: UIImage? = playerState == .paused ? playImage : pauseImage
+      let image: UIImage? = playerState == .paused ? playImage : pauseImage
       playButton.setImage(image, for: .normal)
       playButton.isHidden = false
       splashPlayButton.isHidden = true
@@ -501,7 +501,7 @@ class LocalPlayerView: UIView {
   /* Initial setup of the controls in the toolbar. */
 
   func initialiseToolbarControls() {
-    var frame: CGRect = fullFrame()
+    let frame: CGRect = fullFrame()
     // Play/Pause images.
     playImage = UIImage(named: "play")
     pauseImage = UIImage(named: "pause")
@@ -509,7 +509,7 @@ class LocalPlayerView: UIView {
     toolbarView = UIView()
     layoutToolbar(frame)
     // Background gradient
-    var gradient = CAGradientLayer()
+    let gradient = CAGradientLayer()
     gradient.frame = toolbarView.bounds
     gradient.colors = [(UIColor.clear.cgColor as? Any), (UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)), blue: CGFloat((50 / 255.0)), alpha: CGFloat((200 / 255.0))).cgColor as? Any)]
     gradient.startPoint = CGPoint.zero
@@ -531,7 +531,7 @@ class LocalPlayerView: UIView {
     totalTime.translatesAutoresizingMaskIntoConstraints = false
     // Slider.
     slider = UISlider()
-    var thumb = UIImage(named: "thumb")
+    let thumb = UIImage(named: "thumb")
     // TODO new image
     slider.setThumbImage(thumb, for: .normal)
     slider.setThumbImage(thumb, for: .highlighted)
@@ -553,9 +553,9 @@ class LocalPlayerView: UIView {
     activityIndicator.hidesWhenStopped = true
     controlView.insertSubview(activityIndicator, aboveSubview: toolbarView)
     // Layout.
-    var hlayout: String = "|-[playButton(==40)]-5-[slider(>=120)]" +
+    let hlayout: String = "|-[playButton(==40)]-5-[slider(>=120)]" +
     "-[totalTime(>=40)]-|"
-    var vlayout: String = "V:|[playButton(==40)]"
+    let vlayout: String = "V:|[playButton(==40)]"
     viewsDictionary = ["slider": slider, "totalTime": totalTime, "playButton": playButton]
     toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: hlayout, options: .alignAllCenterY, metrics: nil, views: viewsDictionary!))
     toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: vlayout, options: [], metrics: nil, views: viewsDictionary!))
