@@ -102,7 +102,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
     self.sessionManager.add(self)
     self.gradient = CAGradientLayer()
-    self.gradient.colors = [(UIColor.clear.cgColor as? Any), (UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)), blue: CGFloat((50 / 255.0)), alpha: CGFloat((200 / 255.0))).cgColor as? Any)]
+    self.gradient.colors = [(UIColor.clear.cgColor), (UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)), blue: CGFloat((50 / 255.0)), alpha: CGFloat((200 / 255.0))).cgColor)]
     self.gradient.startPoint = CGPoint(x: CGFloat(0), y: CGFloat(1))
     self.gradient.endPoint = CGPoint.zero
     let orientation: UIInterfaceOrientation = UIApplication.shared.statusBarOrientation

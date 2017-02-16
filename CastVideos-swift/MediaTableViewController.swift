@@ -253,21 +253,20 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func loadSelectedItem(byAppending appending: Bool) {
     print("enqueue item \(selectedItem.mediaInfo)")
-    if let session = GCKCastContext.sharedInstance().sessionManager.currentSession as? GCKCastSession {
-      let castSession: GCKCastSession? = (session as? GCKCastSession)
-      if ((castSession?.remoteMediaClient) != nil) {
+    if let castSession = GCKCastContext.sharedInstance().sessionManager.currentSession as? GCKCastSession {
+      if ((castSession.remoteMediaClient) != nil) {
         let builder = GCKMediaQueueItemBuilder()
         builder.mediaInformation = selectedItem.mediaInfo
         builder.autoplay = true
         builder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
-        let item: GCKMediaQueueItem? = builder.build()
-        if ((castSession?.remoteMediaClient?.mediaStatus) != nil) && appending {
-          let request: GCKRequest? = castSession?.remoteMediaClient?.queueInsert(item!, beforeItemWithID: kGCKMediaQueueInvalidItemID)
+        let item = builder.build()
+        if ((castSession.remoteMediaClient?.mediaStatus) != nil) && appending {
+          let request: GCKRequest? = castSession.remoteMediaClient?.queueInsert(item, beforeItemWithID: kGCKMediaQueueInvalidItemID)
           request?.delegate = self
         }
         else {
-          let repeatMode = (castSession?.remoteMediaClient?.mediaStatus != nil) ? castSession?.remoteMediaClient?.mediaStatus?.queueRepeatMode : .off
-          let request: GCKRequest? = castSession?.remoteMediaClient?.queueLoad([item!], start: 0, playPosition: 0, repeatMode: repeatMode!, customData: nil)
+          let repeatMode = (castSession.remoteMediaClient?.mediaStatus != nil) ? castSession.remoteMediaClient?.mediaStatus?.queueRepeatMode : .off
+          let request = castSession.remoteMediaClient?.queueLoad([item], start: 0, playPosition: 0, repeatMode: repeatMode!, customData: nil)
           request?.delegate = self
         }
       }

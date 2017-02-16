@@ -515,7 +515,7 @@ class LocalPlayerView: UIView {
     // Background gradient
     let gradient = CAGradientLayer()
     gradient.frame = toolbarView.bounds
-    gradient.colors = [(UIColor.clear.cgColor as? Any), (UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)), blue: CGFloat((50 / 255.0)), alpha: CGFloat((200 / 255.0))).cgColor as? Any)]
+    gradient.colors = [(UIColor.clear.cgColor), (UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)), blue: CGFloat((50 / 255.0)), alpha: CGFloat((200 / 255.0))).cgColor)]
     gradient.startPoint = CGPoint.zero
     gradient.endPoint = CGPoint(x: CGFloat(0), y: CGFloat(1))
     // Play/Pause button.
