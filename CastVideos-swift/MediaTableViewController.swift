@@ -100,7 +100,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     super.viewWillAppear(animated)
     print("viewWillAppear - Table view")
     self.navigationController?.navigationBar.isTranslucent = false
-    self.navigationController?.navigationBar?.setBackgroundImage(nil, for: .default)
+    self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
     self.navigationController?.navigationBar.shadowImage = nil
     UIApplication.shared.setStatusBarHidden(false, with: .fade)
     self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
@@ -114,7 +114,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       self.navigationItem.titleView = self.titleView
       self.title = self.rootItem.title
     }
-    appDelegate.castControlBarsEnabled = true
+    appDelegate?.isCastControlBarsEnabled = true
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -207,7 +207,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     var tableViewCell: UITableViewCell? = ((sender as AnyObject).superview?.superview as? UITableViewCell)
     var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell!)
     selectedItem = (self.rootItem.items[(indexPathForCell?.row)!] as? MediaItem)
-    var isHasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.isHasConnectedCastSession
+    var isHasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
     if (selectedItem.mediaInfo != nil) && isHasConnectedCastSession {
       // Display an alert box to allow the user to add to queue or play
       // immediately.
@@ -259,8 +259,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func loadSelectedItem(byAppending appending: Bool) {
     print("enqueue item \(selectedItem.mediaInfo)")
-    var session: GCKSession? = GCKCastContext.sharedInstance().sessionManager.currentSession
-    if (session? is GCKCastSession) {
+    if let session = GCKCastContext.sharedInstance().sessionManager.currentSession as? GCKCastSession {
       var castSession: GCKCastSession? = (session as? GCKCastSession)
       if ((castSession?.remoteMediaClient) != nil) {
         var builder = GCKMediaQueueItemBuilder()
@@ -269,12 +268,12 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
         builder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
         var item: GCKMediaQueueItem? = builder.build()
         if ((castSession?.remoteMediaClient?.mediaStatus) != nil) && appending {
-          var request: GCKRequest? = castSession?.remoteMediaClient?.queueInsert(item, beforeItemWith: kGCKMediaQueueInvalidItemID)
+          var request: GCKRequest? = castSession?.remoteMediaClient?.queueInsert(item!, beforeItemWithID: kGCKMediaQueueInvalidItemID)
           request?.delegate = self
         }
         else {
-          var repeatMode: GCKMediaRepeatMode? = castSession?.remoteMediaClient?.mediaStatus ? castSession?.remoteMediaClient?.mediaStatus?.queueRepeatMode : GCKMediaRepeatModeOff
-          var request: GCKRequest? = castSession?.remoteMediaClient?.queueLoadItems([item!], startIndex: 0, playPosition: 0, repeatMode: repeatMode!, customData: nil)
+          var repeatMode = castSession?.remoteMediaClient?.mediaStatus ? castSession?.remoteMediaClient?.mediaStatus?.queueRepeatMode : .off
+          var request: GCKRequest? = castSession?.remoteMediaClient?.queueLoad([item!], start: 0, playPosition: 0, repeatMode: repeatMode!, customData: nil)
           request?.delegate = self
         }
       }
@@ -306,17 +305,17 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func loadMediaList() {
     // Look up the media list URL.
-    var userDefaults = UserDefaults.standard
-    var urlKey: String? = userDefaults.string(forKey: kPrefMediaListURL)
-    var urlText: String? = userDefaults.string(forKey: urlKey!)
-    var mediaListURL = URL(string: urlText!)
-    if (self.mediaListURL != nil) && mediaListURL?.isEqual(self.mediaListURL) {
+    let userDefaults = UserDefaults.standard
+    let urlKey: String? = userDefaults.string(forKey: kPrefMediaListURL)
+    let urlText: String? = userDefaults.string(forKey: urlKey!)
+    let mediaListURL = URL(string: urlText!)
+    if (self.mediaListURL != nil) && (mediaListURL == self.mediaListURL) {
       // The URL hasn't changed; do nothing.
       return
     }
     self.mediaListURL = mediaListURL
     // Asynchronously load the media json.
-    var delegate: AppDelegate? = (UIApplication.shared.delegate as? AppDelegate)
+    let delegate: AppDelegate? = (UIApplication.shared.delegate as? AppDelegate)
     delegate?.mediaList = MediaListModel()
     self.mediaList = delegate?.mediaList
     self.mediaList.delegate = self
@@ -338,14 +337,14 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
     print("session ended with error: \(error)")
-    var message: String? = "The Casting session has ended.\n\(error?.description)"
-    Toast.displayMessage(message, for: 3, in: (UIApplication.shared.delegate?.window)!)
+    let message = "The Casting session has ended.\n\((error as! NSError).description)"
+    Toast.displayMessage(message, for: 3, in: (UIApplication.shared.delegate?.window))
     self.setQueueButtonVisible(false)
     self.tableView.reloadData()
   }
 
   func sessionManager(_ sessionManager: GCKSessionManager, didFailToStartSessionWithError error: Error?) {
-    self.showAlert(withTitle: "Failed to start a session", message: error?.description)
+    self.showAlert(withTitle: "Failed to start a session", message: (error as! NSError).description)
     self.setQueueButtonVisible(false)
     self.tableView.reloadData()
   }

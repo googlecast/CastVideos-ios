@@ -63,10 +63,6 @@ class LocalPlayerView: UIView {
   var seeking: Bool = false
 
 
-  var streamPosition = TimeInterval()
-  var streamDuration = TimeInterval()
-  var media: GCKMediaInformation!
-  var playerState = LocalPlayerState(rawValue: 0)
   /* The aspect ratio constraint for the view. */
   @IBOutlet weak var viewAspectRatio: NSLayoutConstraint!
   /* The splash image to display before playback or while casting. */
@@ -78,9 +74,9 @@ class LocalPlayerView: UIView {
   /* Whether there has been a recent touch, for fading controls when playing. */
   var isRecentInteraction: Bool = false
   /* Views dictionary used to the layout management. */
-  var viewsDictionary = [AnyHashable: Any]()
+  var viewsDictionary: [AnyHashable: Any]?
   /* Views dictionary used to the layout management. */
-  var constraints = [Any]()
+  var constraints: [Any]?
   /* Play/Pause button. */
   var playButton: UIButton!
   /* Splash play button. */
@@ -100,16 +96,16 @@ class LocalPlayerView: UIView {
   /* Delegate to use for callbacks for play/pause presses while in Cast mode. */
   weak var delegate: LocalPlayerViewDelegate?
   /* Local player elapsed time. */
-  private(set) var streamPosition = TimeInterval()
+  private(set) var streamPosition: TimeInterval?
   /* Local player media duration. */
-  private(set) var streamDuration = TimeInterval()
+  private(set) var streamDuration: TimeInterval?
   /* YES if the video is playing or paused in the local player. */
   var isPlayingLocally: Bool {
     return playerState == .playing || playerState == .paused
   }
   /* YES if the video is fullscreen. */
   var isFullscreen: Bool {
-    var full: Bool = (playerState != .stopped) && UIInterfaceOrientationIsLandscape(UIApplication.shared.statusBarOrientation)
+    let full: Bool = (playerState != .stopped) && UIInterfaceOrientationIsLandscape(UIApplication.shared.statusBarOrientation)
     print("fullscreen=\(full)")
     return full
   }
@@ -150,7 +146,7 @@ class LocalPlayerView: UIView {
     addSubview(controlView)
     // Play overlay that users can tap to get started.
     var giantPlayButton = UIImage(named: "play_circle")
-    splashPlayButton = UIButton(type: UIButtonTypeSystem)
+    splashPlayButton = UIButton(type: .system)
     splashPlayButton.frame = fullFrame()
     splashPlayButton.contentMode = .center
     splashPlayButton.setImage(giantPlayButton, for: .normal)
@@ -165,13 +161,13 @@ class LocalPlayerView: UIView {
     configureControls()
   }
 
-  override func pause() {
+  func pause() {
     if playerState == .playing {
       playButtonClicked(self)
     }
   }
 
-  override func play() {
+  func play() {
     if seeking {
       pendingPlay = true
     }
@@ -185,7 +181,7 @@ class LocalPlayerView: UIView {
 
   }
 
-  override func stop() {
+  func stop() {
     purgeMediaPlayer()
     playerState = .stopped
   }
@@ -203,7 +199,7 @@ class LocalPlayerView: UIView {
 
   }
 
-  override func seek(toTime time: TimeInterval) {
+  func seek(toTime time: TimeInterval) {
     switch playerState {
     case .playing:
       pendingPlay = true
@@ -315,7 +311,7 @@ class LocalPlayerView: UIView {
 
   func handleMediaPlayerReady() {
     print("handleMediaPlayerReady \(pendingPlay)")
-    if CMTIME_IS_INDEFINITE(mediaPlayer.currentItem.duration) {
+    if CMTIME_IS_INDEFINITE((mediaPlayer.currentItem?.duration)!) {
       // Loading has failed, try it again.
       purgeMediaPlayer()
       loadMediaPlayer()
@@ -433,7 +429,7 @@ class LocalPlayerView: UIView {
       loadMediaPlayer()
       slider.isEnabled = false
       activityIndicator.startAnimating()
-      if (mediaPlayer.currentItem != nil) && !CMTIME_IS_INDEFINITE(mediaPlayer.currentItem?.duration) {
+      if (mediaPlayer.currentItem != nil) && !CMTIME_IS_INDEFINITE((mediaPlayer.currentItem?.duration)!) {
         handleMediaPlayerReady()
       }
       else {
@@ -506,7 +502,7 @@ class LocalPlayerView: UIView {
 
   func hideControls() {
     toolbarView.isHidden = true
-    if fullscreen {
+    if isFullscreen {
       print("hideNavigationBar: hide controls")
       delegate?.hideNavigationBar(true)
     }
@@ -577,19 +573,19 @@ class LocalPlayerView: UIView {
    * If there has been a recent interaction, retry in kToolbarDelay seconds. */
 
   func hideToolBar() {
-    print("hideToolBar \(Int(playerState))")
+    print("hideToolBar \(playerState)")
     if !(playerState == .playing || playerState == .starting) {
       return
     }
     if isRecentInteraction {
       isRecentInteraction = false
-      performSelector(#selector(hideToolBar), withObject: self, after: kToolbarDelay)
+      perform(#selector(hideToolBar), with: self, afterDelay: TimeInterval(kToolbarDelay))
     }
     else {
       UIView.animate(withDuration: 0.5, animations: {() -> Void in
         self.toolbarView.alpha = 0
       }, completion: {(_ finished: Bool) -> Void in
-        hideControls()
+        self.hideControls()
         self.toolbarView.alpha = 1
       })
     }
@@ -598,14 +594,14 @@ class LocalPlayerView: UIView {
    * user is playing
    * set a timeout to hide them again. */
 
-  func didTouchControl(_ sender: Any) {
-    print("didTouchControl \(Int(playerState))")
+  func didTouchControl(_ sender: Any?) {
+    print("didTouchControl \(playerState)")
     showControls()
     print("hideNavigationBar: did touch control")
-    delegate.hideNavigationBar(false)
+    delegate?.hideNavigationBar(false)
     isRecentInteraction = true
     if playerState == .playing || playerState == .starting {
-      performSelector(#selector(hideToolBar), withObject: self, after: kToolbarDelay)
+     perform(#selector(hideToolBar), with: self, afterDelay: TimeInterval(kToolbarDelay))
     }
   }
   // MARK: - KVO
@@ -623,9 +619,9 @@ class LocalPlayerView: UIView {
       }
     })
     NotificationCenter.default.addObserver(self, selector: #selector(handleMediaPlaybackEnded), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: mediaPlayer.currentItem)
-    mediaPlayer.currentItem.addObserver(self, forKeyPath: "playbackBufferEmpty", options: NSKeyValueObservingOptionNew, context: nil)
-    mediaPlayer.currentItem.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: NSKeyValueObservingOptionNew, context: nil)
-    mediaPlayer.currentItem.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptionNew, context: nil)
+    mediaPlayer.currentItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
+    mediaPlayer.currentItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
+    mediaPlayer.currentItem?.addObserver(self, forKeyPath: "status", options: .new, context: nil)
     observingMediaPlayer = true
   }
 
@@ -636,8 +632,8 @@ class LocalPlayerView: UIView {
         mediaPlayer.removeTimeObserver(mediaTimeObserver)
         mediaTimeObserver = nil
       }
-      if mediaPlayer.currentItem {
-        NotificationCenter.default.removeObserver(self, name: AVPlayerItemDidPlayToEndTimeNotification, object: mediaPlayer.currentItem)
+      if (mediaPlayer.currentItem != nil) {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: mediaPlayer.currentItem)
       }
       mediaPlayer.currentItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
       mediaPlayer.currentItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
@@ -646,9 +642,9 @@ class LocalPlayerView: UIView {
     }
   }
 
-  override func observeValue(forKeyPath keyPath: String, ofObject object: Any, change: [AnyHashable: Any], context: UnsafeMutableRawPointer) {
+  override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
     print("observeValueForKeyPath \(keyPath)")
-    if !(mediaPlayer.currentItem != nil) || (object != mediaPlayer.currentItem) {
+    guard let currentItem = mediaPlayer.currentItem, let object = object as? AVPlayerItem, object == currentItem else {
       return
     }
     if (keyPath == "playbackLikelyToKeepUp") {

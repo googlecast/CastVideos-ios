@@ -147,7 +147,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
     self.connection = NSURLConnection(request: self.request, delegate: self)
     self.responseData = nil
     self.connection.start()
-    GCKLog("loading media list from URL %@", url)
+    GCKLogger.sharedInstance().delegate?.logMessage!("loading media list from URL \(url)", fromFunction: #function)
   }
 
 
@@ -173,14 +173,14 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
     self.request = nil
     self.responseData = nil
     self.connection = nil
-    GCKLog("httpRequest failed with %@", error)
+    GCKLogger.sharedInstance().delegate?.logMessage!("httpRequest failed with \(error)", fromFunction: #function)
     self.delegate?.mediaListModel(self, didFailToLoadWithError: error)
   }
   // MARK: - NSURLConnectionDataDelegate
 
-  func connection(_ connection: NSURLConnection, didReceive response: URLResponse) {
-    if response.responds(to: #selector(self.statusCode)) {
-      self.responseStatus = (response as! HTTPURLResponse).statusCode
+  internal func connection(_ connection: NSURLConnection, didReceive response: URLResponse) {
+    if let response = response as? HTTPURLResponse {
+      self.responseStatus = response.statusCode
     }
   }
 
@@ -192,10 +192,10 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
   }
 
   func connectionDidFinishLoading(_ connection: NSURLConnection) {
-    GCKLog("httpRequest completed with %ld", Int(self.responseStatus))
+    GCKLogger.sharedInstance().delegate?.logMessage!("httpRequest completed with \(self.responseStatus)", fromFunction: #function)
     if self.responseStatus == 200 {
-      var jsonData: [AnyHashable: Any]? = (try? JSONSerialization.jsonObject(withData: self.responseData, options: JSONSerialization.ReadingOptions.MutableContainers))
-      self.rootItem = self.decodeMediaTree(fromJSON: jsonData!)
+      let jsonData = (try? JSONSerialization.jsonObject(with: self.responseData, options: .mutableContainers))
+      self.rootItem = self.decodeMediaTree(fromJSON: jsonData! as! NSDictionary)
       self.isLoaded = true
       self.delegate?.mediaListModelDidLoad(self)
     }
@@ -206,25 +206,25 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
   }
   // MARK: - JSON decoding
 
-  func decodeMediaTree(fromJSON json: [AnyHashable: Any]) -> MediaItem {
-    var rootItem = MediaItem(title: nil, imageURL: nil, parent: nil)
-    var categories: [Any] = json.gck_array(forKey: kKeyCategories)
-    for categoryElement: [AnyHashable: Any] in categories {
+  func decodeMediaTree(fromJSON json: NSDictionary) -> MediaItem {
+    let rootItem = MediaItem(title: nil, imageURL: nil, parent: nil)
+    let categories = json.gck_array(forKey: kKeyCategories)!
+    for categoryElement in categories {
       if !(categoryElement is [AnyHashable: Any]) {
         continue
       }
-      var category: [AnyHashable: Any]? = (categoryElement as? [AnyHashable: Any])
-      var mediaList: [Any]? = category?.gck_array(forKey: kKeyVideos)
-      if mediaList && (mediaList? is [Any]) {
-        self.title = category?.gck_string(forKey: kKeyName)
+      let category  = (categoryElement as? NSDictionary)
+      let mediaList = category?.gck_array(forKey: kKeyVideos)
+      if (mediaList != nil) {
+        self.title = (category?.gck_string(forKey: kKeyName))!
         // Pick the MP4 files only
-        var videosBaseURLString: String? = category?.gck_string(forKey: kKeyMP4BaseURL)
-        var videosBaseURL = URL(string: videosBaseURLString)
-        var imagesBaseURLString: String? = category?.gck_string(forKey: kKeyImagesBaseURL)
-        var imagesBaseURL = URL(string: imagesBaseURLString)
-        var tracksBaseURLString: String? = category?.gck_string(forKey: kKeyTracksBaseURL)
-        var tracksBaseURL = URL(string: tracksBaseURLString)
-        self.decodeItemList(fromArray: mediaList, into: rootItem, videoFormat: kKeyMP4BaseURL, videosBaseURL: videosBaseURL, imagesBaseURL: imagesBaseURL, tracksBaseURL: tracksBaseURL)
+        let videosBaseURLString: String? = category?.gck_string(forKey: kKeyMP4BaseURL)
+        let videosBaseURL = URL(string: videosBaseURLString!)
+        let imagesBaseURLString: String? = category?.gck_string(forKey: kKeyImagesBaseURL)
+        let imagesBaseURL = URL(string: imagesBaseURLString!)
+        let tracksBaseURLString: String? = category?.gck_string(forKey: kKeyTracksBaseURL)
+        let tracksBaseURL = URL(string: tracksBaseURLString!)
+        self.decodeItemList(fromArray: mediaList!, into: rootItem, videoFormat: kKeyMP4BaseURL, videosBaseURL: videosBaseURL!, imagesBaseURL: imagesBaseURL!, tracksBaseURL: tracksBaseURL!)
         break
       }
     }

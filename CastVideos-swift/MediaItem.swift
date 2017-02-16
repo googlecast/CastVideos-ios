@@ -31,7 +31,7 @@ class MediaItem: NSObject {
   private(set) public var mediaInfo: GCKMediaInformation!
   /** The parent item of this item, or <code>nil</code> if this is the root item.
    */
-  private(set) public var parent: MediaItem!
+  private(set) public var parent: MediaItem?
   var isNowPlaying: Bool = false
 
   /** Initializer for constructing a group item.
@@ -40,7 +40,7 @@ class MediaItem: NSObject {
    * @param imageURL The URL of the image for this item.
    * @param parent The parent item of this item, if any.
    */
-  init(title: String, imageURL: URL?, parent: MediaItem) {
+  init(title: String?, imageURL: URL?, parent: MediaItem?) {
     super.init()
 
     self.title = title

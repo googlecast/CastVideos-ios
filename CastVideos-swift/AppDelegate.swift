@@ -185,7 +185,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
     // _enableSDKLogging = [userDefaults boolForKey:kPrefEnableSDKLogging];
     enableSDKLogging = false
     var mediaNotificationsEnabled: Bool = userDefaults.bool(forKey: kPrefEnableMediaNotifications)
-    GCKLog("notifications ON? %d", mediaNotificationsEnabled)
+    GCKLogger.sharedInstance().delegate?.logMessage!("notifications ON? \(mediaNotificationsEnabled)", fromFunction: #function)
     if firstUserDefaultsSync || (self.mediaNotificationsEnabled != mediaNotificationsEnabled) {
       self.mediaNotificationsEnabled = mediaNotificationsEnabled
       if useCastContainerViewController {
@@ -225,7 +225,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
       rootContainerVC = (window?.rootViewController as? RootContainerViewController)
       navigationController = rootContainerVC?.navigationController
     }
-    navigationController?.navigationItem.backBarButton = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+    navigationController?.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     if (appDelegate?.isCastControlBarsEnabled)! {
       appDelegate?.isCastControlBarsEnabled = false
     }
@@ -255,16 +255,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
   // MARK: - GCKUIImagePicker
 
   func getImageWith(_ imageHints: GCKUIImageHints, from metadata: GCKMediaMetadata) -> GCKImage? {
-    if metadata && metadata.images && (metadata.images.count > 0) {
-      if metadata.images().count == 1 {
-        return metadata.images[0]
+    let images = metadata.images()
+    if !images.isEmpty {
+      if images.count == 1 {
+        return images[0] as? GCKImage
       }
       else {
-        if imageHints.imageType == GCKMediaMetadataImageTypeBackground {
-          return metadata.images[1]
+        if imageHints.imageType == .background {
+          return images[1] as? GCKImage
         }
         else {
-          return metadata.images[0]
+          return images[0] as? GCKImage
         }
       }
     }
