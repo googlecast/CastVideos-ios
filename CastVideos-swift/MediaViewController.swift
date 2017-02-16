@@ -197,12 +197,12 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   func populateMediaInfo(_ autoPlay: Bool, playPosition: TimeInterval) {
     print("populateMediaInfo")
     self._titleLabel.text = self.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyTitle)
-    var subtitle: String? = self.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyArtist)
+    var subtitle = self.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyArtist)
     if subtitle == nil {
       subtitle = self.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyStudio)
     }
     self._subtitleLabel.text = subtitle
-    let description: String? = self.mediaInfo?.metadata?.string(forKey: kMediaKeyDescription)
+    let description = self.mediaInfo?.metadata?.string(forKey: kMediaKeyDescription)
     self._descriptionTextView.text = description?.replacingOccurrences(of: "\\n", with: "\n")
     self._localPlayerView.loadMedia(self.mediaInfo, autoPlay: autoPlay, playPosition: playPosition)
   }

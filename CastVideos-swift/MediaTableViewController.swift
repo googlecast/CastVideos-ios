@@ -145,7 +145,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     let mediaOwner = (cell?.viewWithTag(2) as? UILabel)
       var titleText = item?.title
       var ownerText = detail
-      let text = "\(titleText)\n\(ownerText)"
+      let text = "\(titleText ?? "")\n\(ownerText ?? "")"
       let attribs = [NSForegroundColorAttributeName: mediaTitle?.textColor, NSFontAttributeName: mediaTitle?.font]
       let attributedText = NSMutableAttributedString(string: text, attributes: attribs)
       let blackColor = UIColor.black
