@@ -261,49 +261,49 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
               break
             }
           }
-          let imageURLString: String? = dict.gck_string(forKey: kKeyImageURL)
-          let imageURL = self.buildURL(with: imageURLString, baseURL: imagesBaseURL)
-          if let imageURL = imageURL {
-            metadata.addImage(GCKImage(url: imageURL, width: kThumbnailWidth, height: kThumbnailHeight))
-          }
-          let posterURLText: String? = dict.gck_string(forKey: kKeyPosterURL)
-          let posterURL = self.buildURL(with: posterURLText, baseURL: imagesBaseURL)
-          if let posterURL = posterURL {
-            metadata.setString(posterURL.absoluteString, forKey: kMediaKeyPosterURL)
-            metadata.addImage(GCKImage(url: posterURL, width: kPosterWidth, height: kPosterHeight))
-          }
-          if let description = dict.gck_string(forKey: kKeySubtitle) {
-            metadata.setString(description, forKey: kMediaKeyDescription)
-          }
-          var mediaTracks: [Any]? = nil
-          if let studio = dict.gck_string(forKey: kKeyStudio) {
-            metadata.setString(studio, forKey: kGCKMetadataKeyStudio)
-          }
-          let duration: Int? = dict.gck_integer(forKey: kKeyDuration)
-          mediaTracks = [GCKMediaTrack]()
-          if let tracks = dict.gck_array(forKey: kKeyTracks) {
-            for trackElement: Any in tracks {
-              guard let trackDict = trackElement as? NSDictionary else { continue }
-              let identifier = trackDict.gck_integer(forKey: kKeyID)
-              let name: String? = trackDict.gck_string(forKey: kKeyName)
-              let typeString: String? = trackDict.gck_string(forKey: kKeyType)
-              let subtypeString: String? = trackDict.gck_string(forKey: kKeySubtype)
-              let contentID: String? = trackDict.gck_string(forKey: kKeyContentID)
-              let language: String? = trackDict.gck_string(forKey: kKeyLanguage)
-              let url = self.buildURL(with: contentID, baseURL: tracksBaseURL)
-              let mediaTrack = GCKMediaTrack(identifier: identifier, contentIdentifier: url?.absoluteString, contentType: kDefaultTrackMimeType, type: self.trackType(from: typeString!), textSubtype: self.textTrackSubtype(from: subtypeString!), name: name, languageCode: language, customData: nil)
+        }
+        let imageURLString: String? = dict.gck_string(forKey: kKeyImageURL)
+        let imageURL = self.buildURL(with: imageURLString, baseURL: imagesBaseURL)
+        if let imageURL = imageURL {
+          metadata.addImage(GCKImage(url: imageURL, width: kThumbnailWidth, height: kThumbnailHeight))
+        }
+        let posterURLText: String? = dict.gck_string(forKey: kKeyPosterURL)
+        let posterURL = self.buildURL(with: posterURLText, baseURL: imagesBaseURL)
+        if let posterURL = posterURL {
+          metadata.setString(posterURL.absoluteString, forKey: kMediaKeyPosterURL)
+          metadata.addImage(GCKImage(url: posterURL, width: kPosterWidth, height: kPosterHeight))
+        }
+        if let description = dict.gck_string(forKey: kKeySubtitle) {
+          metadata.setString(description, forKey: kMediaKeyDescription)
+        }
+        var mediaTracks: [Any]? = nil
+        if let studio = dict.gck_string(forKey: kKeyStudio) {
+          metadata.setString(studio, forKey: kGCKMetadataKeyStudio)
+        }
+        let duration: Int? = dict.gck_integer(forKey: kKeyDuration)
+        mediaTracks = [GCKMediaTrack]()
+        if let tracks = dict.gck_array(forKey: kKeyTracks) {
+          for trackElement: Any in tracks {
+            guard let trackDict = trackElement as? NSDictionary else { continue }
+            let identifier = trackDict.gck_integer(forKey: kKeyID)
+            let name: String? = trackDict.gck_string(forKey: kKeyName)
+            let typeString: String? = trackDict.gck_string(forKey: kKeyType)
+            let subtypeString: String? = trackDict.gck_string(forKey: kKeySubtype)
+            let contentID: String? = trackDict.gck_string(forKey: kKeyContentID)
+            let language: String? = trackDict.gck_string(forKey: kKeyLanguage)
+            let url = self.buildURL(with: contentID, baseURL: tracksBaseURL)
+            let mediaTrack = GCKMediaTrack(identifier: identifier, contentIdentifier: url?.absoluteString, contentType: kDefaultTrackMimeType, type: self.trackType(from: typeString!), textSubtype: self.textTrackSubtype(from: subtypeString!), name: name, languageCode: language, customData: nil)
               mediaTracks?.append(mediaTrack)
-            }
           }
+        }
 
-          if mediaTracks?.count == 0 {
-            mediaTracks = nil
-          }
-          let mediaInfo = GCKMediaInformation(contentID: url?.absoluteString ?? "", streamType: .buffered, contentType: mimeType ?? "", metadata: metadata, streamDuration: TimeInterval(duration!), mediaTracks: mediaTracks as! [GCKMediaTrack]?, textTrackStyle: self.trackStyle, customData: nil)
-          let childItem = MediaItem(mediaInformation: mediaInfo, parent: item)
+        if mediaTracks?.count == 0 {
+          mediaTracks = nil
+        }
+        let mediaInfo = GCKMediaInformation(contentID: url!.absoluteString, streamType: .buffered, contentType: mimeType!, metadata: metadata, streamDuration: TimeInterval(duration!), mediaTracks: mediaTracks as! [GCKMediaTrack]?, textTrackStyle: self.trackStyle, customData: nil)
+        let childItem = MediaItem(mediaInformation: mediaInfo, parent: item)
           item.items.append(childItem)
 
-        }
       }
     }
   }
