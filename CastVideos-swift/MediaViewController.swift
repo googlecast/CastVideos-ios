@@ -26,10 +26,10 @@ let kPrefShowStreamTimeRemaining: String = "show_stream_time_remaining"
 class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemoteMediaClientListener, LocalPlayerViewDelegate, GCKRequestDelegate {
 
 
-  @IBOutlet var titleLabel: UILabel!
-  @IBOutlet var subtitleLabel: UILabel!
-  @IBOutlet var descriptionTextView: UITextView!
-  @IBOutlet var localPlayerView: LocalPlayerView!
+  @IBOutlet var _titleLabel: UILabel!
+  @IBOutlet var _subtitleLabel: UILabel!
+  @IBOutlet var _descriptionTextView: UITextView!
+  @IBOutlet var _localPlayerView: LocalPlayerView!
   var sessionManager: GCKSessionManager!
   var castSession: GCKCastSession!
   var castMediaController: GCKUIMediaController!
@@ -46,18 +46,11 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   /* Whether to reset the edges on disappearing. */
   var isResetEdgesOnDisappear: Bool = false
   // The media to play.
-  var mediaInfo: GCKMediaInformation! {
-    get {
-      return self.mediaInfo
-    }
-    set(mediaInfo) {
+  var mediaInfo: GCKMediaInformation? {
+    didSet {
       print("setMediaInfo")
-      if mediaInfo != nil {
-        self.mediaInfo = mediaInfo
-      }
     }
   }
-
 
   required init?(coder: NSCoder) {
     super.init(coder: coder)
@@ -71,7 +64,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   override func viewDidLoad() {
     super.viewDidLoad()
     print("in MediaViewController viewDidLoad")
-    self.localPlayerView.delegate = self
+    self._localPlayerView.delegate = self
     self.castButton = GCKUICastButton(frame: CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(24), height: CGFloat(24)))
     self.castButton.tintColor = UIColor.white
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.castButton)
@@ -92,7 +85,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     print("viewWillAppear; mediaInfo is \(self.mediaInfo), mode is \(self.playbackMode)")
     appDelegate?.isCastControlBarsEnabled = true
     if (self.playbackMode == .local) && self.localPlaybackImplicitlyPaused {
-      self.localPlayerView.play()
+      self._localPlayerView.play()
       self.localPlaybackImplicitlyPaused = false
     }
     // Do we need to switch modes? If we're in remote playback mode but no longer
@@ -146,9 +139,9 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     self.setNavigationBarStyle(.lpvNavBarDefault)
     switch playbackMode! {
     case .local:
-      if self.localPlayerView.playerState == .playing || self.localPlayerView.playerState == .starting {
+      if self._localPlayerView.playerState == .playing || self._localPlayerView.playerState == .starting {
         self.localPlaybackImplicitlyPaused = true
-        self.localPlayerView.pause()
+        self._localPlayerView.pause()
       }
     default:
       // Do nothing.
@@ -167,11 +160,11 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
     if UIInterfaceOrientationIsLandscape(orientation) {
       self.setNavigationBarStyle(.lpvNavBarTransparent)
     }
-    else if !UIInterfaceOrientationIsLandscape(orientation) || !self.localPlayerView.isPlayingLocally {
+    else if !UIInterfaceOrientationIsLandscape(orientation) || !self._localPlayerView.isPlayingLocally {
       self.setNavigationBarStyle(.lpvNavBarDefault)
     }
 
-    self.localPlayerView.orientationChanged()
+    self._localPlayerView.orientationChanged()
   }
 
   func didTapQueueButton(_ sender: Any) {
@@ -203,15 +196,15 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
   func populateMediaInfo(_ autoPlay: Bool, playPosition: TimeInterval) {
     print("populateMediaInfo")
-    self.titleLabel.text = self.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyTitle)
-    var subtitle: String? = self.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyArtist)
+    self._titleLabel.text = self.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyTitle)
+    var subtitle: String? = self.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyArtist)
     if subtitle == nil {
-      subtitle = self.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyStudio)
+      subtitle = self.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyStudio)
     }
-    self.subtitleLabel.text = subtitle
-    let description: String? = self.mediaInfo.metadata?.string(forKey: kMediaKeyDescription)
-    self.descriptionTextView.text = description?.replacingOccurrences(of: "\\n", with: "\n")
-    self.localPlayerView.loadMedia(self.mediaInfo, autoPlay: autoPlay, playPosition: playPosition)
+    self._subtitleLabel.text = subtitle
+    let description: String? = self.mediaInfo?.metadata?.string(forKey: kMediaKeyDescription)
+    self._descriptionTextView.text = description?.replacingOccurrences(of: "\\n", with: "\n")
+    self._localPlayerView.loadMedia(self.mediaInfo, autoPlay: autoPlay, playPosition: playPosition)
   }
 
   func switchToRemotePlayback() {
@@ -223,10 +216,10 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       self.castSession = (self.sessionManager.currentSession as? GCKCastSession)
     }
     // If we were playing locally, load the local media on the remote player
-    if (self.playbackMode == .local) && (self.localPlayerView.playerState != .stopped) && (self.mediaInfo != nil) {
+    if (self.playbackMode == .local) && (self._localPlayerView.playerState != .stopped) && (self.mediaInfo != nil) {
       print("loading media: \(self.mediaInfo)")
-      let playPosition = self.localPlayerView.streamPosition
-      let paused: Bool = (self.localPlayerView.playerState == .paused)
+      let playPosition = self._localPlayerView.streamPosition
+      let paused: Bool = (self._localPlayerView.playerState == .paused)
       let builder = GCKMediaQueueItemBuilder()
       builder.mediaInformation = self.mediaInfo
       builder.autoplay = !paused
@@ -234,17 +227,17 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       let item: GCKMediaQueueItem? = builder.build()
       self.castSession.remoteMediaClient?.queueLoad([item!], start: 0, playPosition: playPosition!, repeatMode: .off, customData: nil)
     }
-    self.localPlayerView.stop()
-    self.localPlayerView.showSplashScreen()
+    self._localPlayerView.stop()
+    self._localPlayerView.showSplashScreen()
     self.setQueueButtonVisible(true)
     self.castSession.remoteMediaClient?.add(self)
     self.playbackMode = .remote
   }
 
   func clearMetadata() {
-    self.titleLabel.text = ""
-    self.subtitleLabel.text = ""
-    self.descriptionTextView.text = ""
+    self._titleLabel.text = ""
+    self._subtitleLabel.text = ""
+    self._descriptionTextView.text = ""
   }
 
   func showAlert(withTitle title: String, message: String) {
@@ -262,7 +255,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   }
 
   func togglePlayPause(_ sender: Any) {
-    self.localPlayerView.togglePause()
+    self._localPlayerView.togglePause()
   }
   // MARK: - GCKSessionManagerListener
 
@@ -368,7 +361,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
         self.actionSheet.addAction(withTitle: "Play Now", target: self, selector: #selector(self.playSelectedItemRemotely))
         self.actionSheet.addAction(withTitle: "Add to Queue", target: self, selector: #selector(self.enqueueSelectedItemRemotely))
       }
-      self.actionSheet.present(in: self, sourceView: self.localPlayerView)
+      self.actionSheet.present(in: self, sourceView: self._localPlayerView)
       return false
     }
     return true
@@ -381,7 +374,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
   func enqueueSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: true)
-    let message = "Added \"\(self.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyTitle))\" to queue."
+    let message = "Added \"\(self.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyTitle))\" to queue."
     Toast.displayMessage(message, for: 3, in: ((UIApplication.shared.delegate?.window)!)!)
     self.setQueueButtonVisible(true)
   }

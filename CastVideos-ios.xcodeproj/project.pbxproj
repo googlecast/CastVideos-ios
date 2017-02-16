@@ -141,9 +141,13 @@
 		6FEF798E1CB8222E001211D3 /* playlist@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF798A1CB8222E001211D3 /* playlist@3x.png */; };
 		6FEF79B41CBC340B001211D3 /* play_circle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF79B21CBC340B001211D3 /* play_circle@2x.png */; };
 		6FEF79B51CBC340B001211D3 /* play_circle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF79B31CBC340B001211D3 /* play_circle@3x.png */; };
+		9E6DCF5D61B37C42A7E8C2FC /* Pods_CastVideos_swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD5221553E9A82097ADE84E2 /* Pods_CastVideos_swift.framework */; };
+		A42124B7E54AEEEBB3854CEF /* Pods_CastVideos_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E5C0884CD2F32A03B29F2A /* Pods_CastVideos_ios.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		053B89E16FD95027BFD98352 /* Pods-CastVideos-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-ios/Pods-CastVideos-ios.release.xcconfig"; sourceTree = "<group>"; };
+		08E5C0884CD2F32A03B29F2A /* Pods_CastVideos_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CastVideos_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10FC9FF51E42A16F00BE6122 /* CastVideos-swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CastVideos-swift.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		10FCA0311E42AB3C00BE6122 /* ActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionSheet.swift; sourceTree = "<group>"; };
 		10FCA0321E42AB3C00BE6122 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -155,6 +159,7 @@
 		10FCA03A1E42AB3C00BE6122 /* MediaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaViewController.swift; sourceTree = "<group>"; };
 		10FCA03B1E42AB3C00BE6122 /* RootContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootContainerViewController.swift; sourceTree = "<group>"; };
 		10FCA03C1E42AB3C00BE6122 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		6C7CAF36108EE66AB44B6E1C /* Pods-CastVideos-swift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-swift.release.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift.release.xcconfig"; sourceTree = "<group>"; };
 		6F1300871CB427810015E8D4 /* RootContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RootContainerViewController.h; path = Classes/RootContainerViewController.h; sourceTree = "<group>"; };
 		6F1300881CB427810015E8D4 /* RootContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RootContainerViewController.m; path = Classes/RootContainerViewController.m; sourceTree = "<group>"; };
 		6F13008A1CB478C40015E8D4 /* MediaItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaItem.h; path = Classes/MediaItem.h; sourceTree = "<group>"; };
@@ -236,6 +241,9 @@
 		6FEF798A1CB8222E001211D3 /* playlist@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "playlist@3x.png"; path = "Resources/playlist@3x.png"; sourceTree = "<group>"; };
 		6FEF79B21CBC340B001211D3 /* play_circle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play_circle@2x.png"; path = "Resources/play_circle@2x.png"; sourceTree = "<group>"; };
 		6FEF79B31CBC340B001211D3 /* play_circle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play_circle@3x.png"; path = "Resources/play_circle@3x.png"; sourceTree = "<group>"; };
+		7D4FC2137B74182403330902 /* Pods-CastVideos-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-ios/Pods-CastVideos-ios.debug.xcconfig"; sourceTree = "<group>"; };
+		BD5221553E9A82097ADE84E2 /* Pods_CastVideos_swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CastVideos_swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6F0C1B2B8B8178F149D71CE /* Pods-CastVideos-swift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-swift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,6 +265,7 @@
 				10FCA0531E42AF6700BE6122 /* AVFoundation.framework in Frameworks */,
 				10FCA0501E42AF6700BE6122 /* MediaToolbox.framework in Frameworks */,
 				10FCA04F1E42AF6700BE6122 /* MediaPlayer.framework in Frameworks */,
+				9E6DCF5D61B37C42A7E8C2FC /* Pods_CastVideos_swift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +287,7 @@
 				6F233F621CA4776B00E484F1 /* AVFoundation.framework in Frameworks */,
 				6F233F601CA4776600E484F1 /* AudioToolbox.framework in Frameworks */,
 				6F233F5E1CA4776100E484F1 /* Accelerate.framework in Frameworks */,
+				A42124B7E54AEEEBB3854CEF /* Pods_CastVideos_ios.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +356,8 @@
 				6F233F611CA4776B00E484F1 /* AVFoundation.framework */,
 				6F233F5F1CA4776600E484F1 /* AudioToolbox.framework */,
 				6F233F5D1CA4776100E484F1 /* Accelerate.framework */,
+				08E5C0884CD2F32A03B29F2A /* Pods_CastVideos_ios.framework */,
+				BD5221553E9A82097ADE84E2 /* Pods_CastVideos_swift.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -407,6 +419,7 @@
 				6F233EB81CA460B100E484F1 /* Frameworks */,
 				6F233EB71CA460AC00E484F1 /* Classes */,
 				6FBC43E01CA3138500AAB267 /* Products */,
+				9BA1D10D02E4919C5B20A5F1 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -431,6 +444,17 @@
 			path = "CastVideos-ios";
 			sourceTree = "<group>";
 		};
+		9BA1D10D02E4919C5B20A5F1 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7D4FC2137B74182403330902 /* Pods-CastVideos-ios.debug.xcconfig */,
+				053B89E16FD95027BFD98352 /* Pods-CastVideos-ios.release.xcconfig */,
+				E6F0C1B2B8B8178F149D71CE /* Pods-CastVideos-swift.debug.xcconfig */,
+				6C7CAF36108EE66AB44B6E1C /* Pods-CastVideos-swift.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -438,9 +462,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 10FCA0061E42A16F00BE6122 /* Build configuration list for PBXNativeTarget "CastVideos-swift" */;
 			buildPhases = (
+				B81FD115E6F741C2902B2CC9 /* [CP] Check Pods Manifest.lock */,
 				10FC9FF11E42A16F00BE6122 /* Sources */,
 				10FC9FF21E42A16F00BE6122 /* Frameworks */,
 				10FC9FF31E42A16F00BE6122 /* Resources */,
+				04FAB3E9FAB4F5A8E066EB80 /* [CP] Embed Pods Frameworks */,
+				5AF91E9F24A45A4838A1B7A9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -455,9 +482,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6FBC43F61CA3138500AAB267 /* Build configuration list for PBXNativeTarget "CastVideos-ios" */;
 			buildPhases = (
+				13EBCFC7E57894516E7EE709 /* [CP] Check Pods Manifest.lock */,
 				6FBC43DB1CA3138500AAB267 /* Sources */,
 				6FBC43DC1CA3138500AAB267 /* Frameworks */,
 				6FBC43DD1CA3138500AAB267 /* Resources */,
+				9B04406193621FC367032FBF /* [CP] Embed Pods Frameworks */,
+				BAA9E4218B4FA446B415AFCF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -609,6 +639,99 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		04FAB3E9FAB4F5A8E066EB80 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		13EBCFC7E57894516E7EE709 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		5AF91E9F24A45A4838A1B7A9 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9B04406193621FC367032FBF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-ios/Pods-CastVideos-ios-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B81FD115E6F741C2902B2CC9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		BAA9E4218B4FA446B415AFCF /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-ios/Pods-CastVideos-ios-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		10FC9FF11E42A16F00BE6122 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -650,6 +773,7 @@
 /* Begin XCBuildConfiguration section */
 		10FCA0041E42A16F00BE6122 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E6F0C1B2B8B8178F149D71CE /* Pods-CastVideos-swift.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -671,6 +795,7 @@
 		};
 		10FCA0051E42A16F00BE6122 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6C7CAF36108EE66AB44B6E1C /* Pods-CastVideos-swift.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -778,6 +903,7 @@
 		};
 		6FBC43F71CA3138500AAB267 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7D4FC2137B74182403330902 /* Pods-CastVideos-ios.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -796,6 +922,7 @@
 		};
 		6FBC43F81CA3138500AAB267 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 053B89E16FD95027BFD98352 /* Pods-CastVideos-ios.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (

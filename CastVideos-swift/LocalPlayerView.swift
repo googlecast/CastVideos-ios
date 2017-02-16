@@ -50,6 +50,7 @@ enum LocalPlayerState : Int {
 }
 
 /* UIView for displaying a local player or splash screen. */
+@objc(LocalPlayerView)
 class LocalPlayerView: UIView {
   var mediaPlayer: AVPlayer!
   var mediaPlayerLayer: AVPlayerLayer!
