@@ -49,14 +49,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
   var isCastControlBarsEnabled: Bool {
     get {
       if useCastContainerViewController {
-        if let castContainerVC = (window?.rootViewController as? GCKUICastContainerViewController) {
-          return castContainerVC.miniMediaControlsItemEnabled
-        }
+        let castContainerVC = (window?.rootViewController as? GCKUICastContainerViewController)
+        return castContainerVC!.miniMediaControlsItemEnabled
       }
       else {
-        if let rootContainerVC = (window?.rootViewController as? RootContainerViewController) {
-          return rootContainerVC.isMiniMediaControlsViewEnabled
-        }
+        let rootContainerVC = (window?.rootViewController as? RootContainerViewController)
+        return rootContainerVC!.miniMediaControlsViewEnabled
       }
     }
     set(notificationsEnabled) {
@@ -68,7 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
       else {
         var rootContainerVC: RootContainerViewController?
         rootContainerVC = (window?.rootViewController as? RootContainerViewController)
-        rootContainerVC?.isMiniMediaControlsViewEnabled = notificationsEnabled
+        rootContainerVC?.miniMediaControlsViewEnabled = notificationsEnabled
       }
     }
   }
@@ -116,7 +114,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
     else {
       var rootContainerVC: RootContainerViewController?
       rootContainerVC = (window?.rootViewController as? RootContainerViewController)
-      rootContainerVC?.isMiniMediaControlsViewEnabled = true
+      rootContainerVC?.miniMediaControlsViewEnabled = true
     }
     NotificationCenter.default.addObserver(self, selector: #selector(presentExpandedMediaControls), name: NSNotification.Name.gckExpandedMediaControlsTriggered, object: nil)
     firstUserDefaultsSync = true
@@ -132,10 +130,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
   }
 
   func populateRegistrationDomain() {
-    let settingsBundleURL: URL? = Bundle.main.url(forResource: "Settings", withExtension: "bundle")
-    let appVersion: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-    let appDefaults = [String: Any]()
-    loadDefaults(appDefaults, fromSettingsPage: "Root", inSettingsBundleAt: settingsBundleURL!)
+    let settingsBundleURL = Bundle.main.url(forResource: "Settings", withExtension: "bundle")
+    let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
+    var appDefaults = [String: Any]()
+    loadDefaults(&appDefaults, fromSettingsPage: "Root", inSettingsBundleAt: settingsBundleURL!)
     let userDefaults = UserDefaults.standard
     userDefaults.register(defaults: appDefaults)
     userDefaults.setValue(appVersion, forKey: kPrefAppVersion)
@@ -143,32 +141,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
     userDefaults.synchronize()
   }
 
-  func loadDefaults(_ appDefaults: [AnyHashable: Any], fromSettingsPage plistName: String, inSettingsBundleAt settingsBundleURL: URL) {
-    let plistFileName = URL(fileURLWithPath: plistName).appendingPathExtension("plist").absoluteString
+  func loadDefaults(_ appDefaults: inout [String: Any], fromSettingsPage plistName: String, inSettingsBundleAt settingsBundleURL: URL) {
+    let plistFileName = plistName.appending(".plist")
     let settingsDict = NSDictionary(contentsOf: settingsBundleURL.appendingPathComponent(plistFileName))
-    var prefSpecifierArray = (settingsDict?["PreferenceSpecifiers"] as? Array)
-    for prefItem in prefSpecifierArray {
-      var prefItemType: String = prefItem["Type"]
-      var prefItemKey: String = prefItem["Key"]
-      var prefItemDefaultValue: String = prefItem["DefaultValue"]
-      if (prefItemType == "PSChildPaneSpecifier") {
-        var prefItemFile: String = prefItem["File"]
-        loadDefaults(appDefaults, fromSettingsPage: prefItemFile, inSettingsBundleAt: settingsBundleURL)
-      }
-      else if prefItemKey && prefItemDefaultValue {
-        appDefaults[prefItemKey] = prefItemDefaultValue
+    if let prefSpecifierArray = settingsDict?["PreferenceSpecifiers"] as? [[AnyHashable:Any]] {
+      for prefItem in prefSpecifierArray {
+        let prefItemType = prefItem["Type"] as? String
+        let prefItemKey = prefItem["Key"] as? String
+        let prefItemDefaultValue = prefItem["DefaultValue"] as? String
+        if (prefItemType == "PSChildPaneSpecifier") {
+          let prefItemFile = prefItem["File"]  as? String
+          loadDefaults(&appDefaults, fromSettingsPage: prefItemFile!, inSettingsBundleAt: settingsBundleURL)
+        }
+        else if (prefItemKey != nil) && (prefItemDefaultValue != nil) {
+          appDefaults[prefItemKey!] = prefItemDefaultValue
+        }
       }
     }
   }
 
   func applicationIDFromUserDefaults() -> String? {
     let userDefaults = UserDefaults.standard
-    var prefApplicationID: String? = userDefaults.string(forKey: kPrefReceiverAppID)
+    var prefApplicationID = userDefaults.string(forKey: kPrefReceiverAppID)
     if (prefApplicationID == kPrefCustomReceiverSelectedValue) {
       prefApplicationID = userDefaults.string(forKey: kPrefCustomReceiverAppID)
     }
     let appIdRegex = try? NSRegularExpression(pattern: "\\b[0-9A-F]{8}\\b", options: [])
-    let numberOfMatches: Int = (appIdRegex?.numberOfMatches(in: prefApplicationID!, options: [], range: NSRange(location: 0, length: (prefApplicationID?.characters.count ?? 0))))!
+    let numberOfMatches = appIdRegex?.numberOfMatches(in: prefApplicationID!, options: [], range: NSRange(location: 0, length: (prefApplicationID?.characters.count ?? 0)))
     if numberOfMatches == 0 {
       let message: String = "\"\(prefApplicationID)\" is not a valid application ID\n" +
       "Please fix the app settings (should be 8 hex digits, in CAPS)"
@@ -196,7 +195,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
       else {
         var rootContainerVC: RootContainerViewController?
         rootContainerVC = (window?.rootViewController as? RootContainerViewController)
-        rootContainerVC?.isMiniMediaControlsViewEnabled = mediaNotificationsEnabled
+        rootContainerVC?.miniMediaControlsViewEnabled = mediaNotificationsEnabled
       }
     }
     firstUserDefaultsSync = false

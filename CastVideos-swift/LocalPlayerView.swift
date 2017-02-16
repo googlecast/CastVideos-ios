@@ -409,10 +409,13 @@ class LocalPlayerView: UIView {
 
   @IBAction func playButtonClicked(_ sender: Any) {
     print("playButtonClicked \(pendingPlay)")
-    var delegate: LocalPlayerViewDelegate = self.delegate!
-    if playerState == .stopped && delegate && delegate.responds(to: #selector(continueAfterPlayButtonClicked)) {
-      if !delegate.continueAfterPlayButtonClicked() {
-        return
+    if playerState == .stopped {
+      if let delegate = self.delegate {
+        if delegate.responds(to: #selector(MediaViewController.continueAfterPlayButtonClicked)) {
+          if !delegate.continueAfterPlayButtonClicked() {
+           return
+          }
+        }
       }
     }
     isRecentInteraction = true

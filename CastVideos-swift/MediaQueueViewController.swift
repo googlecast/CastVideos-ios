@@ -13,6 +13,7 @@
 // limitations under the License.
 import UIKit
 import GoogleCast
+@objc(MediaQueueViewController)
 class MediaQueueViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, GCKSessionManagerListener, GCKRemoteMediaClientListener, GCKRequestDelegate {
 
 

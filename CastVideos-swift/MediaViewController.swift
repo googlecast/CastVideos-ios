@@ -22,7 +22,7 @@ enum PlaybackMode : Int {
 
 let kPrefShowStreamTimeRemaining: String = "show_stream_time_remaining"
 
-
+@objc(MediaViewController)
 class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemoteMediaClientListener, LocalPlayerViewDelegate, GCKRequestDelegate {
 
 
@@ -35,7 +35,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   var castMediaController: GCKUIMediaController!
   var volumeController: GCKUIDeviceVolumeController!
   var streamPositionSliderMoving: Bool = false
-  var playbackMode: PlaybackMode
+  var playbackMode: PlaybackMode?
   var queueButton: UIBarButtonItem!
   var showStreamTimeRemaining: Bool = false
   var localPlaybackImplicitlyPaused: Bool = false
@@ -48,7 +48,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   // The media to play.
   var mediaInfo: GCKMediaInformation! {
     get {
-      // TODO: add getter implementation
+      return self.mediaInfo
     }
     set(mediaInfo) {
       print("setMediaInfo")
@@ -144,8 +144,8 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   override func viewWillDisappear(_ animated: Bool) {
     print("viewWillDisappear")
     self.setNavigationBarStyle(.lpvNavBarDefault)
-    switch self.playbackMode {
-    case PlaybackMode.local:
+    switch playbackMode! {
+    case .local:
       if self.localPlayerView.playerState == .playing || self.localPlayerView.playerState == .starting {
         self.localPlaybackImplicitlyPaused = true
         self.localPlayerView.pause()

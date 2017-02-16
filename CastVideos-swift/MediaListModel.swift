@@ -299,7 +299,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
           if mediaTracks?.count == 0 {
             mediaTracks = nil
           }
-          let mediaInfo = GCKMediaInformation(contentID: url!.absoluteString, streamType: .buffered, contentType: mimeType!, metadata: metadata, streamDuration: TimeInterval(duration!), mediaTracks: mediaTracks as! [GCKMediaTrack]?, textTrackStyle: self.trackStyle, customData: nil)
+          let mediaInfo = GCKMediaInformation(contentID: url?.absoluteString ?? "", streamType: .buffered, contentType: mimeType ?? "", metadata: metadata, streamDuration: TimeInterval(duration!), mediaTracks: mediaTracks as! [GCKMediaTrack]?, textTrackStyle: self.trackStyle, customData: nil)
           let childItem = MediaItem(mediaInformation: mediaInfo, parent: item)
           item.items.append(childItem)
 
