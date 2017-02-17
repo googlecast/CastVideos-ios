@@ -31,7 +31,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   @IBOutlet var _descriptionTextView: UITextView!
   @IBOutlet var _localPlayerView: LocalPlayerView!
   var sessionManager: GCKSessionManager!
-  var castSession: GCKCastSession!
+  var castSession: GCKCastSession?
   var castMediaController: GCKUIMediaController!
   var volumeController: GCKUIDeviceVolumeController!
   var streamPositionSliderMoving: Bool = false
@@ -189,7 +189,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       print("last player state: \(self.castMediaController.lastKnownPlayerState), ended: \(ended)")
     }
     self.populateMediaInfo((!paused && !ended), playPosition: playPosition)
-    self.castSession.remoteMediaClient?.remove(self)
+    self.castSession?.remoteMediaClient?.remove(self)
     self.castSession = nil
     self.playbackMode = .local
   }
@@ -225,12 +225,12 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       builder.autoplay = !paused
       builder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
       let item: GCKMediaQueueItem? = builder.build()
-      self.castSession.remoteMediaClient?.queueLoad([item!], start: 0, playPosition: playPosition!, repeatMode: .off, customData: nil)
+      self.castSession?.remoteMediaClient?.queueLoad([item!], start: 0, playPosition: playPosition!, repeatMode: .off, customData: nil)
     }
     self._localPlayerView.stop()
     self._localPlayerView.showSplashScreen()
     self.setQueueButtonVisible(true)
-    self.castSession.remoteMediaClient?.add(self)
+    self.castSession?.remoteMediaClient?.add(self)
     self.playbackMode = .remote
   }
 
@@ -387,8 +387,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
   func loadSelectedItem(byAppending appending: Bool) {
     print("enqueue item \(self.mediaInfo)")
-    let session = GCKCastContext.sharedInstance().sessionManager.currentSession
-    if let castSession = session as? GCKCastSession {
+    if let castSession = GCKCastContext.sharedInstance().sessionManager.currentSession as? GCKCastSession {
       if ((castSession.remoteMediaClient) != nil) {
         let builder = GCKMediaQueueItemBuilder()
         builder.mediaInformation = self.mediaInfo

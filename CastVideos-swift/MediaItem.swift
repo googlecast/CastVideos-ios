@@ -28,7 +28,7 @@ class MediaItem: NSObject {
    * empty array. */
   internal(set) public var items: [Any]!
   /** If this is a media item, the media information object. */
-  private(set) public var mediaInfo: GCKMediaInformation!
+  private(set) public var mediaInfo: GCKMediaInformation?
   /** The parent item of this item, or <code>nil</code> if this is the root item.
    */
   private(set) public var parent: MediaItem?

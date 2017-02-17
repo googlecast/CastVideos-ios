@@ -240,7 +240,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   func enqueueSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: true)
     // selectedItem = [self getSelectedItem];
-    let message = "Added \"\(selectedItem.mediaInfo.metadata?.string(forKey: kGCKMetadataKeyTitle))\" to queue."
+    let message = "Added \"\(selectedItem.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyTitle))\" to queue."
     Toast.displayMessage(message, for: 3, in: appDelegate?.window)
     self.setQueueButtonVisible(true)
   }

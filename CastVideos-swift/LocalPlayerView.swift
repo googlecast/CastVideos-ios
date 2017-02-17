@@ -52,9 +52,9 @@ enum LocalPlayerState : Int {
 /* UIView for displaying a local player or splash screen. */
 @objc(LocalPlayerView)
 class LocalPlayerView: UIView {
-  var mediaPlayer: AVPlayer!
-  var mediaPlayerLayer: AVPlayerLayer!
-  var mediaTimeObserver: Any!
+  var mediaPlayer: AVPlayer?
+  var mediaPlayerLayer: AVPlayerLayer?
+  var mediaTimeObserver: Any?
   var observingMediaPlayer: Bool = false
   // If there is a pending request to seek to a new position.
   var pendingPlayPosition = TimeInterval()
@@ -65,7 +65,7 @@ class LocalPlayerView: UIView {
 
 
   /* The aspect ratio constraint for the view. */
-  @IBOutlet weak var viewAspectRatio: NSLayoutConstraint!
+  @IBOutlet weak var viewAspectRatio: NSLayoutConstraint?
   /* The splash image to display before playback or while casting. */
   var splashImage: UIImageView!
   /* The UIView used for receiving control input. */
@@ -171,7 +171,7 @@ class LocalPlayerView: UIView {
       pendingPlay = true
     }
     else if playerState == .paused {
-      mediaPlayer.play()
+      mediaPlayer?.play()
       playerState = .playing
     }
     else if playerState == .starting {
@@ -234,7 +234,7 @@ class LocalPlayerView: UIView {
       frame.size = CGSize(width: CGFloat(frame.size.height), height: CGFloat(frame.size.width))
     }
     splashImage.frame = frame
-    mediaPlayerLayer.frame = frame
+    mediaPlayerLayer?.frame = frame
     controlView.frame = frame
     layoutToolbar(frame)
     activityIndicator.center = controlView.center
@@ -252,7 +252,7 @@ class LocalPlayerView: UIView {
 
   override func updateConstraints() {
     super.updateConstraints()
-    viewAspectRatio.isActive = !isFullscreen
+    viewAspectRatio?.isActive = !isFullscreen
   }
   // MARK: - Public interface
   /* YES if we the local media is playing or paused, NO if casting or on the
@@ -283,20 +283,20 @@ class LocalPlayerView: UIView {
   }
 
   func loadMediaPlayer() {
-    if var mediaPlayer = mediaPlayer {
+    if mediaPlayer != nil {
       let mediaURL = URL(string: media.contentID)
       mediaPlayer = AVPlayer.init(url: mediaURL!)
       mediaPlayerLayer = AVPlayerLayer.init(player: mediaPlayer)
-      mediaPlayerLayer.frame = fullFrame()
-      mediaPlayerLayer.backgroundColor = UIColor.black.cgColor
-      layer.insertSublayer(mediaPlayerLayer, above: splashImage.layer)
+      mediaPlayerLayer?.frame = fullFrame()
+      mediaPlayerLayer?.backgroundColor = UIColor.black.cgColor
+      layer.insertSublayer(mediaPlayerLayer!, above: splashImage.layer)
       addMediaPlayerObservers()
     }
   }
 
   func purgeMediaPlayer() {
     removeMediaPlayerObservers()
-    mediaPlayerLayer.removeFromSuperlayer()
+    mediaPlayerLayer?.removeFromSuperlayer()
     mediaPlayerLayer = nil
     mediaPlayer = nil
     pendingPlayPosition = kGCKInvalidTimeInterval
@@ -306,14 +306,14 @@ class LocalPlayerView: UIView {
 
   func handleMediaPlayerReady() {
     print("handleMediaPlayerReady \(pendingPlay)")
-    if CMTIME_IS_INDEFINITE((mediaPlayer.currentItem?.duration)!) {
+    if CMTIME_IS_INDEFINITE((mediaPlayer?.currentItem?.duration)!) {
       // Loading has failed, try it again.
       purgeMediaPlayer()
       loadMediaPlayer()
       return
     }
     if var streamDuration = streamDuration {
-      streamDuration = CMTimeGetSeconds(mediaPlayer.currentItem!.duration)
+      streamDuration = CMTimeGetSeconds(mediaPlayer!.currentItem!.duration)
       slider.maximumValue = Float(streamDuration)
       slider.minimumValue = 0
       slider.isEnabled = true
@@ -330,7 +330,7 @@ class LocalPlayerView: UIView {
     }
     if pendingPlay {
       pendingPlay = false
-      mediaPlayer.play()
+      mediaPlayer?.play()
       playerState = .playing
     }
     else {
@@ -342,7 +342,7 @@ class LocalPlayerView: UIView {
     print("performSeekToTime")
     activityIndicator.startAnimating()
     seeking = true
-    mediaPlayer.seek(to: CMTimeMakeWithSeconds(time, 1), completionHandler: {[weak self] (_ finished: Bool) -> Void in
+    mediaPlayer?.seek(to: CMTimeMakeWithSeconds(time, 1), completionHandler: {[weak self] (_ finished: Bool) -> Void in
       if self?.playerState == .starting {
         self?.pendingPlay = true
       }
@@ -355,7 +355,7 @@ class LocalPlayerView: UIView {
     activityIndicator.stopAnimating()
     if pendingPlay {
       pendingPlay = false
-      mediaPlayer.play()
+      mediaPlayer?.play()
       playerState = .playing
     }
     else {
@@ -372,12 +372,12 @@ class LocalPlayerView: UIView {
     slider.value = 0
     purgeMediaPlayer()
     delegate?.setNavigationBarStyle(.lpvNavBarDefault)
-    mediaPlayer.seek(to: CMTimeMake(0, 1))
+    mediaPlayer?.seek(to: CMTimeMake(0, 1))
     configureControls()
   }
 
   func notifyStreamPositionChanged(_ time: CMTime) {
-    if (mediaPlayer.currentItem?.status != .readyToPlay) || seeking {
+    if (mediaPlayer?.currentItem?.status != .readyToPlay) || seeking {
       return
     }
     streamPosition = CMTimeGetSeconds(time)
@@ -424,7 +424,7 @@ class LocalPlayerView: UIView {
       loadMediaPlayer()
       slider.isEnabled = false
       activityIndicator.startAnimating()
-      if (mediaPlayer.currentItem != nil) && !CMTIME_IS_INDEFINITE((mediaPlayer.currentItem?.duration)!) {
+      if (mediaPlayer?.currentItem != nil) && !CMTIME_IS_INDEFINITE((mediaPlayer?.currentItem?.duration)!) {
         handleMediaPlayerReady()
       }
       else {
@@ -432,11 +432,11 @@ class LocalPlayerView: UIView {
       }
     }
     else if playerState == .playing {
-      mediaPlayer.pause()
+      mediaPlayer?.pause()
       playerState = .paused
     }
     else if playerState == .paused {
-      mediaPlayer.play()
+      mediaPlayer?.play()
       playerState = .playing
     }
 
@@ -445,13 +445,13 @@ class LocalPlayerView: UIView {
   /* If we touch the slider, stop the movie while we scrub. */
 
   @IBAction func onSliderTouchStarted(_ sender: Any) {
-    mediaPlayer.rate = 0.0
+    mediaPlayer?.rate = 0.0
     isRecentInteraction = true
   }
   /* Once we let go of the slider, restart playback. */
 
   @IBAction func onSliderTouchEnded(_ sender: Any) {
-    mediaPlayer.rate = 1.0
+    mediaPlayer?.rate = 1.0
   }
   /* On slider value change the movie play time. */
 
@@ -459,7 +459,7 @@ class LocalPlayerView: UIView {
     if (streamDuration != nil) {
       let newTime: CMTime = CMTimeMakeWithSeconds(Float64(slider.value), 1)
       activityIndicator.startAnimating()
-      mediaPlayer.seek(to: newTime)
+      mediaPlayer?.seek(to: newTime)
     }
     else {
       slider.value = 0
@@ -473,7 +473,7 @@ class LocalPlayerView: UIView {
       playButton.setImage(playImage, for: .normal)
       splashPlayButton.isHidden = false
       splashImage.layer.isHidden = false
-      mediaPlayerLayer.isHidden = true
+      mediaPlayerLayer?.isHidden = true
       controlView.isHidden = true
     }
     else if playerState == .playing || playerState == .paused || playerState == .starting {
@@ -482,7 +482,7 @@ class LocalPlayerView: UIView {
       playButton.setImage(image, for: .normal)
       playButton.isHidden = false
       splashPlayButton.isHidden = true
-      mediaPlayerLayer.isHidden = false
+      mediaPlayerLayer?.isHidden = false
       splashImage.layer.isHidden = true
       controlView.isHidden = false
     }
@@ -607,13 +607,13 @@ class LocalPlayerView: UIView {
     print("addMediaPlayerObservers")
     // We take a weak reference to self to avoid retain cycles in the block.
 
-    mediaTimeObserver = mediaPlayer.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: nil, using: {[weak self] (_ time: CMTime) -> Void in
+    mediaTimeObserver = mediaPlayer?.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: nil, using: {[weak self] (_ time: CMTime) -> Void in
         self?.notifyStreamPositionChanged(time)
     })
-    NotificationCenter.default.addObserver(self, selector: #selector(handleMediaPlaybackEnded), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: mediaPlayer.currentItem)
-    mediaPlayer.currentItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
-    mediaPlayer.currentItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
-    mediaPlayer.currentItem?.addObserver(self, forKeyPath: "status", options: .new, context: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleMediaPlaybackEnded), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: mediaPlayer?.currentItem)
+    mediaPlayer?.currentItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
+    mediaPlayer?.currentItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
+    mediaPlayer?.currentItem?.addObserver(self, forKeyPath: "status", options: .new, context: nil)
     observingMediaPlayer = true
   }
 
@@ -621,22 +621,22 @@ class LocalPlayerView: UIView {
     print("removeMediaPlayerObservers")
     if observingMediaPlayer {
       if (mediaTimeObserver != nil) {
-        mediaPlayer.removeTimeObserver(mediaTimeObserver)
+        mediaPlayer?.removeTimeObserver(mediaTimeObserver!)
         mediaTimeObserver = nil
       }
-      if (mediaPlayer.currentItem != nil) {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: mediaPlayer.currentItem)
+      if (mediaPlayer?.currentItem != nil) {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: mediaPlayer?.currentItem)
       }
-      mediaPlayer.currentItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
-      mediaPlayer.currentItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
-      mediaPlayer.currentItem?.removeObserver(self, forKeyPath: "status")
+      mediaPlayer?.currentItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
+      mediaPlayer?.currentItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
+      mediaPlayer?.currentItem?.removeObserver(self, forKeyPath: "status")
       observingMediaPlayer = false
     }
   }
 
   override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
     print("observeValueForKeyPath \(keyPath)")
-    guard let currentItem = mediaPlayer.currentItem, let object = object as? AVPlayerItem, object == currentItem else {
+    guard let currentItem = mediaPlayer?.currentItem, let object = object as? AVPlayerItem, object == currentItem else {
       return
     }
     if (keyPath == "playbackLikelyToKeepUp") {
@@ -646,7 +646,7 @@ class LocalPlayerView: UIView {
       activityIndicator.startAnimating()
     }
     else if (keyPath == "status") {
-      if mediaPlayer.status == .readyToPlay {
+      if mediaPlayer?.status == .readyToPlay {
         handleMediaPlayerReady()
       }
     }

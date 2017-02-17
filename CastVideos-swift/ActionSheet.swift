@@ -16,8 +16,8 @@ import UIKit
 
 class ActionSheetAction: NSObject {
   private(set) var title: String?
-  var target: AnyObject!
-  var selector: Selector!
+  var target: AnyObject?
+  var selector: Selector?
 
   init(title: String, target: AnyObject!, selector: Selector) {
     super.init()
