@@ -15,30 +15,22 @@ import UIKit
 import AVFoundation
 import GoogleCast
 
+
 let kPrefPreloadTime: String = "preload_time_sec"
-
 let kPrefEnableAnalyticsLogging: String = "enable_analytics_logging"
-
 let kPrefEnableSDKLogging: String = "enable_sdk_logging"
-
 let kPrefAppVersion: String = "app_version"
-
 let kPrefSDKVersion: String = "sdk_version"
-
 let kPrefReceiverAppID: String = "receiver_app_id"
-
 let kPrefCustomReceiverSelectedValue: String = "use_custom_receiver_app_id"
-
 let kPrefCustomReceiverAppID: String = "custom_receiver_app_id"
-
 let kPrefEnableMediaNotifications: String = "enable_media_notifications"
 
 let kApplicationID: String? = nil
-
 let appDelegate = (UIApplication.shared.delegate as? AppDelegate)
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSessionManagerListener, GCKUIImagePicker {
+class AppDelegate: UIResponder, UIApplicationDelegate {
   var enableSDKLogging = false
   var mediaNotificationsEnabled = false
   var firstUserDefaultsSync = false
@@ -51,8 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
       if useCastContainerViewController {
         let castContainerVC = (window?.rootViewController as? GCKUICastContainerViewController)
         return castContainerVC!.miniMediaControlsItemEnabled
-      }
-      else {
+      } else {
         let rootContainerVC = (window?.rootViewController as? RootContainerViewController)
         return rootContainerVC!.miniMediaControlsViewEnabled
       }
@@ -62,8 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
         var castContainerVC: GCKUICastContainerViewController?
         castContainerVC = (window?.rootViewController as? GCKUICastContainerViewController)
         castContainerVC?.miniMediaControlsItemEnabled = notificationsEnabled
-      }
-      else {
+      } else {
         var rootContainerVC: RootContainerViewController?
         rootContainerVC = (window?.rootViewController as? RootContainerViewController)
         rootContainerVC?.miniMediaControlsViewEnabled = notificationsEnabled
@@ -83,39 +73,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
     // We are forcing a custom container view controller, but the Cast Container
     // is also available
     useCastContainerViewController = false
+
     let options = GCKCastOptions(receiverApplicationID: applicationID)
     GCKCastContext.setSharedInstanceWith(options)
     GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
     window?.clipsToBounds = true
-    let logFilter = GCKLoggerFilter()
-    logFilter.exclusive = true
-    logFilter.addClassNames(["GCKDeviceScanner", "GCKDeviceProvider", "GCKDiscoveryManager", "GCKCastChannel", "GCKMediaControlChannel", "GCKUICastButton", "GCKUIMediaController", "NSMutableDictionary"])
-    GCKLogger.sharedInstance().filter = logFilter
-    GCKLogger.sharedInstance().delegate = self
+    setupCastLogging()
+
     // Set playback category mode to allow playing audio on the video files even
     // when the ringer mute switch is on.
-
     do {
       try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
     } catch let setCategoryError {
       print("Error setting audio category: \(setCategoryError.localizedDescription)")
     }
-    NotificationCenter.default.addObserver(self, selector: #selector(syncWithUserDefaults), name: UserDefaults.didChangeNotification, object: nil)
+
     if useCastContainerViewController {
       let appStoryboard = UIStoryboard(name: "Main", bundle: nil)
       let navigationController = appStoryboard.instantiateViewController(withIdentifier: "MainNavigation") as! UINavigationController
-      var castContainerVC: GCKUICastContainerViewController?
-      castContainerVC = GCKCastContext.sharedInstance().createCastContainerController(for: navigationController)
-      castContainerVC?.miniMediaControlsItemEnabled = true
+      let castContainerVC = GCKCastContext.sharedInstance().createCastContainerController(for: navigationController) as GCKUICastContainerViewController
+      castContainerVC.miniMediaControlsItemEnabled = true
       window = UIWindow(frame: UIScreen.main.bounds)
       window?.rootViewController = castContainerVC
       window?.makeKeyAndVisible()
-    }
-    else {
-      var rootContainerVC: RootContainerViewController?
-      rootContainerVC = (window?.rootViewController as? RootContainerViewController)
+    } else {
+      let rootContainerVC = (window?.rootViewController as? RootContainerViewController)
       rootContainerVC?.miniMediaControlsViewEnabled = true
     }
+
+    NotificationCenter.default.addObserver(self, selector: #selector(syncWithUserDefaults), name: UserDefaults.didChangeNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(presentExpandedMediaControls), name: NSNotification.Name.gckExpandedMediaControlsTriggered, object: nil)
     firstUserDefaultsSync = true
     syncWithUserDefaults()
@@ -129,6 +115,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
     NotificationCenter.default.removeObserver(self, name: NSNotification.Name.gckExpandedMediaControlsTriggered, object: nil)
   }
 
+  func setupCastLogging() {
+    let logFilter = GCKLoggerFilter()
+    let classesToLog = ["GCKDeviceScanner", "GCKDeviceProvider", "GCKDiscoveryManager", "GCKCastChannel", "GCKMediaControlChannel", "GCKUICastButton", "GCKUIMediaController", "NSMutableDictionary"]
+    logFilter.setLoggingLevel(.verbose, forClasses: classesToLog)
+    GCKLogger.sharedInstance().filter = logFilter
+    GCKLogger.sharedInstance().delegate = self
+  }
+
+  func presentExpandedMediaControls() {
+    print("present expanded media controls")
+    // Segue directly to the ExpandedViewController.
+    let navigationController: UINavigationController?
+    if useCastContainerViewController {
+      let castContainerVC = (window?.rootViewController as? GCKUICastContainerViewController)
+      navigationController = (castContainerVC?.contentViewController as? UINavigationController)
+    } else {
+      let rootContainerVC = (window?.rootViewController as? RootContainerViewController)
+      navigationController = rootContainerVC?.navigationController
+    }
+    // NOTE: Why aren't we just setting this to nil?
+    navigationController?.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+    if let appDelegate = appDelegate, appDelegate.isCastControlBarsEnabled == true {
+      appDelegate.isCastControlBarsEnabled = false
+    }
+    GCKCastContext.sharedInstance().presentDefaultExpandedMediaControls()
+  }
+}
+
+// MARK: - Working with default values
+extension AppDelegate {
+
   func populateRegistrationDomain() {
     let settingsBundleURL = Bundle.main.url(forResource: "Settings", withExtension: "bundle")
     let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
@@ -141,6 +158,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
     userDefaults.synchronize()
   }
 
+
   func loadDefaults(_ appDefaults: inout [String: Any], fromSettingsPage plistName: String, inSettingsBundleAt settingsBundleURL: URL) {
     let plistFileName = plistName.appending(".plist")
     let settingsDict = NSDictionary(contentsOf: settingsBundleURL.appendingPathComponent(plistFileName))
@@ -152,8 +170,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
         if (prefItemType == "PSChildPaneSpecifier") {
           let prefItemFile = prefItem["File"]  as? String
           loadDefaults(&appDefaults, fromSettingsPage: prefItemFile!, inSettingsBundleAt: settingsBundleURL)
-        }
-        else if (prefItemKey != nil) && (prefItemDefaultValue != nil) {
+        } else if (prefItemKey != nil) && (prefItemDefaultValue != nil) {
           appDefaults[prefItemKey!] = prefItemDefaultValue
         }
       }
@@ -166,77 +183,66 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
     if (prefApplicationID == kPrefCustomReceiverSelectedValue) {
       prefApplicationID = userDefaults.string(forKey: kPrefCustomReceiverAppID)
     }
-    let appIdRegex = try? NSRegularExpression(pattern: "\\b[0-9A-F]{8}\\b", options: [])
-    let numberOfMatches = appIdRegex?.numberOfMatches(in: prefApplicationID!, options: [], range: NSRange(location: 0, length: (prefApplicationID?.characters.count ?? 0)))
-    if numberOfMatches == 0 {
-      let message: String = "\"\(prefApplicationID)\" is not a valid application ID\n" +
-      "Please fix the app settings (should be 8 hex digits, in CAPS)"
+    if prefApplicationID == nil {
+      let message: String = "You don't seem to have an application ID.\n" +
+      "Please fix the app settings."
       showAlert(withTitle: "Invalid Receiver Application ID", message: message)
       return nil
+    } else {
+      let appIdRegex = try? NSRegularExpression(pattern: "\\b[0-9A-F]{8}\\b", options: [])
+      let rangeToCheck = NSRange(location: 0, length: (prefApplicationID?.characters.count ?? 0))
+      let numberOfMatches = appIdRegex?.numberOfMatches(in: prefApplicationID!,
+                                                        options: [],
+                                                        range: rangeToCheck)
+      if numberOfMatches == 0 {
+        let message: String = "\"\(prefApplicationID)\" is not a valid application ID\n" +
+        "Please fix the app settings (should be 8 hex digits, in CAPS)"
+        showAlert(withTitle: "Invalid Receiver Application ID", message: message)
+        return nil
+      }
     }
-    return prefApplicationID!
+    return prefApplicationID
   }
-  // MARK: - NSUserDefaults notification
 
   func syncWithUserDefaults() {
     let userDefaults = UserDefaults.standard
     // Forcing no logging from the SDK
-    // _enableSDKLogging = [userDefaults boolForKey:kPrefEnableSDKLogging];
     enableSDKLogging = false
-    let mediaNotificationsEnabled: Bool = userDefaults.bool(forKey: kPrefEnableMediaNotifications)
-    GCKLogger.sharedInstance().delegate?.logMessage!("notifications ON? \(mediaNotificationsEnabled)", fromFunction: #function)
+    let mediaNotificationsEnabled = userDefaults.bool(forKey: kPrefEnableMediaNotifications)
+    GCKLogger.sharedInstance().delegate?.logMessage?("Notifications on? \(mediaNotificationsEnabled)", fromFunction: #function)
     if firstUserDefaultsSync || (self.mediaNotificationsEnabled != mediaNotificationsEnabled) {
       self.mediaNotificationsEnabled = mediaNotificationsEnabled
       if useCastContainerViewController {
-        var castContainerVC: GCKUICastContainerViewController?
-        castContainerVC = (window?.rootViewController as? GCKUICastContainerViewController)
+        let castContainerVC = (window?.rootViewController as? GCKUICastContainerViewController)
         castContainerVC?.miniMediaControlsItemEnabled = mediaNotificationsEnabled
       }
       else {
-        var rootContainerVC: RootContainerViewController?
-        rootContainerVC = (window?.rootViewController as? RootContainerViewController)
+        let rootContainerVC = (window?.rootViewController as? RootContainerViewController)
         rootContainerVC?.miniMediaControlsViewEnabled = mediaNotificationsEnabled
       }
     }
     firstUserDefaultsSync = false
   }
-  // MARK: - GCKLoggerDelegate
+}
 
+// MARK: - GCKLoggerDelegate
+extension AppDelegate: GCKLoggerDelegate {
   func logMessage(_ message: String, fromFunction function: String) {
     if enableSDKLogging {
       // Send SDK's log messages directly to the console.
       print("\(function)  \(message)")
     }
   }
-  // MARK: - Notifications
 
-  func presentExpandedMediaControls() {
-    print("present expanded media controls")
-    // Segue directly to the ExpandedViewController.
-    var navigationController: UINavigationController?
-    if useCastContainerViewController {
-      var castContainerVC: GCKUICastContainerViewController?
-      castContainerVC = (window?.rootViewController as? GCKUICastContainerViewController)
-      navigationController = (castContainerVC?.contentViewController as? UINavigationController)
-    }
-    else {
-      var rootContainerVC: RootContainerViewController?
-      rootContainerVC = (window?.rootViewController as? RootContainerViewController)
-      navigationController = rootContainerVC?.navigationController
-    }
-    navigationController?.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-    if (appDelegate?.isCastControlBarsEnabled)! {
-      appDelegate?.isCastControlBarsEnabled = false
-    }
-    GCKCastContext.sharedInstance().presentDefaultExpandedMediaControls()
-  }
-  // MARK: - GCKSessionManagerListener
+}
+
+// MARK: - GCKSessionManagerListener
+extension AppDelegate: GCKSessionManagerListener {
 
   func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
     if error == nil {
       Toast.displayMessage("Session ended", for: 3, in: (window?.rootViewController?.view)!)
-    }
-    else {
+    } else {
       let message = "Session ended unexpectedly:\n\(error?.localizedDescription)"
       showAlert(withTitle: "Session error", message: message)
     }
@@ -248,29 +254,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GCKLoggerDelegate, GCKSes
   }
 
   func showAlert(withTitle title: String, message: String) {
+    // TODO: Pull this out into a class that either shows an AlertVeiw or a AlertController
     let alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
     alert.show()
   }
-  // MARK: - GCKUIImagePicker
 
+}
+
+// MARK: - GCKUIImagePicker
+extension AppDelegate: GCKUIImagePicker {
   func getImageWith(_ imageHints: GCKUIImageHints, from metadata: GCKMediaMetadata) -> GCKImage? {
     let images = metadata.images()
-    if !images.isEmpty {
-      if images.count == 1 {
-        return images[0] as? GCKImage
-      }
-      else {
-        if imageHints.imageType == .background {
-          return images[1] as? GCKImage
-        }
-        else {
-          return images[0] as? GCKImage
-        }
-      }
-    }
-    else {
-      print("No images available in media metadata. ")
-      return nil
+    guard !images.isEmpty else { print("No images available in media metadata."); return nil }
+    if images.count > 1 && imageHints.imageType == .background {
+      return images[1] as? GCKImage
+    } else {
+      return images[0] as? GCKImage
     }
   }
 }
+
