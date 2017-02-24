@@ -124,7 +124,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if (self.rootItem != nil) {
-      return self.rootItem!.items.count
+      return self.rootItem!.children.count
     } else {
       return 0
     }
@@ -132,7 +132,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
-    let item: MediaItem? = (self.rootItem?.items[indexPath.row] as? MediaItem)
+    let item: MediaItem? = (self.rootItem?.children[indexPath.row] as? MediaItem)
     var detail: String? = nil
     let mediaInfo: GCKMediaInformation? = item?.mediaInfo
     if mediaInfo != nil {
@@ -183,7 +183,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   @IBAction func playButtonClicked(_ sender: Any) {
     let tableViewCell = ((sender as AnyObject).superview??.superview as? UITableViewCell)
     var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell!)
-    selectedItem = (self.rootItem?.items[(indexPathForCell?.row)!] as? MediaItem)
+    selectedItem = (self.rootItem?.children[(indexPathForCell?.row)!] as? MediaItem)
     let hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
     if (selectedItem.mediaInfo != nil) && hasConnectedCastSession {
       // Display an popover to allow the user to add to queue or play
@@ -201,7 +201,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   @IBAction func playButtonClickedOld(_ sender: Any) {
     let tableViewCell = (sender as AnyObject).superview??.superview as! UITableViewCell
     var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell)
-    selectedItem = (self.rootItem?.items[(indexPathForCell?.row)!] as? MediaItem)
+    selectedItem = (self.rootItem?.children[(indexPathForCell?.row)!] as? MediaItem)
     let isHasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
     if (selectedItem.mediaInfo != nil) && isHasConnectedCastSession {
       // Display an alert box to allow the user to add to queue or play
@@ -216,7 +216,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    if let item = self.rootItem?.items[indexPath.row] as? MediaItem, let _ = item.mediaInfo {
+    if let item = self.rootItem?.children[indexPath.row] as? MediaItem, let _ = item.mediaInfo {
       self.performSegue(withIdentifier: "mediaDetails", sender: self)
     }
   }
@@ -278,7 +278,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     var indexPath: IndexPath? = self.tableView.indexPathForSelectedRow
     if indexPath != nil {
       print("selected row is \(indexPath)")
-      item = (self.rootItem?.items[(indexPath?.row)!] as? MediaItem)
+      item = (self.rootItem?.children[(indexPath?.row)!] as? MediaItem)
     }
     return item!
   }

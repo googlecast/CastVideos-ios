@@ -20,18 +20,11 @@ import GoogleCast
  */
 class MediaItem: NSObject {
 
-  /** The title of the item. */
-  private(set) public var title: String?
-  /** The URL of the image for the item. */
-  private(set) public var imageURL: URL?
-  /** The list of child items, if any. If this is not a group, this will be an
-   * empty array. */
-  internal(set) public var items: [Any]!
-  /** If this is a media item, the media information object. */
-  private(set) public var mediaInfo: GCKMediaInformation?
-  /** The parent item of this item, or <code>nil</code> if this is the root item.
-   */
-  private(set) public var parent: MediaItem?
+  private(set) var title: String?
+  private(set) var imageURL: URL?
+  var children: [Any]!
+  private(set) var mediaInfo: GCKMediaInformation?
+  private(set) var parent: MediaItem?
   var isNowPlaying: Bool = false
 
   /** Initializer for constructing a group item.
@@ -41,38 +34,29 @@ class MediaItem: NSObject {
    * @param parent The parent item of this item, if any.
    */
   init(title: String?, imageURL: URL?, parent: MediaItem?) {
-    super.init()
-
     self.title = title
-    self.items = [Any]()
+    self.children = [Any]()
     self.imageURL = imageURL
     self.parent = parent
-
   }
+
   /** Initializer for constructing a media item.
    *
    * @param mediaInfo The media information for this item.
    * @param parent The parent item of this item, if any.
    */
-
-  init(mediaInformation mediaInfo: GCKMediaInformation, parent: MediaItem) {
-    super.init()
-
+  convenience init(mediaInformation mediaInfo: GCKMediaInformation, parent: MediaItem) {
+    let title = mediaInfo.metadata?.string(forKey: kGCKMetadataKeyTitle) ?? ""
+    let imageURL = (mediaInfo.metadata?.images()[0] as? GCKImage)?.url
+    self.init(title: title, imageURL: imageURL, parent: parent)
     self.mediaInfo = mediaInfo
-    self.title = mediaInfo.metadata?.string(forKey: kGCKMetadataKeyTitle) ?? ""
-    if let images = mediaInfo.metadata?.images() {
-      self.imageURL = (images[0] as? GCKImage)?.url
-    }
-
-    self.parent = parent
-
   }
+
   /**
    * Factory method for constructing the special "now playing" item.
    *
    * @param parent The parent item of this item.
    */
-
   class func nowPlayingItem(withParent parent: MediaItem) -> MediaItem {
     let item = MediaItem(title: "Now Playing", imageURL: nil, parent: parent)
     item.isNowPlaying = true

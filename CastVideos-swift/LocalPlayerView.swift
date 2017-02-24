@@ -97,6 +97,7 @@ class LocalPlayerView: UIView {
   /* Local player elapsed time. */
   private(set) var streamPosition: TimeInterval?
   /* Local player media duration. */
+  // TODO: There appears to be an error right now where this is always nil. Look into it
   private(set) var streamDuration: TimeInterval?
   /* YES if the video is playing or paused in the local player. */
   var isPlayingLocally: Bool {
@@ -283,7 +284,7 @@ class LocalPlayerView: UIView {
   }
 
   func loadMediaPlayer() {
-    if mediaPlayer != nil {
+    if mediaPlayer == nil {
       let mediaURL = URL(string: media.contentID)
       mediaPlayer = AVPlayer.init(url: mediaURL!)
       mediaPlayerLayer = AVPlayerLayer.init(player: mediaPlayer)
@@ -381,8 +382,9 @@ class LocalPlayerView: UIView {
       return
     }
     streamPosition = CMTimeGetSeconds(time)
-    slider.value = Float(streamPosition!)
-    var remainingTime: TimeInterval = (Float(streamDuration!) > Float(streamPosition!)) ? (streamDuration! - streamPosition!) : 0
+    guard let streamDuration = streamDuration else { return }
+    slider.value = Float(streamPosition)
+    var remainingTime: TimeInterval = (Float(streamDuration) > Float(streamPosition)) ? (streamDuration - streamPosition) : 0
     if remainingTime > 0 {
       remainingTime = -remainingTime
     }
@@ -402,7 +404,7 @@ class LocalPlayerView: UIView {
         return controlView.hitTest(point, with: event)!
       }
     }
-    return super.hitTest(point, with: event)!
+    return super.hitTest(point, with: event)
   }
   /* Take the appropriate action when the play/pause button is clicked - depending
    * on the state this may start the movie, pause the movie, or start or pause
