@@ -132,13 +132,12 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
-    let item: MediaItem? = (self.rootItem?.children[indexPath.row] as? MediaItem)
+    let item = self.rootItem?.children[indexPath.row] as? MediaItem
     var detail: String? = nil
-    let mediaInfo: GCKMediaInformation? = item?.mediaInfo
-    if mediaInfo != nil {
-      detail = mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyStudio)
+    if let mediaInfo  = item?.mediaInfo {
+      detail = mediaInfo.metadata?.string(forKey: kGCKMetadataKeyStudio)
       if detail == nil {
-        detail = mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyArtist)
+        detail = mediaInfo.metadata?.string(forKey: kGCKMetadataKeyArtist)
       }
     }
     let mediaTitle = (cell?.viewWithTag(1) as? UILabel)
@@ -188,7 +187,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     if (selectedItem.mediaInfo != nil) && hasConnectedCastSession {
       // Display an popover to allow the user to add to queue or play
       // immediately.
-      if !(self.actionSheet != nil) {
+      if (self.actionSheet == nil) {
         self.actionSheet = ActionSheet(title: "Play Item", message: "Select an action", cancelButtonText: "Cancel")
         self.actionSheet.addAction(withTitle: "Play Now", target: self, selector: #selector(self.playSelectedItemRemotely))
         self.actionSheet.addAction(withTitle: "Add to Queue", target: self, selector: #selector(self.enqueueSelectedItemRemotely))
@@ -225,8 +224,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     print("prepareForSegue")
     if (segue.identifier == "mediaDetails") {
       let viewController: MediaViewController? = (segue.destination as? MediaViewController)
-      let mediaInfo: GCKMediaInformation? = self.getSelectedItem().mediaInfo
-      if mediaInfo != nil {
+      if let mediaInfo  = self.getSelectedItem().mediaInfo {
         viewController?.mediaInfo = mediaInfo
       }
     }
@@ -275,10 +273,9 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func getSelectedItem() -> MediaItem {
     var item: MediaItem? = nil
-    var indexPath: IndexPath? = self.tableView.indexPathForSelectedRow
-    if indexPath != nil {
+    if let indexPath = self.tableView.indexPathForSelectedRow {
       print("selected row is \(indexPath)")
-      item = (self.rootItem?.children[(indexPath?.row)!] as? MediaItem)
+      item = (self.rootItem?.children[(indexPath.row)] as? MediaItem)
     }
     return item!
   }
@@ -302,7 +299,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     let urlKey: String? = userDefaults.string(forKey: kPrefMediaListURL)
     let urlText: String? = userDefaults.string(forKey: urlKey!)
     let mediaListURL = URL(string: urlText!)
-    if (self.mediaListURL != nil) && (mediaListURL == self.mediaListURL) {
+    if (mediaListURL == self.mediaListURL) {
       // The URL hasn't changed; do nothing.
       return
     }

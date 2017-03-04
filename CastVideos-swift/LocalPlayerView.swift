@@ -97,7 +97,6 @@ class LocalPlayerView: UIView {
   /* Local player elapsed time. */
   private(set) var streamPosition: TimeInterval!
   /* Local player media duration. */
-  // TODO: There appears to be an error right now where this is always nil. Look into it
   private(set) var streamDuration: TimeInterval?
   /* YES if the video is playing or paused in the local player. */
   var isPlayingLocally: Bool {
@@ -313,12 +312,12 @@ class LocalPlayerView: UIView {
       loadMediaPlayer()
       return
     }
-    if var streamDuration = streamDuration {
+    if streamDuration == nil {
       streamDuration = CMTimeGetSeconds(mediaPlayer!.currentItem!.duration)
-      slider.maximumValue = Float(streamDuration)
+      slider.maximumValue = Float(streamDuration!)
       slider.minimumValue = 0
       slider.isEnabled = true
-      totalTime.text = GCKUIUtils.timeInterval(asString: streamDuration)
+      totalTime.text = GCKUIUtils.timeInterval(asString: streamDuration!)
     }
     if !pendingPlayPosition.isNaN && pendingPlayPosition > 0 {
       print("seeking to pending position \(pendingPlayPosition)")
@@ -382,7 +381,7 @@ class LocalPlayerView: UIView {
       return
     }
     streamPosition = CMTimeGetSeconds(time)
-    guard let streamDuration = streamDuration else { return }
+    guard let streamDuration = streamDuration, let streamPosition = streamPosition else { return }
     slider.value = Float(streamPosition)
     var remainingTime: TimeInterval = (Float(streamDuration) > Float(streamPosition)) ? (streamDuration - streamPosition) : 0
     if remainingTime > 0 {

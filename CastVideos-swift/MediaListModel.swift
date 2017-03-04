@@ -185,10 +185,10 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
   }
 
   func connection(_ connection: NSURLConnection, didReceive data: Data) {
-    if !(self.responseData != nil) {
-      self.responseData = Data()
+    if responseData == nil {
+      responseData = Data()
     }
-    self.responseData.append(data)
+    responseData.append(data)
   }
 
   func connectionDidFinishLoading(_ connection: NSURLConnection) {
@@ -263,13 +263,11 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
           }
         }
         let imageURLString: String? = dict.gck_string(forKey: kKeyImageURL)
-        let imageURL = self.buildURL(with: imageURLString, baseURL: imagesBaseURL)
-        if let imageURL = imageURL {
+        if let imageURL = self.buildURL(with: imageURLString, baseURL: imagesBaseURL) {
           metadata.addImage(GCKImage(url: imageURL, width: kThumbnailWidth, height: kThumbnailHeight))
         }
         let posterURLText: String? = dict.gck_string(forKey: kKeyPosterURL)
-        let posterURL = self.buildURL(with: posterURLText, baseURL: imagesBaseURL)
-        if let posterURL = posterURL {
+        if let posterURL = self.buildURL(with: posterURLText, baseURL: imagesBaseURL) {
           metadata.setString(posterURL.absoluteString, forKey: kMediaKeyPosterURL)
           metadata.addImage(GCKImage(url: posterURL, width: kPosterWidth, height: kPosterHeight))
         }
