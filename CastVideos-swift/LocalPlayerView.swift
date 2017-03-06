@@ -95,7 +95,7 @@ class LocalPlayerView: UIView {
   /* Delegate to use for callbacks for play/pause presses while in Cast mode. */
   weak var delegate: LocalPlayerViewDelegate?
   /* Local player elapsed time. */
-  private(set) var streamPosition: TimeInterval!
+  private(set) var streamPosition: TimeInterval?
   /* Local player media duration. */
   private(set) var streamDuration: TimeInterval?
   /* YES if the video is playing or paused in the local player. */
