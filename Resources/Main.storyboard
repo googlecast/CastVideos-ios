@@ -23,7 +23,7 @@
                                 <rect key="frame" x="0.0" y="22" width="414" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wSy-zd-FfY" id="REg-OY-kXt">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="79.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="79"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" tag="3" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Sqf-Ut-xUR" customClass="GCKUIImageView">
@@ -193,10 +193,10 @@
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <connections>
-                        <outlet property="_descriptionTextView" destination="Dal-Sb-jv1" id="oRR-X7-mwe"/>
-                        <outlet property="_localPlayerView" destination="rRF-aW-11A" id="teU-td-kBI"/>
-                        <outlet property="_subtitleLabel" destination="0Bp-Yh-mdK" id="KS3-j1-7Ab"/>
-                        <outlet property="_titleLabel" destination="RjS-V6-5ll" id="iu0-lK-JaT"/>
+                        <outlet property="descriptionTextView" destination="Dal-Sb-jv1" id="QHq-3H-kUV"/>
+                        <outlet property="localPlayerView" destination="rRF-aW-11A" id="i6F-Xt-Eyj"/>
+                        <outlet property="subtitleLabel" destination="0Bp-Yh-mdK" id="2QB-tO-hId"/>
+                        <outlet property="titleLabel" destination="RjS-V6-5ll" id="gYo-f1-TRw"/>
                         <segue destination="bcu-gx-psd" kind="show" identifier="MediaQueueSegue" id="Pks-CI-9Hx"/>
                     </connections>
                 </viewController>
@@ -224,7 +224,7 @@
                                         <rect key="frame" x="0.0" y="28" width="414" height="83"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pLk-yV-G40" id="BO1-ic-xQq">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="82.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="82"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" tag="3" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9C2-mo-1SA" customClass="GCKUIImageView">
@@ -306,6 +306,7 @@
                         </textAttributes>
                     </navigationBar>
                     <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="2hi-Oz-8kL">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </toolbar>
                     <connections>
@@ -364,8 +365,8 @@
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="_miniMediaControlsContainerView" destination="JWd-gG-RgK" id="Z2D-Xo-QLQ"/>
-                        <outlet property="_miniMediaControlsHeightConstraint" destination="Dff-b3-8s0" id="1Th-Hs-cSK"/>
+                        <outlet property="miniMediaControlsContainerView" destination="JWd-gG-RgK" id="Qke-Ab-ozn"/>
+                        <outlet property="miniMediaControlsHeightConstraint" destination="Dff-b3-8s0" id="Liz-ua-yNF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="k0B-Qk-DjH" userLabel="First Responder" sceneMemberID="firstResponder"/>

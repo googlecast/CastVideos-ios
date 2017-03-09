@@ -34,7 +34,8 @@ class Toast: UIView {
       let toastRect = CGRect(x: horizontalOffset, y: verticalOffset, width: toastWidth, height: toastHeight)
       // Init and stylize the toast and message.
       let toast = Toast(frame: toastRect)
-      toast.backgroundColor = UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)), blue: CGFloat((50 / 255.0)), alpha: CGFloat(1))
+      toast.backgroundColor = UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)),
+                                      blue: CGFloat((50 / 255.0)), alpha: CGFloat(1))
       toast.messageLabel = UILabel(frame: CGRect(x: CGFloat(0), y: CGFloat(0), width: toastWidth, height: toastHeight))
       toast.messageLabel.text = message
       toast.messageLabel.textColor = UIColor.white
@@ -46,9 +47,11 @@ class Toast: UIView {
       view.insertSubview(toast, aboveSubview: view.subviews.last!)
       activeToast = toast
       UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-      NotificationCenter.default.addObserver(self, selector: #selector(self.orientationChanged), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+      NotificationCenter.default.addObserver(self, selector: #selector(self.orientationChanged),
+                                             name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
       // Set the toast's timeout
-      DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(timeInterval * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {() -> Void in
+      DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(timeInterval * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC),
+                                    execute: {() -> Void in
         toast.removeFromSuperview()
         NotificationCenter.default.removeObserver(self)
         isToastActive = false
@@ -60,7 +63,7 @@ class Toast: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
   }
-  
+
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }

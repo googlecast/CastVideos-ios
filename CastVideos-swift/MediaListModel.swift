@@ -11,85 +11,86 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 import Foundation
 import GoogleCast
 
 /** A key for the URL of the media item's poster (large image). */
-let kMediaKeyPosterURL: String = "posterUrl"
+let kMediaKeyPosterURL = "posterUrl"
 /** A key for the media item's extended description. */
-let kMediaKeyDescription: String = "description"
+let kMediaKeyDescription = "description"
 
-let kKeyCategories: String = "categories"
+let kKeyCategories = "categories"
 
-let kKeyMP4BaseURL: String = "mp4"
+let kKeyMP4BaseURL = "mp4"
 
-let kKeyImagesBaseURL: String = "images"
+let kKeyImagesBaseURL = "images"
 
-let kKeyTracksBaseURL: String = "tracks"
+let kKeyTracksBaseURL = "tracks"
 
-let kKeySources: String = "sources"
+let kKeySources = "sources"
 
-let kKeyVideos: String = "videos"
+let kKeyVideos = "videos"
 
-let kKeyArtist: String = "artist"
+let kKeyArtist = "artist"
 
-let kKeyBaseURL: String = "baseUrl"
+let kKeyBaseURL = "baseUrl"
 
-let kKeyContentID: String = "contentId"
+let kKeyContentID = "contentId"
 
-let kKeyDescription: String = "description"
+let kKeyDescription = "description"
 
-let kKeyID: String = "id"
+let kKeyID = "id"
 
-let kKeyImageURL: String = "image-480x270"
+let kKeyImageURL = "image-480x270"
 
-let kKeyItems: String = "items"
+let kKeyItems = "items"
 
-let kKeyLanguage: String = "language"
+let kKeyLanguage = "language"
 
-let kKeyMimeType: String = "mime"
+let kKeyMimeType = "mime"
 
-let kKeyName: String = "name"
+let kKeyName = "name"
 
-let kKeyPosterURL: String = "image-780x1200"
+let kKeyPosterURL = "image-780x1200"
 
-let kKeyStreamType: String = "streamType"
+let kKeyStreamType = "streamType"
 
-let kKeyStudio: String = "studio"
+let kKeyStudio = "studio"
 
-let kKeySubtitle: String = "subtitle"
+let kKeySubtitle = "subtitle"
 
-let kKeySubtype: String = "subtype"
+let kKeySubtype = "subtype"
 
-let kKeyTitle: String = "title"
+let kKeyTitle = "title"
 
-let kKeyTracks: String = "tracks"
+let kKeyTracks = "tracks"
 
-let kKeyType: String = "type"
+let kKeyType = "type"
 
-let kKeyURL: String = "url"
+let kKeyURL = "url"
 
-let kKeyDuration: String = "duration"
+let kKeyDuration = "duration"
 
-let kDefaultVideoMimeType: String = "video/mp4"
+let kDefaultVideoMimeType = "video/mp4"
 
-let kDefaultTrackMimeType: String = "text/vtt"
+let kDefaultTrackMimeType = "text/vtt"
 
-let kTypeAudio: String = "audio"
+let kTypeAudio = "audio"
 
-let kTypePhoto: String = "photos"
+let kTypePhoto = "photos"
 
-let kTypeVideo: String = "videos"
+let kTypeVideo = "videos"
 
-let kTypeLive: String = "live"
+let kTypeLive = "live"
 
-let kThumbnailWidth: Int = 480
+let kThumbnailWidth = 480
 
-let kThumbnailHeight: Int = 720
+let kThumbnailHeight = 720
 
-let kPosterWidth: Int = 780
+let kPosterWidth = 780
 
-let kPosterHeight: Int = 1200
+let kPosterHeight = 1200
 
 /**
  * The delegate protocol for receiving notifications from the model.
@@ -150,8 +151,6 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
     GCKLogger.sharedInstance().delegate?.logMessage!("loading media list from URL \(url)", fromFunction: #function)
   }
 
-
-
   override init() {
     super.init()
 
@@ -192,14 +191,14 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
   }
 
   func connectionDidFinishLoading(_ connection: NSURLConnection) {
-    GCKLogger.sharedInstance().delegate?.logMessage!("httpRequest completed with \(self.responseStatus)", fromFunction: #function)
+    GCKLogger.sharedInstance().delegate?.logMessage!("httpRequest completed with \(self.responseStatus)",
+                                                     fromFunction: #function)
     if self.responseStatus == 200 {
       let jsonData = (try? JSONSerialization.jsonObject(with: self.responseData, options: .mutableContainers))
       self.rootItem = self.decodeMediaTree(fromJSON: jsonData! as! NSDictionary)
       self.isLoaded = true
       self.delegate?.mediaListModelDidLoad(self)
-    }
-    else {
+    } else {
       let error = NSError.init(domain: "HTTP", code: self.responseStatus, userInfo: nil)
       self.delegate?.mediaListModel(self, didFailToLoadWithError: error)
     }
@@ -215,7 +214,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
       }
       let category  = (categoryElement as? NSDictionary)
       let mediaList = category?.gck_array(forKey: kKeyVideos)
-      if (mediaList != nil) {
+      if mediaList != nil {
         self.title = (category?.gck_string(forKey: kKeyName))!
         // Pick the MP4 files only
         let videosBaseURLString: String? = category?.gck_string(forKey: kKeyMP4BaseURL)
@@ -224,7 +223,8 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
         let imagesBaseURL = URL(string: imagesBaseURLString!)
         let tracksBaseURLString: String? = category?.gck_string(forKey: kKeyTracksBaseURL)
         let tracksBaseURL = URL(string: tracksBaseURLString!)
-        self.decodeItemList(fromArray: mediaList!, into: rootItem, videoFormat: kKeyMP4BaseURL, videosBaseURL: videosBaseURL!, imagesBaseURL: imagesBaseURL!, tracksBaseURL: tracksBaseURL!)
+        self.decodeItemList(fromArray: mediaList!, into: rootItem, videoFormat: kKeyMP4BaseURL,
+                            videosBaseURL: videosBaseURL!, imagesBaseURL: imagesBaseURL!, tracksBaseURL: tracksBaseURL!)
         break
       }
     }
@@ -235,13 +235,13 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
     guard let string = string else { return nil}
     if string.hasPrefix("http://") || string.hasPrefix("https://") {
       return URL(string: string)!
-    }
-    else {
+    } else {
       return URL(string: string, relativeTo: baseURL)!
     }
   }
 
-  func decodeItemList(fromArray array: [Any], into item: MediaItem, videoFormat: String, videosBaseURL: URL, imagesBaseURL: URL, tracksBaseURL: URL) {
+  func decodeItemList(fromArray array: [Any], into item: MediaItem, videoFormat: String,
+                      videosBaseURL: URL, imagesBaseURL: URL, tracksBaseURL: URL) {
     for element in array {
       if let dict = element as? NSDictionary {
         let metadata = GCKMediaMetadata(metadataType: .movie)
@@ -254,7 +254,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
         for sourceElement in sources {
           if let sourceDict = sourceElement as? NSDictionary {
             let type: String? = sourceDict.gck_string(forKey: kKeyType)
-            if (type == videoFormat) {
+            if type == videoFormat {
               mimeType = sourceDict.gck_string(forKey: kKeyMimeType)
               let urlText: String? = sourceDict.gck_string(forKey: kKeyURL)
               url = self.buildURL(with: urlText, baseURL: videosBaseURL)
@@ -307,32 +307,32 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
   }
 
   func trackType(from string: String) -> GCKMediaTrackType {
-    if (string == "audio") {
+    if string == "audio" {
       return .audio
     }
-    if (string == "text") {
+    if string == "text" {
       return .text
     }
-    if (string == "video") {
+    if string == "video" {
       return .video
     }
     return .unknown
   }
 
   func textTrackSubtype(from string: String) -> GCKMediaTextTrackSubtype {
-    if (string == "captions") {
+    if string == "captions" {
       return .captions
     }
-    if (string == "chapters") {
+    if string == "chapters" {
       return .chapters
     }
-    if (string == "descriptions") {
+    if string == "descriptions" {
       return .descriptions
     }
-    if (string == "metadata") {
+    if string == "metadata" {
       return .metadata
     }
-    if (string == "subtitles") {
+    if string == "subtitles" {
       return .subtitles
     }
     return .unknown

@@ -11,20 +11,20 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 import UIKit
 import AVFoundation
 import GoogleCast
 
-
-let kPrefPreloadTime: String = "preload_time_sec"
-let kPrefEnableAnalyticsLogging: String = "enable_analytics_logging"
-let kPrefEnableSDKLogging: String = "enable_sdk_logging"
-let kPrefAppVersion: String = "app_version"
-let kPrefSDKVersion: String = "sdk_version"
-let kPrefReceiverAppID: String = "receiver_app_id"
-let kPrefCustomReceiverSelectedValue: String = "use_custom_receiver_app_id"
-let kPrefCustomReceiverAppID: String = "custom_receiver_app_id"
-let kPrefEnableMediaNotifications: String = "enable_media_notifications"
+let kPrefPreloadTime = "preload_time_sec"
+let kPrefEnableAnalyticsLogging = "enable_analytics_logging"
+let kPrefEnableSDKLogging = "enable_sdk_logging"
+let kPrefAppVersion = "app_version"
+let kPrefSDKVersion = "sdk_version"
+let kPrefReceiverAppID = "receiver_app_id"
+let kPrefCustomReceiverSelectedValue = "use_custom_receiver_app_id"
+let kPrefCustomReceiverAppID = "custom_receiver_app_id"
+let kPrefEnableMediaNotifications = "enable_media_notifications"
 
 let kApplicationID: String? = nil
 let appDelegate = (UIApplication.shared.delegate as? AppDelegate)
@@ -61,8 +61,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
   }
 
-
-  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+  func application(_ application: UIApplication,
+                   didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     populateRegistrationDomain()
     let applicationID: String = applicationIDFromUserDefaults()!
     if applicationID == "" {
@@ -90,8 +90,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     if useCastContainerViewController {
       let appStoryboard = UIStoryboard(name: "Main", bundle: nil)
-      let navigationController = appStoryboard.instantiateViewController(withIdentifier: "MainNavigation") as! UINavigationController
-      let castContainerVC = GCKCastContext.sharedInstance().createCastContainerController(for: navigationController) as GCKUICastContainerViewController
+      guard let navigationController = appStoryboard.instantiateViewController(withIdentifier: "MainNavigation")
+        as? UINavigationController else { return false }
+      let castContainerVC = GCKCastContext.sharedInstance().createCastContainerController(for: navigationController)
+        as GCKUICastContainerViewController
       castContainerVC.miniMediaControlsItemEnabled = true
       window = UIWindow(frame: UIScreen.main.bounds)
       window?.rootViewController = castContainerVC
@@ -101,8 +103,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       rootContainerVC?.miniMediaControlsViewEnabled = true
     }
 
-    NotificationCenter.default.addObserver(self, selector: #selector(syncWithUserDefaults), name: UserDefaults.didChangeNotification, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(presentExpandedMediaControls), name: NSNotification.Name.gckExpandedMediaControlsTriggered, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(syncWithUserDefaults),
+                                           name: UserDefaults.didChangeNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(presentExpandedMediaControls),
+                                           name: NSNotification.Name.gckExpandedMediaControlsTriggered, object: nil)
     firstUserDefaultsSync = true
     syncWithUserDefaults()
     UIApplication.shared.statusBarStyle = .lightContent
@@ -112,12 +116,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
 
   func applicationWillTerminate(_ application: UIApplication) {
-    NotificationCenter.default.removeObserver(self, name: NSNotification.Name.gckExpandedMediaControlsTriggered, object: nil)
+    NotificationCenter.default.removeObserver(self, name: NSNotification.Name.gckExpandedMediaControlsTriggered,
+                                              object: nil)
   }
 
   func setupCastLogging() {
     let logFilter = GCKLoggerFilter()
-    let classesToLog = ["GCKDeviceScanner", "GCKDeviceProvider", "GCKDiscoveryManager", "GCKCastChannel", "GCKMediaControlChannel", "GCKUICastButton", "GCKUIMediaController", "NSMutableDictionary"]
+    let classesToLog = ["GCKDeviceScanner", "GCKDeviceProvider", "GCKDiscoveryManager", "GCKCastChannel",
+                        "GCKMediaControlChannel", "GCKUICastButton", "GCKUIMediaController", "NSMutableDictionary"]
     logFilter.setLoggingLevel(.verbose, forClasses: classesToLog)
     GCKLogger.sharedInstance().filter = logFilter
     GCKLogger.sharedInstance().delegate = self
@@ -135,7 +141,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       navigationController = rootContainerVC?.navigationController
     }
     // NOTE: Why aren't we just setting this to nil?
-    navigationController?.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+    navigationController?.navigationItem.backBarButtonItem =
+        UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     if let appDelegate = appDelegate, appDelegate.isCastControlBarsEnabled == true {
       appDelegate.isCastControlBarsEnabled = false
     }
@@ -158,8 +165,8 @@ extension AppDelegate {
     userDefaults.synchronize()
   }
 
-
-  func loadDefaults(_ appDefaults: inout [String: Any], fromSettingsPage plistName: String, inSettingsBundleAt settingsBundleURL: URL) {
+  func loadDefaults(_ appDefaults: inout [String: Any], fromSettingsPage plistName: String,
+                    inSettingsBundleAt settingsBundleURL: URL) {
     let plistFileName = plistName.appending(".plist")
     let settingsDict = NSDictionary(contentsOf: settingsBundleURL.appendingPathComponent(plistFileName))
     if let prefSpecifierArray = settingsDict?["PreferenceSpecifiers"] as? [[AnyHashable:Any]] {
@@ -167,7 +174,7 @@ extension AppDelegate {
         let prefItemType = prefItem["Type"] as? String
         let prefItemKey = prefItem["Key"] as? String
         let prefItemDefaultValue = prefItem["DefaultValue"] as? String
-        if (prefItemType == "PSChildPaneSpecifier") {
+        if prefItemType == "PSChildPaneSpecifier" {
           let prefItemFile = prefItem["File"]  as? String
           loadDefaults(&appDefaults, fromSettingsPage: prefItemFile!, inSettingsBundleAt: settingsBundleURL)
         } else if (prefItemKey != nil) && (prefItemDefaultValue != nil) {
@@ -180,7 +187,7 @@ extension AppDelegate {
   func applicationIDFromUserDefaults() -> String? {
     let userDefaults = UserDefaults.standard
     var prefApplicationID = userDefaults.string(forKey: kPrefReceiverAppID)
-    if (prefApplicationID == kPrefCustomReceiverSelectedValue) {
+    if prefApplicationID == kPrefCustomReceiverSelectedValue {
       prefApplicationID = userDefaults.string(forKey: kPrefCustomReceiverAppID)
     }
     if prefApplicationID == nil {
@@ -209,14 +216,14 @@ extension AppDelegate {
     // Forcing no logging from the SDK
     enableSDKLogging = false
     let mediaNotificationsEnabled = userDefaults.bool(forKey: kPrefEnableMediaNotifications)
-    GCKLogger.sharedInstance().delegate?.logMessage?("Notifications on? \(mediaNotificationsEnabled)", fromFunction: #function)
+    GCKLogger.sharedInstance().delegate?.logMessage?("Notifications on? \(mediaNotificationsEnabled)",
+                                                     fromFunction: #function)
     if firstUserDefaultsSync || (self.mediaNotificationsEnabled != mediaNotificationsEnabled) {
       self.mediaNotificationsEnabled = mediaNotificationsEnabled
       if useCastContainerViewController {
         let castContainerVC = (window?.rootViewController as? GCKUICastContainerViewController)
         castContainerVC?.miniMediaControlsItemEnabled = mediaNotificationsEnabled
-      }
-      else {
+      } else {
         let rootContainerVC = (window?.rootViewController as? RootContainerViewController)
         rootContainerVC?.miniMediaControlsViewEnabled = mediaNotificationsEnabled
       }
@@ -255,7 +262,8 @@ extension AppDelegate: GCKSessionManagerListener {
 
   func showAlert(withTitle title: String, message: String) {
     // TODO: Pull this out into a class that either shows an AlertVeiw or a AlertController
-    let alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
+    let alert = UIAlertView(title: title, message: message,
+                            delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
     alert.show()
   }
 
@@ -273,4 +281,3 @@ extension AppDelegate: GCKUIImagePicker {
     }
   }
 }
-

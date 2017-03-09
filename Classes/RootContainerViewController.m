@@ -21,9 +21,9 @@ static const NSTimeInterval kCastControlBarsAnimationDuration = 0.20;
 
 @interface RootContainerViewController ()<
     GCKUIMiniMediaControlsViewControllerDelegate> {
-  __weak IBOutlet UIView *_miniMediaControlsContainerView;
-  __weak IBOutlet NSLayoutConstraint *_miniMediaControlsHeightConstraint;
-  GCKUIMiniMediaControlsViewController *_miniMediaControlsViewController;
+  __weak IBOutlet UIView *miniMediaControlsContainerView;
+  __weak IBOutlet NSLayoutConstraint *miniMediaControlsHeightConstraint;
+  GCKUIMiniMediaControlsViewController *miniMediaControlsViewController;
 }
 
 @property(nonatomic, weak, readwrite)
@@ -36,13 +36,13 @@ static const NSTimeInterval kCastControlBarsAnimationDuration = 0.20;
 - (void)viewDidLoad {
   [super viewDidLoad];
   GCKCastContext *castContext = [GCKCastContext sharedInstance];
-  _miniMediaControlsViewController =
+  miniMediaControlsViewController =
       [castContext createMiniMediaControlsViewController];
-  _miniMediaControlsViewController.delegate = self;
+  miniMediaControlsViewController.delegate = self;
 
   [self updateControlBarsVisibility];
-  [self installViewController:_miniMediaControlsViewController
-              inContainerView:_miniMediaControlsContainerView];
+  [self installViewController:miniMediaControlsViewController
+              inContainerView:miniMediaControlsContainerView];
 }
 
 - (void)setMiniMediaControlsViewEnabled:(BOOL)miniMediaControlsViewEnabled {
@@ -56,12 +56,12 @@ static const NSTimeInterval kCastControlBarsAnimationDuration = 0.20;
 
 - (void)updateControlBarsVisibility {
   if (self.miniMediaControlsViewEnabled &&
-      _miniMediaControlsViewController.active) {
-    _miniMediaControlsHeightConstraint.constant =
-        _miniMediaControlsViewController.minHeight;
-    [self.view bringSubviewToFront:_miniMediaControlsContainerView];
+      miniMediaControlsViewController.active) {
+    miniMediaControlsHeightConstraint.constant =
+        miniMediaControlsViewController.minHeight;
+    [self.view bringSubviewToFront:miniMediaControlsContainerView];
   } else {
-    _miniMediaControlsHeightConstraint.constant = 0;
+    miniMediaControlsHeightConstraint.constant = 0;
   }
   [UIView animateWithDuration:kCastControlBarsAnimationDuration
                    animations:^{

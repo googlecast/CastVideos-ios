@@ -36,13 +36,13 @@ protocol LocalPlayerViewDelegate: NSObjectProtocol {
 }
 
 /* Navigation Bar styles/ */
-enum LPVNavBarStyle : Int {
+enum LPVNavBarStyle: Int {
   case lpvNavBarTransparent
   case lpvNavBarDefault
 }
 
 /* The player state. */
-enum LocalPlayerState : Int {
+enum LocalPlayerState: Int {
   case stopped
   case starting
   case playing
@@ -62,7 +62,6 @@ class LocalPlayerView: UIView {
   var pendingPlay: Bool = false
   // If a seek is currently in progress.
   var seeking: Bool = false
-
 
   /* The aspect ratio constraint for the view. */
   @IBOutlet weak var viewAspectRatio: NSLayoutConstraint?
@@ -104,7 +103,8 @@ class LocalPlayerView: UIView {
   }
   /* YES if the video is fullscreen. */
   var isFullscreen: Bool {
-    let full: Bool = (playerState != .stopped) && UIInterfaceOrientationIsLandscape(UIApplication.shared.statusBarOrientation)
+    let full: Bool = (playerState != .stopped) &&
+        UIInterfaceOrientationIsLandscape(UIApplication.shared.statusBarOrientation)
     print("fullscreen=\(full)")
     return full
   }
@@ -169,12 +169,10 @@ class LocalPlayerView: UIView {
   func play() {
     if seeking {
       pendingPlay = true
-    }
-    else if playerState == .paused {
+    } else if playerState == .paused {
       mediaPlayer?.play()
       playerState = .playing
-    }
-    else if playerState == .starting {
+    } else if playerState == .starting {
       playerState = .playing
     }
 
@@ -220,7 +218,6 @@ class LocalPlayerView: UIView {
     handleMediaPlaybackEnded()
   }
 
-
   deinit {
     purgeMediaPlayer()
     NotificationCenter.default.removeObserver(self)
@@ -242,7 +239,8 @@ class LocalPlayerView: UIView {
   /* Update the frame for the toolbar. */
 
   func layoutToolbar(_ frame: CGRect) {
-    toolbarView.frame = CGRect(x: CGFloat(0), y: CGFloat(frame.size.height - CGFloat(kToolbarHeight)), width: CGFloat(frame.size.width), height: CGFloat(kToolbarHeight))
+    toolbarView.frame = CGRect(x: CGFloat(0), y: CGFloat(frame.size.height - CGFloat(kToolbarHeight)),
+                               width: CGFloat(frame.size.width), height: CGFloat(kToolbarHeight))
   }
   /* Return the full frame with no offsets. */
 
@@ -276,7 +274,8 @@ class LocalPlayerView: UIView {
   func loadMediaImage() {
     if let images = media.metadata?.images(), !images.isEmpty {
       let image = images[0] as? GCKImage
-      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (image?.url)!, completion: {(_ image: UIImage?) -> Void in
+      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (image?.url)!,
+                                                             completion: {(_ image: UIImage?) -> Void in
         self.splashImage.image = image
       })
     }
@@ -324,16 +323,14 @@ class LocalPlayerView: UIView {
       performSeek(toTime: pendingPlayPosition)
       pendingPlayPosition = kGCKInvalidTimeInterval
       return
-    }
-    else {
+    } else {
       activityIndicator.stopAnimating()
     }
     if pendingPlay {
       pendingPlay = false
       mediaPlayer?.play()
       playerState = .playing
-    }
-    else {
+    } else {
       playerState = .paused
     }
   }
@@ -357,8 +354,7 @@ class LocalPlayerView: UIView {
       pendingPlay = false
       mediaPlayer?.play()
       playerState = .playing
-    }
-    else {
+    } else {
       playerState = .paused
     }
     seeking = false
@@ -383,7 +379,8 @@ class LocalPlayerView: UIView {
     streamPosition = CMTimeGetSeconds(time)
     guard let streamDuration = streamDuration, let streamPosition = streamPosition else { return }
     slider.value = Float(streamPosition)
-    var remainingTime: TimeInterval = (Float(streamDuration) > Float(streamPosition)) ? (streamDuration - streamPosition) : 0
+    var remainingTime: TimeInterval = (Float(streamDuration) > Float(streamPosition)) ?
+        (streamDuration - streamPosition) : 0
     if remainingTime > 0 {
       remainingTime = -remainingTime
     }
@@ -398,8 +395,7 @@ class LocalPlayerView: UIView {
       if controlView.isHidden {
         didTouchControl(nil)
         return nil
-      }
-      else if point.y > frame.size.height - CGFloat(kToolbarHeight) {
+      } else if point.y > frame.size.height - CGFloat(kToolbarHeight) {
         return controlView.hitTest(point, with: event)!
       }
     }
@@ -427,16 +423,13 @@ class LocalPlayerView: UIView {
       activityIndicator.startAnimating()
       if (mediaPlayer?.currentItem != nil) && !CMTIME_IS_INDEFINITE((mediaPlayer?.currentItem?.duration)!) {
         handleMediaPlayerReady()
-      }
-      else {
+      } else {
         playerState = .starting
       }
-    }
-    else if playerState == .playing {
+    } else if playerState == .playing {
       mediaPlayer?.pause()
       playerState = .paused
-    }
-    else if playerState == .paused {
+    } else if playerState == .paused {
       mediaPlayer?.play()
       playerState = .playing
     }
@@ -457,12 +450,11 @@ class LocalPlayerView: UIView {
   /* On slider value change the movie play time. */
 
   @IBAction func onSliderValueChanged(_ sender: Any) {
-    if (streamDuration != nil) {
+    if streamDuration != nil {
       let newTime: CMTime = CMTimeMakeWithSeconds(Float64(slider.value), 1)
       activityIndicator.startAnimating()
       mediaPlayer?.seek(to: newTime)
-    }
-    else {
+    } else {
       slider.value = 0
     }
   }
@@ -476,8 +468,7 @@ class LocalPlayerView: UIView {
       splashImage.layer.isHidden = false
       mediaPlayerLayer?.isHidden = true
       controlView.isHidden = true
-    }
-    else if playerState == .playing || playerState == .paused || playerState == .starting {
+    } else if playerState == .playing || playerState == .paused || playerState == .starting {
       // Play or Pause button based on state.
       let image: UIImage? = playerState == .paused ? playImage : pauseImage
       playButton.setImage(image, for: .normal)
@@ -516,7 +507,9 @@ class LocalPlayerView: UIView {
     // Background gradient
     let gradient = CAGradientLayer()
     gradient.frame = toolbarView.bounds
-    gradient.colors = [(UIColor.clear.cgColor), (UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)), blue: CGFloat((50 / 255.0)), alpha: CGFloat((200 / 255.0))).cgColor)]
+    gradient.colors = [(UIColor.clear.cgColor), (UIColor(red: CGFloat((50 / 255.0)), green: CGFloat((50 / 255.0)),
+                                                         blue: CGFloat((50 / 255.0)),
+                                                         alpha: CGFloat((200 / 255.0))).cgColor)]
     gradient.startPoint = CGPoint.zero
     gradient.endPoint = CGPoint(x: CGFloat(0), y: CGFloat(1))
     // Play/Pause button.
@@ -547,7 +540,8 @@ class LocalPlayerView: UIView {
     slider.addTarget(self, action: #selector(onSliderTouchEnded), for: .touchUpOutside)
     slider.autoresizingMask = .flexibleWidth
     slider.minimumValue = 0
-    slider.minimumTrackTintColor = UIColor(red: CGFloat(15.0 / 255), green: CGFloat(153.0 / 255), blue: CGFloat(242.0 / 255), alpha: CGFloat(1.0))
+    slider.minimumTrackTintColor = UIColor(red: CGFloat(15.0 / 255), green: CGFloat(153.0 / 255),
+                                           blue: CGFloat(242.0 / 255), alpha: CGFloat(1.0))
     slider.translatesAutoresizingMaskIntoConstraints = false
     toolbarView.addSubview(playButton)
     toolbarView.addSubview(totalTime)
@@ -562,8 +556,10 @@ class LocalPlayerView: UIView {
     "-[totalTime(>=40)]-|"
     let vlayout: String = "V:|[playButton(==40)]"
     viewsDictionary = ["slider": slider, "totalTime": totalTime, "playButton": playButton]
-    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: hlayout, options: .alignAllCenterY, metrics: nil, views: viewsDictionary!))
-    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: vlayout, options: [], metrics: nil, views: viewsDictionary!))
+    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: hlayout, options: .alignAllCenterY,
+                                                              metrics: nil, views: viewsDictionary!))
+    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: vlayout, options: [],
+                                                              metrics: nil, views: viewsDictionary!))
   }
   /* Hide the tool bar, and the navigation controller if in the appropriate state.
    * If there has been a recent interaction, retry in kToolbarDelay seconds. */
@@ -576,8 +572,7 @@ class LocalPlayerView: UIView {
     if isRecentInteraction {
       isRecentInteraction = false
       perform(#selector(hideToolBar), with: self, afterDelay: TimeInterval(kToolbarDelay))
-    }
-    else {
+    } else {
       UIView.animate(withDuration: 0.5, animations: {() -> Void in
         self.toolbarView.alpha = 0
       }, completion: {(_ finished: Bool) -> Void in
@@ -608,10 +603,13 @@ class LocalPlayerView: UIView {
     print("addMediaPlayerObservers")
     // We take a weak reference to self to avoid retain cycles in the block.
 
-    mediaTimeObserver = mediaPlayer?.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1), queue: nil, using: {[weak self] (_ time: CMTime) -> Void in
+    mediaTimeObserver = mediaPlayer?.addPeriodicTimeObserver(forInterval: CMTimeMake(1, 1),
+                                                             queue: nil, using: {[weak self] (_ time: CMTime) -> Void in
         self?.notifyStreamPositionChanged(time)
     })
-    NotificationCenter.default.addObserver(self, selector: #selector(handleMediaPlaybackEnded), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: mediaPlayer?.currentItem)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleMediaPlaybackEnded),
+                                           name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+                                           object: mediaPlayer?.currentItem)
     mediaPlayer?.currentItem?.addObserver(self, forKeyPath: "playbackBufferEmpty", options: .new, context: nil)
     mediaPlayer?.currentItem?.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: .new, context: nil)
     mediaPlayer?.currentItem?.addObserver(self, forKeyPath: "status", options: .new, context: nil)
@@ -621,12 +619,13 @@ class LocalPlayerView: UIView {
   func removeMediaPlayerObservers() {
     print("removeMediaPlayerObservers")
     if observingMediaPlayer {
-      if (mediaTimeObserver != nil) {
+      if mediaTimeObserver != nil {
         mediaPlayer?.removeTimeObserver(mediaTimeObserver!)
         mediaTimeObserver = nil
       }
-      if (mediaPlayer?.currentItem != nil) {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: mediaPlayer?.currentItem)
+      if mediaPlayer?.currentItem != nil {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+                                                  object: mediaPlayer?.currentItem)
       }
       mediaPlayer?.currentItem?.removeObserver(self, forKeyPath: "playbackBufferEmpty")
       mediaPlayer?.currentItem?.removeObserver(self, forKeyPath: "playbackLikelyToKeepUp")
@@ -635,18 +634,17 @@ class LocalPlayerView: UIView {
     }
   }
 
-  override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+  override func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                             change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
     print("observeValueForKeyPath \(keyPath)")
     guard let currentItem = mediaPlayer?.currentItem, let object = object as? AVPlayerItem, object == currentItem else {
       return
     }
-    if (keyPath == "playbackLikelyToKeepUp") {
+    if keyPath == "playbackLikelyToKeepUp" {
       activityIndicator.stopAnimating()
-    }
-    else if (keyPath == "playbackBufferEmpty") {
+    } else if keyPath == "playbackBufferEmpty" {
       activityIndicator.startAnimating()
-    }
-    else if (keyPath == "status") {
+    } else if keyPath == "status" {
       if mediaPlayer?.status == .readyToPlay {
         handleMediaPlayerReady()
       }

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 import Foundation
 import UIKit
 
@@ -59,13 +60,15 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
       // iOS 8+ approach.
       let controller = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
       for action: ActionSheetAction in actions {
-        let alertAction = UIAlertAction(title: action.title, style: .default, handler: {(_ unused: UIAlertAction) -> Void in
+        let alertAction = UIAlertAction(title: action.title,
+                                        style: .default, handler: {(_ unused: UIAlertAction) -> Void in
           action.trigger()
         })
         controller.addAction(alertAction)
       }
       if let cancelButtonText = cancelButtonText {
-        let cancelAction = UIAlertAction(title: cancelButtonText, style: .cancel, handler: {(_ action: UIAlertAction) -> Void in
+        let cancelAction = UIAlertAction(title: cancelButtonText, style: .cancel,
+                                         handler: {(_ action: UIAlertAction) -> Void in
           controller.dismiss(animated: true)
         })
         controller.addAction(cancelAction)
@@ -78,10 +81,10 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
       presentationController.sourceRect = sourceView.bounds
       presentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
       parent.present(controller, animated: true)
-    }
-    else {
+    } else {
       // iOS 7 and below.
-      let alertView = UIAlertView(title: title!, message: message!, delegate: self, cancelButtonTitle: cancelButtonText, otherButtonTitles: "")
+      let alertView = UIAlertView(title: title!, message: message!,
+                                  delegate: self, cancelButtonTitle: cancelButtonText, otherButtonTitles: "")
       indexedActions = [AnyHashable: Any](minimumCapacity: actions.count) as? [Int : ActionSheetAction]
       for action: ActionSheetAction in actions {
         let position = alertView.addButton(withTitle: action.title)

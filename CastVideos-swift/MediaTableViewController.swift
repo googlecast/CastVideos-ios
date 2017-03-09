@@ -16,7 +16,8 @@ import GoogleCast
 let kPrefMediaListURL: String = "media_list_url"
 
 @objc(MediaTableViewController)
-class MediaTableViewController: UITableViewController, GCKSessionManagerListener, MediaListModelDelegate, GCKRequestDelegate {
+class MediaTableViewController: UITableViewController, GCKSessionManagerListener,
+    MediaListModelDelegate, GCKRequestDelegate {
   var sessionManager: GCKSessionManager!
   var castSession: GCKCastSession!
   var rootTitleView: UIImageView!
@@ -28,7 +29,6 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   var queueAdded: Bool = false
   var castButton: GCKUICastButton!
 
-
   /** The media to be displayed. */
   var mediaList: MediaListModel?
   var rootItem: MediaItem? {
@@ -38,7 +38,6 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     }
   }
 
-
   override func viewDidLoad() {
     print("MediaTableViewController - viewDidLoad")
     super.viewDidLoad()
@@ -46,18 +45,24 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     self.sessionManager.add(self)
     self.titleView = self.navigationItem.titleView
     self.rootTitleView = UIImageView(image: UIImage(named: "logo_castvideos.png"))
-    NotificationCenter.default.addObserver(self, selector: #selector(self.loadMediaList), name: UserDefaults.didChangeNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(self.loadMediaList),
+                                           name: UserDefaults.didChangeNotification, object: nil)
     if self.rootItem == nil {
       self.loadMediaList()
     }
-    self.castButton = GCKUICastButton(frame: CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(24), height: CGFloat(24)))
+    self.castButton = GCKUICastButton(frame: CGRect(x: CGFloat(0), y: CGFloat(0),
+                                                    width: CGFloat(24), height: CGFloat(24)))
     self.castButton.tintColor = UIColor.white
     self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.castButton)
-    self.queueButton = UIBarButtonItem(image: UIImage(named: "playlist_white.png"), style: .plain, target: self, action: #selector(self.didTapQueueButton))
+    self.queueButton = UIBarButtonItem(image: UIImage(named: "playlist_white.png"),
+                                       style: .plain, target: self, action: #selector(self.didTapQueueButton))
     self.tableView.separatorColor = UIColor.clear
-    NotificationCenter.default.addObserver(self, selector: #selector(self.deviceOrientationDidChange), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(self.deviceOrientationDidChange),
+                                           name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-    NotificationCenter.default.addObserver(self, selector: #selector(self.castDeviceDidChange), name: NSNotification.Name.gckCastStateDidChange, object: GCKCastContext.sharedInstance())
+    NotificationCenter.default.addObserver(self, selector: #selector(self.castDeviceDidChange),
+                                           name: NSNotification.Name.gckCastStateDidChange,
+                                           object: GCKCastContext.sharedInstance())
   }
 
   func castDeviceDidChange(_ notification: Notification) {
@@ -78,8 +83,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       barItems?.append(self.queueButton)
       self.navigationItem.rightBarButtonItems = barItems
       self.queueAdded = true
-    }
-    else if !visible && self.queueAdded {
+    } else if !visible && self.queueAdded {
       var barItems = (arrayLiteral: self.navigationItem.rightBarButtonItems)
       barItems?.remove(at: barItems?.index(of: self.queueButton) ?? -1)
       self.navigationItem.rightBarButtonItems = barItems
@@ -104,8 +108,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       // If this is the root group, show stylized application title in the title
       // view.
       self.navigationItem.titleView = self.rootTitleView
-    }
-    else {
+    } else {
       // Otherwise show the title of the group in the title view.
       self.navigationItem.titleView = self.titleView
       self.title = self.rootItem?.title
@@ -123,7 +126,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if (self.rootItem != nil) {
+    if self.rootItem != nil {
       return self.rootItem!.children.count
     } else {
       return 0
@@ -151,19 +154,22 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       let titleTextRange = NSRange(location: 0, length: (titleText?.characters.count ?? 0))
       attributedText.setAttributes([NSForegroundColorAttributeName: blackColor], range: titleTextRange)
       let lightGrayColor = UIColor.lightGray
-      let ownerTextRange = NSRange(location: (titleText?.characters.count ?? 0) + 1, length: (ownerText?.characters.count ?? 0))
-      attributedText.setAttributes([NSForegroundColorAttributeName: lightGrayColor, NSFontAttributeName: UIFont.systemFont(ofSize: CGFloat(12))], range: ownerTextRange)
+      let ownerTextRange = NSRange(location: (titleText?.characters.count ?? 0) + 1,
+                                   length: (ownerText?.characters.count ?? 0))
+      attributedText.setAttributes([NSForegroundColorAttributeName: lightGrayColor,
+                                    NSFontAttributeName: UIFont.systemFont(ofSize: CGFloat(12))],
+                                   range: ownerTextRange)
       mediaTitle?.attributedText = attributedText
       mediaOwner?.isHidden = true
 
     if item?.mediaInfo != nil {
       cell?.accessoryType = .none
-    }
-    else {
+    } else {
       cell?.accessoryType = .disclosureIndicator
     }
     let imageView: UIImageView? = (cell?.contentView.viewWithTag(3) as? UIImageView)
-    GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (item?.imageURL)!, completion: {(_ image: UIImage?) -> Void in
+    GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (item?.imageURL)!,
+                                                           completion: {(_ image: UIImage?) -> Void in
       imageView?.image = image
       cell?.setNeedsLayout()
     })
@@ -172,8 +178,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     if hasConnectedCastSession {
       addButton?.isHidden = false
       addButton?.addTarget(self, action: #selector(self.playButtonClicked), for: .touchDown)
-    }
-    else {
+    } else {
       addButton?.isHidden = true
     }
     return cell!
@@ -187,10 +192,12 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     if (selectedItem.mediaInfo != nil) && hasConnectedCastSession {
       // Display an popover to allow the user to add to queue or play
       // immediately.
-      if (self.actionSheet == nil) {
+      if self.actionSheet == nil {
         self.actionSheet = ActionSheet(title: "Play Item", message: "Select an action", cancelButtonText: "Cancel")
-        self.actionSheet.addAction(withTitle: "Play Now", target: self, selector: #selector(self.playSelectedItemRemotely))
-        self.actionSheet.addAction(withTitle: "Add to Queue", target: self, selector: #selector(self.enqueueSelectedItemRemotely))
+        self.actionSheet.addAction(withTitle: "Play Now", target: self,
+                                   selector: #selector(self.playSelectedItemRemotely))
+        self.actionSheet.addAction(withTitle: "Add to Queue", target: self,
+                                   selector: #selector(self.enqueueSelectedItemRemotely))
       }
       self.actionSheet.present(in: self, sourceView: tableViewCell!)
     }
@@ -198,17 +205,19 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   // TODO
 
   @IBAction func playButtonClickedOld(_ sender: Any) {
-    let tableViewCell = (sender as AnyObject).superview??.superview as! UITableViewCell
+    guard let tableViewCell = (sender as AnyObject).superview??.superview as? UITableViewCell else { return }
     var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell)
     selectedItem = (self.rootItem?.children[(indexPathForCell?.row)!] as? MediaItem)
     let isHasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
     if (selectedItem.mediaInfo != nil) && isHasConnectedCastSession {
       // Display an alert box to allow the user to add to queue or play
       // immediately.
-      if (self.actionSheet == nil) {
+      if self.actionSheet == nil {
         self.actionSheet = ActionSheet(title: "Play Item", message: "Select an action", cancelButtonText: "Cancel")
-        self.actionSheet.addAction(withTitle: "Play Now", target: self, selector: #selector(self.playSelectedItemRemotely))
-        self.actionSheet.addAction(withTitle: "Add to Queue", target: self, selector: #selector(self.enqueueSelectedItemRemotely))
+        self.actionSheet.addAction(withTitle: "Play Now", target: self,
+                                   selector: #selector(self.playSelectedItemRemotely))
+        self.actionSheet.addAction(withTitle: "Add to Queue", target: self,
+                                   selector: #selector(self.enqueueSelectedItemRemotely))
       }
       self.actionSheet.present(in: self, sourceView: tableViewCell)
     }
@@ -222,7 +231,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     print("prepareForSegue")
-    if (segue.identifier == "mediaDetails") {
+    if segue.identifier == "mediaDetails" {
       let viewController: MediaViewController? = (segue.destination as? MediaViewController)
       if let mediaInfo  = self.getSelectedItem().mediaInfo {
         viewController?.mediaInfo = mediaInfo
@@ -252,19 +261,21 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   func loadSelectedItem(byAppending appending: Bool) {
     print("enqueue item \(selectedItem.mediaInfo)")
     if let castSession = GCKCastContext.sharedInstance().sessionManager.currentSession as? GCKCastSession {
-      if ((castSession.remoteMediaClient) != nil) {
+      if (castSession.remoteMediaClient) != nil {
         let builder = GCKMediaQueueItemBuilder()
         builder.mediaInformation = selectedItem.mediaInfo
         builder.autoplay = true
         builder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
         let item = builder.build()
         if ((castSession.remoteMediaClient?.mediaStatus) != nil) && appending {
-          let request: GCKRequest? = castSession.remoteMediaClient?.queueInsert(item, beforeItemWithID: kGCKMediaQueueInvalidItemID)
+          let request: GCKRequest? =
+            castSession.remoteMediaClient?.queueInsert(item, beforeItemWithID: kGCKMediaQueueInvalidItemID)
           request?.delegate = self
-        }
-        else {
-          let repeatMode = (castSession.remoteMediaClient?.mediaStatus != nil) ? castSession.remoteMediaClient?.mediaStatus?.queueRepeatMode : .off
-          let request = castSession.remoteMediaClient?.queueLoad([item], start: 0, playPosition: 0, repeatMode: repeatMode!, customData: nil)
+        } else {
+          let repeatMode = (castSession.remoteMediaClient?.mediaStatus != nil) ?
+            castSession.remoteMediaClient?.mediaStatus?.queueRepeatMode : .off
+          let request = castSession.remoteMediaClient?.queueLoad([item], start: 0, playPosition: 0,
+                                                                 repeatMode: repeatMode!, customData: nil)
           request?.delegate = self
         }
       }
@@ -289,7 +300,10 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func mediaListModel(_ list: MediaListModel, didFailToLoadWithError error: Error?) {
     let errorMessage: String = "Unable to load the media list from\n\(self.mediaListURL.absoluteString)."
-    let alert = UIAlertView(title: NSLocalizedString("Cast Error", comment: ""), message: NSLocalizedString(errorMessage, comment: ""), delegate: nil, cancelButtonTitle: NSLocalizedString("OK", comment: ""), otherButtonTitles: "")
+    let alert = UIAlertView(title: NSLocalizedString("Cast Error", comment: ""),
+                            message: NSLocalizedString(errorMessage, comment: ""),
+                            delegate: nil, cancelButtonTitle: NSLocalizedString("OK", comment: ""),
+                            otherButtonTitles: "")
     alert.show()
   }
 
@@ -299,7 +313,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     let urlKey: String? = userDefaults.string(forKey: kPrefMediaListURL)
     let urlText: String? = userDefaults.string(forKey: urlKey!)
     let mediaListURL = URL(string: urlText!)
-    if (mediaListURL == self.mediaListURL) {
+    if mediaListURL == self.mediaListURL {
       // The URL hasn't changed; do nothing.
       return
     }
@@ -341,14 +355,17 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     self.tableView.reloadData()
   }
 
-  func sessionManager(_ sessionManager: GCKSessionManager, didFailToResumeSession session: GCKSession, withError error: Error?) {
-    Toast.displayMessage("The Casting session could not be resumed.", for: 3, in: (UIApplication.shared.delegate?.window)!)
+  func sessionManager(_ sessionManager: GCKSessionManager,
+                      didFailToResumeSession session: GCKSession, withError error: Error?) {
+    Toast.displayMessage("The Casting session could not be resumed.",
+                         for: 3, in: (UIApplication.shared.delegate?.window)!)
     self.setQueueButtonVisible(false)
     self.tableView.reloadData()
   }
 
   func showAlert(withTitle title: String, message: String) {
-    let alert = UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
+    let alert = UIAlertView(title: title, message: message,
+                            delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
     alert.show()
   }
   // MARK: - GCKRequestDelegate

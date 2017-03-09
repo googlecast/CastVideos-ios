@@ -14,8 +14,8 @@
 import UIKit
 import GoogleCast
 @objc(MediaQueueViewController)
-class MediaQueueViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, GCKSessionManagerListener, GCKRemoteMediaClientListener, GCKRequestDelegate {
-
+class MediaQueueViewController: UIViewController, UITableViewDataSource, UITableViewDelegate,
+    GCKSessionManagerListener, GCKRemoteMediaClientListener, GCKRequestDelegate {
 
   var timer: Timer!
   // Queue
@@ -26,7 +26,6 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   var mediaClient: GCKRemoteMediaClient!
   var mediaController: GCKUIMediaController!
   var queueRequest: GCKRequest!
-
 
   override func viewDidLoad() {
     print("_tableView is \(self.tableView)")
@@ -57,8 +56,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     self.tableView.isUserInteractionEnabled = true
     if self.mediaClient.mediaStatus?.queueItemCount() == 0 {
       self.editButton.isEnabled = false
-    }
-    else {
+    } else {
       self.editButton.isEnabled = true
     }
     self.tableView.reloadData()
@@ -77,8 +75,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
       if self.mediaClient.mediaStatus?.queueItemCount() == 0 {
         self.editButton.isEnabled = false
       }
-    }
-    else {
+    } else {
       self.editButton.title = "Done"
       self.tableView.setEditing(true, animated: true)
       self.isEditing = true
@@ -86,7 +83,8 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   }
 
   func showErrorMessage(_ message: String) {
-    let alert = UIAlertView(title: NSLocalizedString("Error", comment: ""), message: message, delegate: nil, cancelButtonTitle: NSLocalizedString("OK", comment: ""), otherButtonTitles: "")
+    let alert = UIAlertView(title: NSLocalizedString("Error", comment: ""), message: message, delegate: nil,
+                            cancelButtonTitle: NSLocalizedString("OK", comment: ""), otherButtonTitles: "")
     alert.show()
   }
 
@@ -126,15 +124,16 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     let mediaOwner: UILabel? = (cell?.viewWithTag(2) as? UILabel)
     mediaOwner?.text = detail
     if self.mediaClient.mediaStatus?.currentItemID == item?.itemID {
-      cell?.backgroundColor = UIColor(red: CGFloat(15.0 / 255), green: CGFloat(153.0 / 255), blue: CGFloat(242.0 / 255), alpha: CGFloat(0.1))
-    }
-    else {
+      cell?.backgroundColor = UIColor(red: CGFloat(15.0 / 255), green: CGFloat(153.0 / 255),
+                                      blue: CGFloat(242.0 / 255), alpha: CGFloat(0.1))
+    } else {
       cell?.backgroundColor = nil
     }
     let imageView = (cell?.contentView.viewWithTag(3) as? UIImageView)
     if let images = item?.mediaInformation.metadata?.images(), images.count > 0 {
       let image = images[0] as? GCKImage
-      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (image?.url)!, completion: {(_ image: UIImage?) -> Void in
+      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (image?.url)!,
+                                                             completion: {(_ image: UIImage?) -> Void in
         imageView?.image = image
         cell?.setNeedsLayout()
       })
@@ -164,7 +163,8 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     return .delete
   }
 
-  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle,
+                 forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
       // Delete row.
       let item: GCKMediaQueueItem? = self.mediaClient.mediaStatus?.queueItem(at: UInt(indexPath.row))
@@ -196,7 +196,8 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     self.attach(to: session)
   }
 
-  func sessionManager(_ sessionManager: GCKSessionManager, didSuspend session: GCKCastSession, with reason: GCKConnectionSuspendReason) {
+  func sessionManager(_ sessionManager: GCKSessionManager, didSuspend session: GCKCastSession,
+                      with reason: GCKConnectionSuspendReason) {
     self.detachFromCastSession()
   }
 
