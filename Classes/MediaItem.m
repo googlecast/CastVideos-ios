@@ -20,7 +20,7 @@
 
 @property(nonatomic, strong, readwrite) NSString *title;
 @property(nonatomic, strong, readwrite) NSURL *imageURL;
-@property(nonatomic, strong, readwrite) NSMutableArray *items;
+@property(nonatomic, strong, readwrite) NSMutableArray *children;
 @property(nonatomic, strong, readwrite) GCKMediaInformation *mediaInfo;
 @property(nonatomic, strong, readwrite) MediaItem *parent;
 @property(nonatomic, assign, readwrite) BOOL nowPlaying;
@@ -34,7 +34,7 @@
                        parent:(MediaItem *)parent {
   if (self = [super init]) {
     _title = title;
-    _items = [[NSMutableArray alloc] init];
+    _children = [[NSMutableArray alloc] init];
     _imageURL = imageURL;
     _parent = parent;
   }

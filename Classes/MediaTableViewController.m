@@ -170,7 +170,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
-  return (self.rootItem.items).count;
+  return (self.rootItem.children).count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -179,7 +179,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
       [tableView dequeueReusableCellWithIdentifier:@"MediaCell"];
 
   MediaItem *item =
-      (MediaItem *)(self.rootItem.items)[indexPath.row];
+      (MediaItem *)(self.rootItem.children)[indexPath.row];
 
   NSString *detail = nil;
   GCKMediaInformation *mediaInfo = item.mediaInfo;
@@ -266,7 +266,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   NSIndexPath *indexPathForCell =
       [self.tableView indexPathForCell:tableViewCell];
   selectedItem =
-      (MediaItem *)(self.rootItem.items)[indexPathForCell.row];
+      (MediaItem *)(self.rootItem.children)[indexPathForCell.row];
   BOOL hasConnectedCastSession =
       [GCKCastContext sharedInstance].sessionManager.hasConnectedCastSession;
   if (selectedItem.mediaInfo && hasConnectedCastSession) {
@@ -294,7 +294,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   NSIndexPath *indexPathForCell =
       [self.tableView indexPathForCell:tableViewCell];
   selectedItem =
-      (MediaItem *)(self.rootItem.items)[indexPathForCell.row];
+      (MediaItem *)(self.rootItem.children)[indexPathForCell.row];
   BOOL hasConnectedCastSession =
       [GCKCastContext sharedInstance].sessionManager.hasConnectedCastSession;
   if (selectedItem.mediaInfo && hasConnectedCastSession) {
@@ -317,7 +317,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 - (void)tableView:(UITableView *)tableView
     didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-  MediaItem *item = (self.rootItem.items)[indexPath.row];
+  MediaItem *item = (self.rootItem.children)[indexPath.row];
 
   if (item.mediaInfo) {
     [self performSegueWithIdentifier:@"mediaDetails" sender:self];
@@ -403,7 +403,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   NSIndexPath *indexPath = (self.tableView).indexPathForSelectedRow;
   if (indexPath) {
     NSLog(@"selected row is %@", indexPath);
-    item = (MediaItem *)(self.rootItem.items)[indexPath.row];
+    item = (MediaItem *)(self.rootItem.children)[indexPath.row];
   }
   return item;
 }

@@ -26,7 +26,7 @@
 @property(nonatomic, strong, readonly) NSURL *imageURL;
 /** The list of child items, if any. If this is not a group, this will be an
  * empty array. */
-@property(nonatomic, strong, readonly) NSMutableArray *items;
+@property(nonatomic, strong, readonly) NSMutableArray *children;
 /** If this is a media item, the media information object. */
 @property(nonatomic, strong, readonly) GCKMediaInformation *mediaInfo;
 /** The parent item of this item, or <code>nil</code> if this is the root item.

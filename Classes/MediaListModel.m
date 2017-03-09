@@ -315,7 +315,7 @@ didReceiveResponse:(NSURLResponse *)response {
 
     MediaItem *childItem =
         [[MediaItem alloc] initWithMediaInformation:mediaInfo parent:item];
-    [item.items addObject:childItem];
+    [item.children addObject:childItem];
   }
 }
 
