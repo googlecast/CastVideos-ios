@@ -68,21 +68,8 @@ static NSString *const kPrefEnableMediaNotifications =
   [GCKCastContext sharedInstance].useDefaultExpandedMediaControls = YES;
 
   self.window.clipsToBounds = YES;
-
-  GCKLoggerFilter *logFilter = [[GCKLoggerFilter alloc] init];
-  logFilter.exclusive = YES;
-  [logFilter addClassNames:@[
-    @"GCKDeviceScanner",
-    @"GCKDeviceProvider",
-    @"GCKDiscoveryManager",
-    @"GCKCastChannel",
-    @"GCKMediaControlChannel",
-    @"GCKUICastButton",
-    @"GCKUIMediaController",
-    @"NSMutableDictionary"
-  ]];
-  [GCKLogger sharedInstance].filter = logFilter;
-  [GCKLogger sharedInstance].delegate = self;
+    
+  [self setupCastLogging];
 
   // Set playback category mode to allow playing audio on the video files even
   // when the ringer mute switch is on.
@@ -94,12 +81,6 @@ static NSString *const kPrefEnableMediaNotifications =
     NSLog(@"Error setting audio category: %@",
           setCategoryError.localizedDescription);
   }
-
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self
-         selector:@selector(syncWithUserDefaults)
-             name:NSUserDefaultsDidChangeNotification
-           object:nil];
 
   if (_useCastContainerViewController) {
     UIStoryboard *appStoryboard =
@@ -119,6 +100,12 @@ static NSString *const kPrefEnableMediaNotifications =
         (RootContainerViewController *)self.window.rootViewController;
     rootContainerVC.miniMediaControlsViewEnabled = YES;
   }
+
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(syncWithUserDefaults)
+   name:NSUserDefaultsDidChangeNotification
+   object:nil];
 
   [[NSNotificationCenter defaultCenter]
       addObserver:self
@@ -143,6 +130,54 @@ static NSString *const kPrefEnableMediaNotifications =
                 name:kGCKExpandedMediaControlsTriggeredNotification
               object:nil];
 }
+
+- (void)setupCastLogging {
+  GCKLoggerFilter *logFilter = [[GCKLoggerFilter alloc] init];
+  logFilter.exclusive = YES;
+  [logFilter addClassNames:@[
+    @"GCKDeviceScanner",
+    @"GCKDeviceProvider",
+    @"GCKDiscoveryManager",
+    @"GCKCastChannel",
+    @"GCKMediaControlChannel",
+    @"GCKUICastButton",
+    @"GCKUIMediaController",
+    @"NSMutableDictionary"
+  ]];
+  [GCKLogger sharedInstance].filter = logFilter;
+  [GCKLogger sharedInstance].delegate = self;
+}
+
+- (void)presentExpandedMediaControls {
+  NSLog(@"present expanded media controls");
+  // Segue directly to the ExpandedViewController.
+  UINavigationController *navigationController;
+  if (_useCastContainerViewController) {
+    GCKUICastContainerViewController *castContainerVC;
+    castContainerVC =
+    (GCKUICastContainerViewController *)self.window.rootViewController;
+    navigationController =
+    (UINavigationController *)castContainerVC.contentViewController;
+  } else {
+    RootContainerViewController *rootContainerVC;
+    rootContainerVC =
+    (RootContainerViewController *)self.window.rootViewController;
+    navigationController = rootContainerVC.navigationController;
+  }
+ 
+  // NOTE: Why aren't we just setting this to nil?
+  navigationController.navigationItem.backBarButtonItem =
+  [[UIBarButtonItem alloc] initWithTitle:@""
+                                   style:UIBarButtonItemStylePlain
+                                  target:nil
+                                  action:nil];
+  if (appDelegate.castControlBarsEnabled) {
+    appDelegate.castControlBarsEnabled = NO;
+  }
+  [[GCKCastContext sharedInstance] presentDefaultExpandedMediaControls];
+}
+
+#pragma mark - Working with default values
 
 - (void)populateRegistrationDomain {
   NSURL *settingsBundleURL = [[NSBundle mainBundle] URLForResource:@"Settings"
@@ -283,34 +318,6 @@ static NSString *const kPrefEnableMediaNotifications =
         (RootContainerViewController *)self.window.rootViewController;
     return rootContainerVC.miniMediaControlsViewEnabled;
   }
-}
-
-- (void)presentExpandedMediaControls {
-  NSLog(@"present expanded media controls");
-  // Segue directly to the ExpandedViewController.
-  UINavigationController *navigationController;
-  if (_useCastContainerViewController) {
-    GCKUICastContainerViewController *castContainerVC;
-    castContainerVC =
-        (GCKUICastContainerViewController *)self.window.rootViewController;
-    navigationController =
-        (UINavigationController *)castContainerVC.contentViewController;
-  } else {
-    RootContainerViewController *rootContainerVC;
-    rootContainerVC =
-        (RootContainerViewController *)self.window.rootViewController;
-    navigationController = rootContainerVC.navigationController;
-  }
-
-  navigationController.navigationItem.backBarButtonItem =
-      [[UIBarButtonItem alloc] initWithTitle:@""
-                                       style:UIBarButtonItemStylePlain
-                                      target:nil
-                                      action:nil];
-  if (appDelegate.castControlBarsEnabled) {
-    appDelegate.castControlBarsEnabled = NO;
-  }
-  [[GCKCastContext sharedInstance] presentDefaultExpandedMediaControls];
 }
 
 #pragma mark - GCKSessionManagerListener
