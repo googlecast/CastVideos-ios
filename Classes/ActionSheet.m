@@ -22,7 +22,7 @@
 
 - (instancetype)initWithTitle:(NSString *)title
                        target:(id)target
-                     selector:(SEL)selector;
+                     selector:(SEL)selector NS_DESIGNATED_INITIALIZER;
 
 - (void)trigger;
 
@@ -123,7 +123,7 @@
     // always displays at the
     // bottom of the screen.
     UIPopoverPresentationController *presentationController =
-        [controller popoverPresentationController];
+        controller.popoverPresentationController;
     presentationController.sourceView = sourceView;
     presentationController.sourceRect = sourceView.bounds;
     presentationController.permittedArrowDirections = 0;

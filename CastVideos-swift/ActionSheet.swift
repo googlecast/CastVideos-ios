@@ -16,7 +16,7 @@ import Foundation
 import UIKit
 
 class ActionSheetAction: NSObject {
-  private(set) var title: String?
+  fileprivate(set) var title: String?
   var target: AnyObject?
   var selector: Selector?
 

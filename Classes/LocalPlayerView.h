@@ -85,6 +85,6 @@ typedef NS_ENUM(NSInteger, LocalPlayerState) {
 /* Play has beeen pressed in the LocalPlayerView.
  * Return NO to halt default actions, YES to continue as normal.
  */
-- (BOOL)continueAfterPlayButtonClicked;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL continueAfterPlayButtonClicked;
 
 @end

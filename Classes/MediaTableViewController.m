@@ -170,7 +170,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
-  return [self.rootItem.items count];
+  return (self.rootItem.items).count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -179,7 +179,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
       [tableView dequeueReusableCellWithIdentifier:@"MediaCell"];
 
   MediaItem *item =
-      (MediaItem *)[self.rootItem.items objectAtIndex:indexPath.row];
+      (MediaItem *)(self.rootItem.items)[indexPath.row];
 
   NSString *detail = nil;
   GCKMediaInformation *mediaInfo = item.mediaInfo;
@@ -209,7 +209,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
                                                attributes:attribs];
 
     UIColor *blackColor = [UIColor blackColor];
-    NSRange titleTextRange = NSMakeRange(0, [titleText length]);
+    NSRange titleTextRange = NSMakeRange(0, titleText.length);
     [attributedText setAttributes:@{
       NSForegroundColorAttributeName : blackColor
     }
@@ -217,7 +217,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
     UIColor *lightGrayColor = [UIColor lightGrayColor];
     NSRange ownerTextRange =
-        NSMakeRange([titleText length] + 1, [ownerText length]);
+        NSMakeRange(titleText.length + 1, ownerText.length);
     [attributedText setAttributes:@{
       NSForegroundColorAttributeName : lightGrayColor,
       NSFontAttributeName : [UIFont systemFontOfSize:12]
@@ -241,7 +241,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   [[GCKCastContext sharedInstance]
           .imageCache fetchImageForURL:item.imageURL
                             completion:^(UIImage *image) {
-                              [imageView setImage:image];
+                              imageView.image = image;
                               [cell setNeedsLayout];
                             }];
 
@@ -262,11 +262,11 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 - (IBAction)playButtonClicked:(id)sender {
   UITableViewCell *tableViewCell =
-      (UITableViewCell *)[[sender superview] superview];
+      (UITableViewCell *)[sender superview].superview;
   NSIndexPath *indexPathForCell =
       [self.tableView indexPathForCell:tableViewCell];
   selectedItem =
-      (MediaItem *)[self.rootItem.items objectAtIndex:indexPathForCell.row];
+      (MediaItem *)(self.rootItem.items)[indexPathForCell.row];
   BOOL hasConnectedCastSession =
       [GCKCastContext sharedInstance].sessionManager.hasConnectedCastSession;
   if (selectedItem.mediaInfo && hasConnectedCastSession) {
@@ -290,11 +290,11 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 // TODO
 - (IBAction)playButtonClickedOld:(id)sender {
   UITableViewCell *tableViewCell =
-      (UITableViewCell *)[[sender superview] superview];
+      (UITableViewCell *)[sender superview].superview;
   NSIndexPath *indexPathForCell =
       [self.tableView indexPathForCell:tableViewCell];
   selectedItem =
-      (MediaItem *)[self.rootItem.items objectAtIndex:indexPathForCell.row];
+      (MediaItem *)(self.rootItem.items)[indexPathForCell.row];
   BOOL hasConnectedCastSession =
       [GCKCastContext sharedInstance].sessionManager.hasConnectedCastSession;
   if (selectedItem.mediaInfo && hasConnectedCastSession) {
@@ -317,7 +317,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 - (void)tableView:(UITableView *)tableView
     didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-  MediaItem *item = [self.rootItem.items objectAtIndex:indexPath.row];
+  MediaItem *item = (self.rootItem.items)[indexPath.row];
 
   if (item.mediaInfo) {
     [self performSegueWithIdentifier:@"mediaDetails" sender:self];
@@ -326,12 +326,12 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
   NSLog(@"prepareForSegue");
-  if ([[segue identifier] isEqualToString:@"mediaDetails"]) {
+  if ([segue.identifier isEqualToString:@"mediaDetails"]) {
     MediaViewController *viewController =
-        (MediaViewController *)[segue destinationViewController];
+        (MediaViewController *)segue.destinationViewController;
     GCKMediaInformation *mediaInfo = [self getSelectedItem].mediaInfo;
     if (mediaInfo) {
-      [viewController setMediaInfo:mediaInfo];
+      viewController.mediaInfo = mediaInfo;
     }
   }
 }
@@ -400,10 +400,10 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 - (MediaItem *)getSelectedItem {
   MediaItem *item = nil;
-  NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+  NSIndexPath *indexPath = (self.tableView).indexPathForSelectedRow;
   if (indexPath) {
     NSLog(@"selected row is %@", indexPath);
-    item = (MediaItem *)[self.rootItem.items objectAtIndex:indexPath.row];
+    item = (MediaItem *)(self.rootItem.items)[indexPath.row];
   }
   return item;
 }
@@ -421,7 +421,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 didFailToLoadWithError:(NSError *)error {
   NSString *errorMessage =
       [NSString stringWithFormat:@"Unable to load the media list from\n%@.",
-                                 [_mediaListURL absoluteString]];
+                                 _mediaListURL.absoluteString];
   UIAlertView *alert =
       [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cast Error", nil)
                                  message:NSLocalizedString(errorMessage, nil)
@@ -477,7 +477,7 @@ didFailToLoadWithError:(NSError *)error {
   NSLog(@"session ended with error: %@", error);
   NSString *message =
       [NSString stringWithFormat:@"The Casting session has ended.\n%@",
-                                 [error description]];
+                                 error.description];
 
   [Toast displayToastMessage:message
              forTimeInterval:3
@@ -489,7 +489,7 @@ didFailToLoadWithError:(NSError *)error {
 - (void)sessionManager:(GCKSessionManager *)sessionManager
     didFailToStartSessionWithError:(NSError *)error {
   [self showAlertWithTitle:@"Failed to start a session"
-                   message:[error description]];
+                   message:error.description];
   [self setQueueButtonVisible:NO];
   [self.tableView reloadData];
 }

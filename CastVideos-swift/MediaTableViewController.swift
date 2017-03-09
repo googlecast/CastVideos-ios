@@ -266,15 +266,15 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
         builder.mediaInformation = selectedItem.mediaInfo
         builder.autoplay = true
         builder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
-        let item = builder.build()
+        let item = builder.build
         if ((castSession.remoteMediaClient?.mediaStatus) != nil) && appending {
           let request: GCKRequest? =
-            castSession.remoteMediaClient?.queueInsert(item, beforeItemWithID: kGCKMediaQueueInvalidItemID)
+            castSession.remoteMediaClient?.queueInsert(item(), beforeItemWithID: kGCKMediaQueueInvalidItemID)
           request?.delegate = self
         } else {
           let repeatMode = (castSession.remoteMediaClient?.mediaStatus != nil) ?
             castSession.remoteMediaClient?.mediaStatus?.queueRepeatMode : .off
-          let request = castSession.remoteMediaClient?.queueLoad([item], start: 0, playPosition: 0,
+          let request = castSession.remoteMediaClient?.queueLoad([item()], start: 0, playPosition: 0,
                                                                  repeatMode: repeatMode!, customData: nil)
           request?.delegate = self
         }

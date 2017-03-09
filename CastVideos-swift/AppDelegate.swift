@@ -272,12 +272,12 @@ extension AppDelegate: GCKSessionManagerListener {
 // MARK: - GCKUIImagePicker
 extension AppDelegate: GCKUIImagePicker {
   func getImageWith(_ imageHints: GCKUIImageHints, from metadata: GCKMediaMetadata) -> GCKImage? {
-    let images = metadata.images()
-    guard !images.isEmpty else { print("No images available in media metadata."); return nil }
-    if images.count > 1 && imageHints.imageType == .background {
-      return images[1] as? GCKImage
+    let images = metadata.images
+    guard !images().isEmpty else { print("No images available in media metadata."); return nil }
+    if images().count > 1 && imageHints.imageType == .background {
+      return images()[1] as? GCKImage
     } else {
-      return images[0] as? GCKImage
+      return images()[0] as? GCKImage
     }
   }
 }

@@ -20,11 +20,11 @@ import GoogleCast
  */
 class MediaItem: NSObject {
 
-  private(set) var title: String?
-  private(set) var imageURL: URL?
+  fileprivate(set) var title: String?
+  fileprivate(set) var imageURL: URL?
   var children: [Any]!
-  private(set) var mediaInfo: GCKMediaInformation?
-  private(set) var parent: MediaItem?
+  fileprivate(set) var mediaInfo: GCKMediaInformation?
+  fileprivate(set) var parent: MediaItem?
   var isNowPlaying: Bool = false
 
   /** Initializer for constructing a group item.

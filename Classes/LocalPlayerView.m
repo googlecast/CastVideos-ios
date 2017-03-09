@@ -86,24 +86,24 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)layoutSubviews {
   CGRect frame =
-      [self fullscreen] ? [UIScreen mainScreen].bounds : [self fullFrame];
+      self.fullscreen ? [UIScreen mainScreen].bounds : [self fullFrame];
   if ((NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1) &&
-      [self fullscreen]) {
+      self.fullscreen) {
     // Below iOS 8 the bounds don't change with orientation changes.
     frame.size = CGSizeMake(frame.size.height, frame.size.width);
   }
 
-  [self.splashImage setFrame:frame];
-  [_mediaPlayerLayer setFrame:frame];
-  [self.controlView setFrame:frame];
+  (self.splashImage).frame = frame;
+  _mediaPlayerLayer.frame = frame;
+  (self.controlView).frame = frame;
   [self layoutToolbar:frame];
   _activityIndicator.center = self.controlView.center;
 }
 
 /* Update the frame for the toolbar. */
 - (void)layoutToolbar:(CGRect)frame {
-  [self.toolbarView setFrame:CGRectMake(0, frame.size.height - kToolbarHeight,
-                                        frame.size.width, kToolbarHeight)];
+  (self.toolbarView).frame = CGRectMake(0, frame.size.height - kToolbarHeight,
+                                        frame.size.width, kToolbarHeight);
 }
 
 /* Return the full frame with no offsets. */
@@ -115,7 +115,7 @@ static NSInteger kToolbarHeight = 44;
   [super updateConstraints];
   // Active is iOS 8 only, so only do this if available.
   if ([self.viewAspectRatio respondsToSelector:@selector(setActive:)]) {
-    self.viewAspectRatio.active = ![self fullscreen];
+    self.viewAspectRatio.active = !self.fullscreen;
   }
 }
 
@@ -255,7 +255,7 @@ static NSInteger kToolbarHeight = 44;
 
 /* If the orientation changes, display the controls. */
 - (void)orientationChanged {
-  if ([self fullscreen]) {
+  if (self.fullscreen) {
     [self setFullscreen];
   }
   [self didTouchControl:nil];
@@ -267,7 +267,7 @@ static NSInteger kToolbarHeight = 44;
   CGRect screenBounds = [UIScreen mainScreen].bounds;
   if (!CGRectEqualToRect(screenBounds, self.frame)) {
     NSLog(@"hideNavigationBar: set fullscreen");
-    [self setFrame:screenBounds];
+    self.frame = screenBounds;
   }
 }
 
@@ -281,12 +281,12 @@ static NSInteger kToolbarHeight = 44;
 /* Asynchronously load the splash screen image. */
 - (void)loadMediaImage {
   NSArray *images = self.media.metadata.images;
-  if (images && [images count] > 0) {
-    GCKImage *image = [images objectAtIndex:0];
+  if (images && images.count > 0) {
+    GCKImage *image = images[0];
     [[GCKCastContext sharedInstance]
             .imageCache fetchImageForURL:image.URL
                               completion:^(UIImage *image) {
-                                [_splashImage setImage:image];
+                                _splashImage.image = image;
                               }];
   }
 }
@@ -296,8 +296,8 @@ static NSInteger kToolbarHeight = 44;
     NSURL *mediaURL = [NSURL URLWithString:self.media.contentID];
     _mediaPlayer = [AVPlayer playerWithURL:mediaURL];
     _mediaPlayerLayer = [AVPlayerLayer playerLayerWithPlayer:_mediaPlayer];
-    [_mediaPlayerLayer setFrame:[self fullFrame]];
-    [_mediaPlayerLayer setBackgroundColor:[[UIColor blackColor] CGColor]];
+    _mediaPlayerLayer.frame = [self fullFrame];
+    _mediaPlayerLayer.backgroundColor = [UIColor blackColor].CGColor;
     [self.layer insertSublayer:_mediaPlayerLayer above:_splashImage.layer];
     [self addMediaPlayerObservers];
   }
@@ -418,7 +418,7 @@ static NSInteger kToolbarHeight = 44;
 
 /* Prefer the toolbar for touches when in control view. */
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-  if ([self fullscreen]) {
+  if (self.fullscreen) {
     NSLog(@"TOUCH TEST");
     if (self.controlView.hidden) {
       [self didTouchControl:nil];
@@ -469,13 +469,13 @@ static NSInteger kToolbarHeight = 44;
 
 /* If we touch the slider, stop the movie while we scrub. */
 - (IBAction)onSliderTouchStarted:(id)sender {
-  [_mediaPlayer setRate:0.f];
+  _mediaPlayer.rate = 0.f;
   self.recentInteraction = YES;
 }
 
 /* Once we let go of the slider, restart playback. */
 - (IBAction)onSliderTouchEnded:(id)sender {
-  [_mediaPlayer setRate:1.0f];
+  _mediaPlayer.rate = 1.0f;
 }
 
 /* On slider value change the movie play time. */
@@ -524,7 +524,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)hideControls {
   self.toolbarView.hidden = YES;
-  if ([self fullscreen]) {
+  if (self.fullscreen) {
     NSLog(@"hideNavigationBar: hide controls");
     [_delegate hideNavigationBar:YES];
   }
@@ -545,19 +545,17 @@ static NSInteger kToolbarHeight = 44;
   // Background gradient
   CAGradientLayer *gradient = [CAGradientLayer layer];
   gradient.frame = self.toolbarView.bounds;
-  gradient.colors = [NSArray
-      arrayWithObjects:(id)[[UIColor clearColor] CGColor],
-                       (id)[[UIColor colorWithRed:(50 / 255.0)
+  gradient.colors = @[(id)[UIColor clearColor].CGColor,
+                       (id)[UIColor colorWithRed:(50 / 255.0)
                                             green:(50 / 255.0)
                                              blue:(50 / 255.0)
-                                            alpha:(200 / 255.0)] CGColor],
-                       nil];
+                                            alpha:(200 / 255.0)].CGColor];
   gradient.startPoint = CGPointZero;
   gradient.endPoint = CGPointMake(0, 1);
 
   // Play/Pause button.
   self.playButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.playButton setFrame:CGRectMake(0, 0, 40, 40)];
+  (self.playButton).frame = CGRectMake(0, 0, 40, 40);
   [self.playButton setImage:self.playImage forState:UIControlStateNormal];
   [self.playButton addTarget:self
                       action:@selector(playButtonClicked:)
@@ -569,8 +567,8 @@ static NSInteger kToolbarHeight = 44;
   self.totalTime = [[UILabel alloc] init];
   self.totalTime.clearsContextBeforeDrawing = YES;
   self.totalTime.text = @"00:00";
-  [self.totalTime setFont:[UIFont fontWithName:@"Helvetica" size:14.0]];
-  [self.totalTime setTextColor:[UIColor whiteColor]];
+  (self.totalTime).font = [UIFont fontWithName:@"Helvetica" size:14.0];
+  (self.totalTime).textColor = [UIColor whiteColor];
   self.totalTime.tintColor = [UIColor whiteColor];
   self.totalTime.translatesAutoresizingMaskIntoConstraints = NO;
 
@@ -655,11 +653,11 @@ static NSInteger kToolbarHeight = 44;
   } else {
     [UIView animateWithDuration:0.5
         animations:^{
-          [self.toolbarView setAlpha:0];
+          (self.toolbarView).alpha = 0;
         }
         completion:^(BOOL finished) {
           [self hideControls];
-          [self.toolbarView setAlpha:1];
+          (self.toolbarView).alpha = 1;
         }];
   }
 }

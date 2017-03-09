@@ -94,9 +94,9 @@ class LocalPlayerView: UIView {
   /* Delegate to use for callbacks for play/pause presses while in Cast mode. */
   weak var delegate: LocalPlayerViewDelegate?
   /* Local player elapsed time. */
-  private(set) var streamPosition: TimeInterval?
+  fileprivate(set) var streamPosition: TimeInterval?
   /* Local player media duration. */
-  private(set) var streamDuration: TimeInterval?
+  fileprivate(set) var streamDuration: TimeInterval?
   /* YES if the video is playing or paused in the local player. */
   var isPlayingLocally: Bool {
     return playerState == .playing || playerState == .paused
@@ -109,9 +109,9 @@ class LocalPlayerView: UIView {
     return full
   }
   /* The media we are playing. */
-  private(set) var media: GCKMediaInformation!
+  fileprivate(set) var media: GCKMediaInformation!
   /* The current player state. */
-  private(set) var playerState: LocalPlayerState!
+  fileprivate(set) var playerState: LocalPlayerState!
   /* Signal an orientation change has occurred. */
 
   func orientationChanged() {
@@ -272,8 +272,8 @@ class LocalPlayerView: UIView {
   /* Asynchronously load the splash screen image. */
 
   func loadMediaImage() {
-    if let images = media.metadata?.images(), !images.isEmpty {
-      let image = images[0] as? GCKImage
+    if let images = media.metadata?.images, !images().isEmpty {
+      let image = images()[0] as? GCKImage
       GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (image?.url)!,
                                                              completion: {(_ image: UIImage?) -> Void in
         self.splashImage.image = image

@@ -19,7 +19,7 @@
 
 - (instancetype)initWithTitle:(NSString *)title
                       message:(NSString *)message
-             cancelButtonText:(NSString *)cancelButtonText;
+             cancelButtonText:(NSString *)cancelButtonText NS_DESIGNATED_INITIALIZER;
 
 - (void)addActionWithTitle:(NSString *)title
                     target:(id)target

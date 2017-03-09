@@ -134,13 +134,11 @@ static NSString *const kPrefShowStreamTimeRemaining =
   [_sessionManager addListener:self];
 
   _gradient = [CAGradientLayer layer];
-  _gradient.colors = [NSArray
-                      arrayWithObjects:(id)[[UIColor clearColor] CGColor],
-                      (id)[[UIColor colorWithRed:(50 / 255.0)
+  _gradient.colors = @[(id)[UIColor clearColor].CGColor,
+                      (id)[UIColor colorWithRed:(50 / 255.0)
                                            green:(50 / 255.0)
                                             blue:(50 / 255.0)
-                                           alpha:(200 / 255.0)] CGColor],
-                      nil];
+                                           alpha:(200 / 255.0)].CGColor];
   _gradient.startPoint = CGPointMake(0, 1);
   _gradient.endPoint = CGPointZero;
 
@@ -378,7 +376,7 @@ static NSString *const kPrefShowStreamTimeRemaining =
   NSLog(@"session ended with error: %@", error);
   NSString *message =
       [NSString stringWithFormat:@"The Casting session has ended.\n%@",
-                                 [error description]];
+                                 error.description];
 
   [Toast displayToastMessage:message
              forTimeInterval:3
@@ -390,7 +388,7 @@ static NSString *const kPrefShowStreamTimeRemaining =
 - (void)sessionManager:(GCKSessionManager *)sessionManager
     didFailToStartSessionWithError:(NSError *)error {
   [self showAlertWithTitle:@"Failed to start a session"
-                   message:[error description]];
+                   message:error.description];
   [self setQueueButtonVisible:NO];
 }
 
@@ -466,7 +464,7 @@ didFailToResumeSession:(GCKSession *)session
   } else {
     NSLog(@"SHOW NavBar.");
   }
-  [self.navigationController.navigationBar setHidden:hide];
+  (self.navigationController.navigationBar).hidden = hide;
 }
 
 /* Play has been pressed in the LocalPlayerView. */

@@ -345,8 +345,8 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   /* Play has been pressed in the LocalPlayerView. */
 
   func continueAfterPlayButtonClicked() -> Bool {
-    let hasConnectedCastSession = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
-    if (self.mediaInfo != nil) && hasConnectedCastSession {
+    let hasConnectedCastSession = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession
+    if (self.mediaInfo != nil) && hasConnectedCastSession() {
       // Display an alert box to allow the user to add to queue or play
       // immediately.
       if self.actionSheet == nil {

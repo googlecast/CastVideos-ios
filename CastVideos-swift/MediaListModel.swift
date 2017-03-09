@@ -122,14 +122,14 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
   var responseStatus: Int = 0
   var trackStyle: GCKMediaTextTrackStyle!
   /* The root item (top-level group). */
-  private(set) public var rootItem: MediaItem!
+  fileprivate(set) var rootItem: MediaItem!
 
   /** A delegate for receiving notifications from the model. */
   weak var delegate: MediaListModelDelegate?
   /** A flag indicating whether the model has been loaded. */
-  private(set) public var isLoaded: Bool = false
+  fileprivate(set) var isLoaded: Bool = false
   /** The title of the media list. */
-  private(set) var title: String = ""
+  fileprivate(set) var title: String = ""
 
   /** Storage for the list of Media objects. */
   var medias = [Any]()

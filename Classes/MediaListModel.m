@@ -83,7 +83,7 @@ static const NSInteger kPosterHeight = 1200;
   NSArray *_medias;
 }
 
-- (id)init {
+- (instancetype)init {
   if (self = [super init]) {
     _trackStyle = [GCKMediaTextTrackStyle createDefault];
   }
@@ -128,7 +128,7 @@ static const NSInteger kPosterHeight = 1200;
 - (void)connection:(NSURLConnection *)connection
 didReceiveResponse:(NSURLResponse *)response {
   if ([response respondsToSelector:@selector(statusCode)]) {
-    _responseStatus = [(NSHTTPURLResponse *)response statusCode];
+    _responseStatus = ((NSHTTPURLResponse *)response).statusCode;
   }
 }
 
@@ -253,7 +253,7 @@ didReceiveResponse:(NSURLResponse *)response {
     NSURL *posterURL =
         [self buildURLWithString:posterURLText baseURL:imagesBaseURL];
     if (posterURL) {
-      [metadata setString:[posterURL absoluteString] forKey:kMediaKeyPosterURL];
+      [metadata setString:posterURL.absoluteString forKey:kMediaKeyPosterURL];
       [metadata addImage:[[GCKImage alloc] initWithURL:posterURL
                                                  width:kPosterWidth
                                                 height:kPosterHeight]];
@@ -290,7 +290,7 @@ didReceiveResponse:(NSURLResponse *)response {
 
       GCKMediaTrack *mediaTrack = [[GCKMediaTrack alloc]
           initWithIdentifier:identifier
-           contentIdentifier:[url absoluteString]
+           contentIdentifier:url.absoluteString
                  contentType:kDefaultTrackMimeType
                         type:[self trackTypeFrom:typeString]
                  textSubtype:[self textTrackSubtypeFrom:subtypeString]
@@ -299,12 +299,12 @@ didReceiveResponse:(NSURLResponse *)response {
                   customData:nil];
       [mediaTracks addObject:mediaTrack];
     }
-    if ([mediaTracks count] == 0) {
+    if (mediaTracks.count == 0) {
       mediaTracks = nil;
     }
 
     GCKMediaInformation *mediaInfo = [[GCKMediaInformation alloc]
-        initWithContentID:[url absoluteString]
+        initWithContentID:url.absoluteString
                streamType:GCKMediaStreamTypeBuffered
               contentType:mimeType
                  metadata:metadata

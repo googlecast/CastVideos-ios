@@ -47,8 +47,8 @@
     _mediaInfo = mediaInfo;
     _title = [mediaInfo.metadata stringForKey:kGCKMetadataKeyTitle];
     NSArray *images = mediaInfo.metadata.images;
-    if (images && ([images count] > 0)) {
-      _imageURL = ((GCKImage *)[images objectAtIndex:0]).URL;
+    if (images && (images.count > 0)) {
+      _imageURL = ((GCKImage *)images[0]).URL;
     }
     _parent = parent;
   }

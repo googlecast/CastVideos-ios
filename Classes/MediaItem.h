@@ -41,7 +41,7 @@
  */
 - (instancetype)initWithTitle:(NSString *)title
                      imageURL:(NSURL *)imageURL
-                       parent:(MediaItem *)parent;
+                       parent:(MediaItem *)parent NS_DESIGNATED_INITIALIZER;
 
 /** Initializer for constructing a media item.
  *
@@ -49,7 +49,7 @@
  * @param parent The parent item of this item, if any.
  */
 - (instancetype)initWithMediaInformation:(GCKMediaInformation *)mediaInfo
-                                  parent:(MediaItem *)parent;
+                                  parent:(MediaItem *)parent NS_DESIGNATED_INITIALIZER;
 
 /**
  * Factory method for constructing the special "now playing" item.

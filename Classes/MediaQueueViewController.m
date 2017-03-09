@@ -182,13 +182,13 @@
   UIImageView *imageView = (UIImageView *)[cell.contentView viewWithTag:3];
 
   NSArray *images = item.mediaInformation.metadata.images;
-  if (images && [images count] > 0) {
-    GCKImage *image = [images objectAtIndex:0];
+  if (images && images.count > 0) {
+    GCKImage *image = images[0];
 
     [[GCKCastContext sharedInstance]
             .imageCache fetchImageForURL:image.URL
                               completion:^(UIImage *image) {
-                                [imageView setImage:image];
+                                imageView.image = image;
                                 [cell setNeedsLayout];
                               }];
   }
@@ -318,7 +318,7 @@
     _tableView.userInteractionEnabled = YES;
     [self showErrorMessage:[NSString
                                stringWithFormat:@"Queue request failed:\n%@",
-                                                [error description]]];
+                                                error.description]];
   }
 }
 

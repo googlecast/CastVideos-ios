@@ -82,7 +82,7 @@ static NSString *const kPrefEnableMediaNotifications =
     @"NSMutableDictionary"
   ]];
   [GCKLogger sharedInstance].filter = logFilter;
-  [[GCKLogger sharedInstance] setDelegate:self];
+  [GCKLogger sharedInstance].delegate = self;
 
   // Set playback category mode to allow playing audio on the video files even
   // when the ringer mute switch is on.
@@ -129,8 +129,7 @@ static NSString *const kPrefEnableMediaNotifications =
   _firstUserDefaultsSync = YES;
   [self syncWithUserDefaults];
 
-  [[UIApplication sharedApplication]
-      setStatusBarStyle:UIStatusBarStyleLightContent];
+  [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 
   [[GCKCastContext sharedInstance].sessionManager addListener:self];
   [GCKCastContext sharedInstance].imagePicker = self;
@@ -170,7 +169,7 @@ static NSString *const kPrefEnableMediaNotifications =
       dictionaryWithContentsOfURL:
           [settingsBundleURL URLByAppendingPathComponent:plistFileName]];
   NSArray *prefSpecifierArray =
-      [settingsDict objectForKey:@"PreferenceSpecifiers"];
+      settingsDict[@"PreferenceSpecifiers"];
 
   for (NSDictionary *prefItem in prefSpecifierArray) {
     NSString *prefItemType = prefItem[@"Type"];
@@ -183,7 +182,7 @@ static NSString *const kPrefEnableMediaNotifications =
                fromSettingsPage:prefItemFile
           inSettingsBundleAtURL:settingsBundleURL];
     } else if (prefItemKey && prefItemDefaultValue) {
-      [appDefaults setObject:prefItemDefaultValue forKey:prefItemKey];
+      appDefaults[prefItemKey] = prefItemDefaultValue;
     }
   }
 }
@@ -201,7 +200,7 @@ static NSString *const kPrefEnableMediaNotifications =
   NSUInteger numberOfMatches = [appIdRegex
       numberOfMatchesInString:prefApplicationID
                       options:0
-                        range:NSMakeRange(0, [prefApplicationID length])];
+                        range:NSMakeRange(0, prefApplicationID.length)];
   if (!numberOfMatches) {
     NSString *message = [NSString
         stringWithFormat:
@@ -327,7 +326,7 @@ static NSString *const kPrefEnableMediaNotifications =
   } else {
     NSString *message =
         [NSString stringWithFormat:@"Session ended unexpectedly:\n%@",
-                                   [error localizedDescription]];
+                                   error.localizedDescription];
     [self showAlertWithTitle:@"Session error" message:message];
   }
 }
@@ -337,7 +336,7 @@ static NSString *const kPrefEnableMediaNotifications =
              withError:(NSError *)error {
   NSString *message =
       [NSString stringWithFormat:@"Failed to start session:\n%@",
-                                 [error localizedDescription]];
+                                 error.localizedDescription];
   [self showAlertWithTitle:@"Session error" message:message];
 }
 
@@ -354,14 +353,14 @@ static NSString *const kPrefEnableMediaNotifications =
 
 - (GCKImage *)getImageWithHints:(GCKUIImageHints *)imageHints
                    fromMetadata:(GCKMediaMetadata *)metadata {
-  if (metadata && metadata.images && ([metadata.images count] > 0)) {
-    if ([metadata.images count] == 1) {
-      return [metadata.images objectAtIndex:0];
+  if (metadata && metadata.images && ((metadata.images).count > 0)) {
+    if ((metadata.images).count == 1) {
+      return (metadata.images)[0];
     } else {
       if (imageHints.imageType == GCKMediaMetadataImageTypeBackground) {
-        return [metadata.images objectAtIndex:1];
+        return (metadata.images)[1];
       } else {
-        return [metadata.images objectAtIndex:0];
+        return (metadata.images)[0];
       }
     }
   } else {

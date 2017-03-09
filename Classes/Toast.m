@@ -26,7 +26,7 @@ static Toast *activeToast;
 
 @implementation Toast
 
-- (id)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
   return [super initWithFrame:frame];
 }
 
@@ -67,7 +67,7 @@ static Toast *activeToast;
 
     // Put the toast on top of the host view.
     [toast addSubview:toast.messageLabel];
-    [view insertSubview:toast aboveSubview:[view.subviews lastObject]];
+    [view insertSubview:toast aboveSubview:(view.subviews).lastObject];
     activeToast = toast;
 
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
