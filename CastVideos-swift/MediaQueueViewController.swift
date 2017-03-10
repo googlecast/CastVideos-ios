@@ -17,21 +17,21 @@ import GoogleCast
 class MediaQueueViewController: UIViewController, UITableViewDataSource, UITableViewDelegate,
     GCKSessionManagerListener, GCKRemoteMediaClientListener, GCKRequestDelegate {
 
-  var timer: Timer!
+  private var timer: Timer!
   // Queue
-  @IBOutlet var tableView: UITableView!
+  @IBOutlet private var _tableView: UITableView!
   // Queue/editing state.
-  @IBOutlet var editButton: UIBarButtonItem!
-  var _editing: Bool = false
-  var mediaClient: GCKRemoteMediaClient!
-  var mediaController: GCKUIMediaController!
-  var queueRequest: GCKRequest!
+  @IBOutlet private var _editButton: UIBarButtonItem!
+  private var _editing = false
+  private var mediaClient: GCKRemoteMediaClient!
+  private var mediaController: GCKUIMediaController!
+  private var queueRequest: GCKRequest!
 
   override func viewDidLoad() {
-    print("_tableView is \(self.tableView)")
-    self.tableView.dataSource = self
-    self.tableView.delegate = self
-    self.isEditing = false
+    print("_tableView is \(self._tableView)")
+    self._tableView.dataSource = self
+    self._tableView.delegate = self
+    self._editing = false
     let sessionManager = GCKCastContext.sharedInstance().sessionManager
     sessionManager.add(self)
     if sessionManager.hasConnectedCastSession() {
@@ -40,8 +40,8 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
     recognizer.minimumPressDuration = 2.0
     // 2 seconds
-    self.tableView.addGestureRecognizer(recognizer)
-    self.tableView.separatorColor = UIColor.clear
+    self._tableView.addGestureRecognizer(recognizer)
+    self._tableView.separatorColor = UIColor.clear
     super.viewDidLoad()
   }
 
@@ -53,13 +53,13 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     self.queueRequest = nil
-    self.tableView.isUserInteractionEnabled = true
+    self._tableView.isUserInteractionEnabled = true
     if self.mediaClient.mediaStatus?.queueItemCount() == 0 {
-      self.editButton.isEnabled = false
+      self._editButton.isEnabled = false
     } else {
-      self.editButton.isEnabled = true
+      self._editButton.isEnabled = true
     }
-    self.tableView.reloadData()
+    self._tableView.reloadData()
   }
 
   override func viewWillDisappear(_ animated: Bool) {
@@ -68,17 +68,17 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   // MARK: - UI Actions
 
   @IBAction func toggleEditing(_ sender: Any) {
-    if self.isEditing {
-      self.editButton.title = "Edit"
-      self.tableView.setEditing(false, animated: true)
-      self.isEditing = false
+    if self._editing {
+      self._editButton.title = "Edit"
+      self._tableView.setEditing(false, animated: true)
+      self._editing = false
       if self.mediaClient.mediaStatus?.queueItemCount() == 0 {
-        self.editButton.isEnabled = false
+        self._editButton.isEnabled = false
       }
     } else {
-      self.editButton.title = "Done"
-      self.tableView.setEditing(true, animated: true)
-      self.isEditing = true
+      self._editButton.title = "Done"
+      self._tableView.setEditing(true, animated: true)
+      self._editing = true
     }
   }
 
@@ -89,8 +89,8 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   }
 
   func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
-    let point: CGPoint = gestureRecognizer.location(in: self.tableView)
-    if let indexPath = self.tableView.indexPathForRow(at: point) {
+    let point: CGPoint = gestureRecognizer.location(in: self._tableView)
+    if let indexPath = self._tableView.indexPathForRow(at: point) {
       let item: GCKMediaQueueItem? = self.mediaClient.mediaStatus?.queueItem(at: UInt(indexPath.row))
       if item != nil {
         self.start(self.mediaClient.queueJumpToItem(withID: (item?.itemID)!))
@@ -182,13 +182,13 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   func attach(to castSession: GCKCastSession) {
     self.mediaClient = castSession.remoteMediaClient
     self.mediaClient.add(self)
-    self.tableView.reloadData()
+    self._tableView.reloadData()
   }
 
   func detachFromCastSession() {
     self.mediaClient.remove(self)
     self.mediaClient = nil
-    self.tableView.reloadData()
+    self._tableView.reloadData()
   }
   // MARK: - GCKSessionManagerListener
 
@@ -211,32 +211,32 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   // MARK: - GCKRemoteMediaClientListener
 
   func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus) {
-    self.tableView.reloadData()
+    self._tableView.reloadData()
   }
 
   func remoteMediaClientDidUpdateQueue(_ client: GCKRemoteMediaClient) {
-    self.tableView.reloadData()
+    self._tableView.reloadData()
   }
   // MARK: - Request scheduling
 
   func start(_ request: GCKRequest) {
     self.queueRequest = request
     self.queueRequest.delegate = self
-    self.tableView.isUserInteractionEnabled = false
+    self._tableView.isUserInteractionEnabled = false
   }
   // MARK: - GCKRequestDelegate
 
   func requestDidComplete(_ request: GCKRequest) {
     if request == self.queueRequest {
       self.queueRequest = nil
-      self.tableView.isUserInteractionEnabled = true
+      self._tableView.isUserInteractionEnabled = true
     }
   }
 
   func request(_ request: GCKRequest, didFailWithError error: GCKError) {
     if request == self.queueRequest {
       self.queueRequest = nil
-      self.tableView.isUserInteractionEnabled = true
+      self._tableView.isUserInteractionEnabled = true
       self.showErrorMessage("Queue request failed:\n\(error.description)")
     }
   }
@@ -244,7 +244,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   func requestWasReplaced(_ request: GCKRequest) {
     if request == self.queueRequest {
       self.queueRequest = nil
-      self.tableView.isUserInteractionEnabled = true
+      self._tableView.isUserInteractionEnabled = true
     }
   }
 }

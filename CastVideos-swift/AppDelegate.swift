@@ -31,10 +31,10 @@ let appDelegate = (UIApplication.shared.delegate as? AppDelegate)
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-  var enableSDKLogging = false
-  var mediaNotificationsEnabled = false
-  var firstUserDefaultsSync = false
-  var useCastContainerViewController = false
+  fileprivate var enableSDKLogging = false
+  fileprivate var mediaNotificationsEnabled = false
+  fileprivate var firstUserDefaultsSync = false
+  fileprivate var useCastContainerViewController = false
 
   var window: UIWindow?
   var mediaList: MediaListModel!

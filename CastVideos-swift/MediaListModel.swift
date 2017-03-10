@@ -116,11 +116,11 @@ protocol MediaListModelDelegate: NSObjectProtocol {
  * An object representing a hierarchy of media items.
  */
 class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDelegate {
-  var request: URLRequest!
-  var connection: NSURLConnection!
-  var responseData: Data!
-  var responseStatus: Int = 0
-  var trackStyle: GCKMediaTextTrackStyle!
+  private var request: URLRequest!
+  private var connection: NSURLConnection!
+  private var responseData: Data!
+  private var responseStatus: Int = 0
+  private var trackStyle: GCKMediaTextTrackStyle!
   /* The root item (top-level group). */
   fileprivate(set) var rootItem: MediaItem!
 
@@ -194,8 +194,9 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
     GCKLogger.sharedInstance().delegate?.logMessage!("httpRequest completed with \(self.responseStatus)",
                                                      fromFunction: #function)
     if self.responseStatus == 200 {
-      let jsonData = (try? JSONSerialization.jsonObject(with: self.responseData, options: .mutableContainers))
-      self.rootItem = self.decodeMediaTree(fromJSON: jsonData! as! NSDictionary)
+      let jsonData = (try? JSONSerialization.jsonObject(with: self.responseData,
+                                                        options: .mutableContainers)) as? NSDictionary
+      self.rootItem = self.decodeMediaTree(fromJSON: jsonData!)
       self.isLoaded = true
       self.delegate?.mediaListModelDidLoad(self)
     } else {
@@ -274,7 +275,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
         if let description = dict.gck_string(forKey: kKeySubtitle) {
           metadata.setString(description, forKey: kMediaKeyDescription)
         }
-        var mediaTracks: [Any]? = nil
+        var mediaTracks: [GCKMediaTrack]? = nil
         if let studio = dict.gck_string(forKey: kKeyStudio) {
           metadata.setString(studio, forKey: kGCKMetadataKeyStudio)
         }
@@ -290,7 +291,10 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
             let contentID: String? = trackDict.gck_string(forKey: kKeyContentID)
             let language: String? = trackDict.gck_string(forKey: kKeyLanguage)
             let url = self.buildURL(with: contentID, baseURL: tracksBaseURL)
-            let mediaTrack = GCKMediaTrack(identifier: identifier, contentIdentifier: url?.absoluteString, contentType: kDefaultTrackMimeType, type: self.trackType(from: typeString!), textSubtype: self.textTrackSubtype(from: subtypeString!), name: name, languageCode: language, customData: nil)
+            let mediaTrack = GCKMediaTrack(identifier: identifier, contentIdentifier: url?.absoluteString,
+                                           contentType: kDefaultTrackMimeType, type: self.trackType(from: typeString!),
+                                           textSubtype: self.textTrackSubtype(from: subtypeString!),
+                                           name: name, languageCode: language, customData: nil)
               mediaTracks?.append(mediaTrack)
           }
         }
@@ -298,7 +302,11 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
         if mediaTracks?.count == 0 {
           mediaTracks = nil
         }
-        let mediaInfo = GCKMediaInformation(contentID: url!.absoluteString, streamType: .buffered, contentType: mimeType!, metadata: metadata, streamDuration: TimeInterval(duration!), mediaTracks: mediaTracks as! [GCKMediaTrack]?, textTrackStyle: self.trackStyle, customData: nil)
+        let mediaInfo = GCKMediaInformation(contentID: url!.absoluteString, streamType: .buffered,
+                                            contentType: mimeType!, metadata: metadata,
+                                            streamDuration: TimeInterval(duration!),
+                                            mediaTracks: mediaTracks,
+                                            textTrackStyle: self.trackStyle, customData: nil)
         let childItem = MediaItem(mediaInformation: mediaInfo, parent: item)
           item.children.append(childItem)
 

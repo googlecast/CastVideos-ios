@@ -52,16 +52,16 @@ enum LocalPlayerState: Int {
 /* UIView for displaying a local player or splash screen. */
 @objc(LocalPlayerView)
 class LocalPlayerView: UIView {
-  var mediaPlayer: AVPlayer?
-  var mediaPlayerLayer: AVPlayerLayer?
-  var mediaTimeObserver: Any?
-  var observingMediaPlayer: Bool = false
+  private var mediaPlayer: AVPlayer?
+  private var mediaPlayerLayer: AVPlayerLayer?
+  private var mediaTimeObserver: Any?
+  private var observingMediaPlayer: Bool = false
   // If there is a pending request to seek to a new position.
-  var pendingPlayPosition = TimeInterval()
+  private var pendingPlayPosition = TimeInterval()
   // If there is a pending request to start playback.
-  var pendingPlay: Bool = false
+  private var pendingPlay: Bool = false
   // If a seek is currently in progress.
-  var seeking: Bool = false
+  private var seeking: Bool = false
 
   /* The aspect ratio constraint for the view. */
   @IBOutlet weak var viewAspectRatio: NSLayoutConstraint?

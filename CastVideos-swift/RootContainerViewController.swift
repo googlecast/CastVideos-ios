@@ -19,11 +19,10 @@ let kCastControlBarsAnimationDuration: TimeInterval = 0.20
 @objc(RootContainerViewController)
 class RootContainerViewController: UIViewController, GCKUIMiniMediaControlsViewControllerDelegate {
 
-
-  @IBOutlet weak var miniMediaControlsContainerView: UIView!
-  @IBOutlet weak var miniMediaControlsHeightConstraint: NSLayoutConstraint!
-  var miniMediaControlsViewController: GCKUIMiniMediaControlsViewController!
-  var miniMediaControlsViewEnabled: Bool = false {
+  @IBOutlet weak private var _miniMediaControlsContainerView: UIView!
+  @IBOutlet weak private var _miniMediaControlsHeightConstraint: NSLayoutConstraint!
+  private var miniMediaControlsViewController: GCKUIMiniMediaControlsViewController!
+  var miniMediaControlsViewEnabled = false {
     didSet {
       if self.isViewLoaded {
         self.updateControlBarsVisibility()
@@ -43,7 +42,7 @@ class RootContainerViewController: UIViewController, GCKUIMiniMediaControlsViewC
       overridenNavigationController = newValue
     }
   }
-  var isMiniMediaControlsItemEnabled: Bool = false
+  var miniMediaControlsItemEnabled = false
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -51,16 +50,17 @@ class RootContainerViewController: UIViewController, GCKUIMiniMediaControlsViewC
     self.miniMediaControlsViewController = castContext.createMiniMediaControlsViewController()
     self.miniMediaControlsViewController.delegate = self
     self.updateControlBarsVisibility()
-    self.installViewController(self.miniMediaControlsViewController, inContainerView: self.miniMediaControlsContainerView)
+    self.installViewController(self.miniMediaControlsViewController,
+                               inContainerView: self._miniMediaControlsContainerView)
   }
   // MARK: - Internal methods
 
   func updateControlBarsVisibility() {
     if self.miniMediaControlsViewEnabled && self.miniMediaControlsViewController.active {
-      self.miniMediaControlsHeightConstraint.constant = self.miniMediaControlsViewController.minHeight
-      self.view.bringSubview(toFront: self.miniMediaControlsContainerView)
+      self._miniMediaControlsHeightConstraint.constant = self.miniMediaControlsViewController.minHeight
+      self.view.bringSubview(toFront: self._miniMediaControlsContainerView)
     } else {
-      self.miniMediaControlsHeightConstraint.constant = 0
+      self._miniMediaControlsHeightConstraint.constant = 0
     }
     UIView.animate(withDuration: kCastControlBarsAnimationDuration, animations: {() -> Void in
       self.view.layoutIfNeeded()

@@ -18,16 +18,16 @@ let kPrefMediaListURL: String = "media_list_url"
 @objc(MediaTableViewController)
 class MediaTableViewController: UITableViewController, GCKSessionManagerListener,
     MediaListModelDelegate, GCKRequestDelegate {
-  var sessionManager: GCKSessionManager!
-  var castSession: GCKCastSession!
-  var rootTitleView: UIImageView!
-  var titleView: UIView!
-  var mediaListURL: URL!
-  var queueButton: UIBarButtonItem!
-  var actionSheet: ActionSheet!
-  var selectedItem: MediaItem!
-  var queueAdded: Bool = false
-  var castButton: GCKUICastButton!
+  private var sessionManager: GCKSessionManager!
+  private var castSession: GCKCastSession!
+  private var rootTitleView: UIImageView!
+  private var titleView: UIView!
+  private var mediaListURL: URL!
+  private var queueButton: UIBarButtonItem!
+  private var actionSheet: ActionSheet!
+  private var selectedItem: MediaItem!
+  private var queueAdded: Bool = false
+  private var castButton: GCKUICastButton!
 
   /** The media to be displayed. */
   var mediaList: MediaListModel?
@@ -341,7 +341,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
     print("session ended with error: \(error)")
-    let message = "The Casting session has ended.\n\((error as! NSError).description)"
+    let message = "The Casting session has ended.\n\(error)"
     if let window = appDelegate?.window {
       Toast.displayMessage(message, for: 3, in: window)
     }
@@ -350,7 +350,9 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   func sessionManager(_ sessionManager: GCKSessionManager, didFailToStartSessionWithError error: Error?) {
-    self.showAlert(withTitle: "Failed to start a session", message: (error as! NSError).description)
+    if let error = error {
+      self.showAlert(withTitle: "Failed to start a session", message: error.localizedDescription)
+    }
     self.setQueueButtonVisible(false)
     self.tableView.reloadData()
   }

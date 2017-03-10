@@ -50,8 +50,8 @@ class Toast: UIView {
       NotificationCenter.default.addObserver(self, selector: #selector(self.orientationChanged),
                                              name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
       // Set the toast's timeout
-      DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(timeInterval * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC),
-                                    execute: {() -> Void in
+      DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() +
+          Double(Int64(timeInterval * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {() -> Void in
         toast.removeFromSuperview()
         NotificationCenter.default.removeObserver(self)
         isToastActive = false
