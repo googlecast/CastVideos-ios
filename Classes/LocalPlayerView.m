@@ -440,7 +440,7 @@ static NSInteger kToolbarHeight = 44;
   id<LocalPlayerViewDelegate> delegate = self.delegate;
   if (self.playerState == LocalPlayerStateStopped && delegate &&
       [delegate respondsToSelector:@selector(continueAfterPlayButtonClicked)]) {
-    if (![_delegate continueAfterPlayButtonClicked]) {
+    if (!_delegate.continueAfterPlayButtonClicked) {
       return;
     }
   }

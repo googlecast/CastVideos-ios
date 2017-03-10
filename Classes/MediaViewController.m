@@ -37,10 +37,10 @@ static NSString *const kPrefShowStreamTimeRemaining =
 @interface MediaViewController ()<GCKSessionManagerListener,
                                   GCKRemoteMediaClientListener,
                                   LocalPlayerViewDelegate, GCKRequestDelegate> {
-  IBOutlet UILabel *titleLabel;
-  IBOutlet UILabel *subtitleLabel;
-  IBOutlet UITextView *descriptionTextView;
-  IBOutlet LocalPlayerView *localPlayerView;
+  IBOutlet UILabel *_titleLabel;
+  IBOutlet UILabel *_subtitleLabel;
+  IBOutlet UITextView *_descriptionTextView;
+  IBOutlet LocalPlayerView *_localPlayerView;
   GCKSessionManager *_sessionManager;
   GCKCastSession *_castSession;
   GCKUIMediaController *_castMediaController;
@@ -77,7 +77,7 @@ static NSString *const kPrefShowStreamTimeRemaining =
   [super viewDidLoad];
   NSLog(@"in MediaViewController viewDidLoad");
 
-  localPlayerView.delegate = self;
+  _localPlayerView.delegate = self;
 
   _castButton =
       [[GCKUICastButton alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
@@ -115,7 +115,7 @@ static NSString *const kPrefShowStreamTimeRemaining =
   appDelegate.castControlBarsEnabled = YES;
 
   if ((_playbackMode == PlaybackModeLocal) && _localPlaybackImplicitlyPaused) {
-    [localPlayerView play];
+    [_localPlayerView play];
     _localPlaybackImplicitlyPaused = NO;
   }
 
@@ -182,10 +182,10 @@ static NSString *const kPrefShowStreamTimeRemaining =
   [self setNavigationBarStyle:LPVNavBarDefault];
   switch (_playbackMode) {
     case PlaybackModeLocal:
-      if (localPlayerView.playerState == LocalPlayerStatePlaying ||
-          localPlayerView.playerState == LocalPlayerStateStarting) {
+      if (_localPlayerView.playerState == LocalPlayerStatePlaying ||
+          _localPlayerView.playerState == LocalPlayerStateStarting) {
         _localPlaybackImplicitlyPaused = YES;
-        [localPlayerView pause];
+        [_localPlayerView pause];
       }
       break;
     case PlaybackModeRemote:
@@ -213,11 +213,11 @@ static NSString *const kPrefShowStreamTimeRemaining =
   if (UIInterfaceOrientationIsLandscape(orientation)) {
     [self setNavigationBarStyle:LPVNavBarTransparent];
   } else if (!UIInterfaceOrientationIsLandscape(orientation) ||
-             !localPlayerView.playingLocally) {
+             !_localPlayerView.playingLocally) {
     [self setNavigationBarStyle:LPVNavBarDefault];
   }
 
-  [localPlayerView orientationChanged];
+  [_localPlayerView orientationChanged];
 }
 
 - (void)setMediaInfo:(GCKMediaInformation *)mediaInfo {
@@ -267,7 +267,7 @@ static NSString *const kPrefShowStreamTimeRemaining =
 - (void)populateMediaInfo:(BOOL)autoPlay
              playPosition:(NSTimeInterval)playPosition {
   NSLog(@"populateMediaInfo");
-  titleLabel.text =
+  _titleLabel.text =
       [self.mediaInfo.metadata stringForKey:kGCKMetadataKeyTitle];
 
   NSString *subtitle =
@@ -275,14 +275,14 @@ static NSString *const kPrefShowStreamTimeRemaining =
   if (!subtitle) {
     subtitle = [self.mediaInfo.metadata stringForKey:kGCKMetadataKeyStudio];
   }
-  subtitleLabel.text = subtitle;
+  _subtitleLabel.text = subtitle;
 
   NSString *description =
       [self.mediaInfo.metadata stringForKey:kMediaKeyDescription];
-  descriptionTextView.text =
+  _descriptionTextView.text =
       [description stringByReplacingOccurrencesOfString:@"\\n"
                                              withString:@"\n"];
-  [localPlayerView loadMedia:self.mediaInfo
+  [_localPlayerView loadMedia:self.mediaInfo
                      autoPlay:autoPlay
                  playPosition:playPosition];
 }
@@ -300,11 +300,11 @@ static NSString *const kPrefShowStreamTimeRemaining =
 
   // If we were playing locally, load the local media on the remote player
   if ((_playbackMode == PlaybackModeLocal) &&
-      (localPlayerView.playerState != LocalPlayerStateStopped) &&
+      (_localPlayerView.playerState != LocalPlayerStateStopped) &&
       self.mediaInfo) {
     NSLog(@"loading media: %@", self.mediaInfo);
-    NSTimeInterval playPosition = localPlayerView.streamPosition;
-    BOOL paused = (localPlayerView.playerState == LocalPlayerStatePaused);
+    NSTimeInterval playPosition = _localPlayerView.streamPosition;
+    BOOL paused = (_localPlayerView.playerState == LocalPlayerStatePaused);
     GCKMediaQueueItemBuilder *builder = [[GCKMediaQueueItemBuilder alloc] init];
     builder.mediaInformation = self.mediaInfo;
     builder.autoplay = !paused;
@@ -318,17 +318,17 @@ static NSString *const kPrefShowStreamTimeRemaining =
                                         repeatMode:GCKMediaRepeatModeOff
                                         customData:nil];
   }
-  [localPlayerView stop];
-  [localPlayerView showSplashScreen];
+  [_localPlayerView stop];
+  [_localPlayerView showSplashScreen];
   [self setQueueButtonVisible:YES];
   [_castSession.remoteMediaClient addListener:self];
   _playbackMode = PlaybackModeRemote;
 }
 
 - (void)clearMetadata {
-  titleLabel.text = @"";
-  subtitleLabel.text = @"";
-  descriptionTextView.text = @"";
+  _titleLabel.text = @"";
+  _subtitleLabel.text = @"";
+  _descriptionTextView.text = @"";
 }
 
 - (void)showAlertWithTitle:(NSString *)title message:(NSString *)message {
@@ -351,7 +351,7 @@ static NSString *const kPrefShowStreamTimeRemaining =
 }
 
 - (void)togglePlayPause:(id)sender {
-  [localPlayerView togglePause];
+  [_localPlayerView togglePause];
 }
 
 #pragma mark - GCKSessionManagerListener
@@ -485,7 +485,7 @@ didFailToResumeSession:(GCKSession *)session
                                 target:self
                               selector:@selector(enqueueSelectedItemRemotely)];
     }
-    [_actionSheet presentInController:self sourceView:localPlayerView];
+    [_actionSheet presentInController:self sourceView:_localPlayerView];
     return NO;
   }
 
