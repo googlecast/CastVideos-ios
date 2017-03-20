@@ -76,10 +76,11 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
       // Present the controller in the right location, on iPad. On iPhone, it
       // always displays at the
       // bottom of the screen.
-      guard let presentationController = controller.popoverPresentationController else { return }
-      presentationController.sourceView = sourceView
-      presentationController.sourceRect = sourceView.bounds
-      presentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+      if let presentationController = controller.popoverPresentationController {
+        presentationController.sourceView = sourceView
+        presentationController.sourceRect = sourceView.bounds
+        presentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+      }
       parent.present(controller, animated: true)
     } else {
       // iOS 7 and below.
