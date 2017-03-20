@@ -31,7 +31,7 @@ enum LPVNavBarStyle: Int {
   case lpvNavBarDefault
 }
 
-enum LocalPlayerState : Int {
+enum LocalPlayerState: Int {
   case stopped
   case starting
   case playing
@@ -82,7 +82,7 @@ class LocalPlayerView: UIView {
 
   /* The media we are playing. */
   private(set) var media: GCKMediaInformation!
-  private(set) var playerState: LocalPlayerState!
+  private(set) var playerState = LocalPlayerState.stopped
 
   func orientationChanged() {
     if isFullscreen {
@@ -153,7 +153,7 @@ class LocalPlayerView: UIView {
   }
 
   func togglePause() {
-    switch playerState! {
+    switch playerState {
     case .paused:
       play()
     case .playing:
@@ -165,7 +165,7 @@ class LocalPlayerView: UIView {
   }
 
   func seek(toTime time: TimeInterval) {
-    switch playerState! {
+    switch playerState {
     case .playing:
       pendingPlay = true
       performSeek(toTime: time)
@@ -206,7 +206,8 @@ class LocalPlayerView: UIView {
 
   /* Update the frame for the toolbar. */
   func layoutToolbar(_ frame: CGRect) {
-    toolbarView.frame = CGRect(x: 0, y: frame.size.height - kToolbarHeight, width: frame.size.width, height: kToolbarHeight)
+    toolbarView.frame = CGRect(x: 0, y: frame.size.height - kToolbarHeight,
+                               width: frame.size.width, height: kToolbarHeight)
     gradientLayer?.frame = toolbarView.bounds
   }
 
@@ -251,13 +252,16 @@ class LocalPlayerView: UIView {
 
   func loadMediaPlayer() {
     if mediaPlayer == nil {
-      let mediaURL = URL(string: media.contentID)
-      mediaPlayer = AVPlayer.init(url: mediaURL!)
-      mediaPlayerLayer = AVPlayerLayer.init(player: mediaPlayer)
-      mediaPlayerLayer?.frame = fullFrame()
-      mediaPlayerLayer?.backgroundColor = UIColor.black.cgColor
-      layer.insertSublayer(mediaPlayerLayer!, above: splashImage.layer)
-      addMediaPlayerObservers()
+      if let mediaURL = URL(string: media.contentID) {
+        mediaPlayer = AVPlayer.init(url: mediaURL)
+        mediaPlayerLayer = AVPlayerLayer.init(player: mediaPlayer)
+        if let mediaPlayerLayer = mediaPlayerLayer {
+          mediaPlayerLayer.frame = fullFrame()
+          mediaPlayerLayer.backgroundColor = UIColor.black.cgColor
+          layer.insertSublayer(mediaPlayerLayer, above: splashImage.layer)
+        }
+        addMediaPlayerObservers()
+      }
     }
   }
 
@@ -273,18 +277,22 @@ class LocalPlayerView: UIView {
 
   func handleMediaPlayerReady() {
     print("handleMediaPlayerReady \(pendingPlay)")
-    if CMTIME_IS_INDEFINITE((mediaPlayer?.currentItem?.duration)!) {
+    if let duration = mediaPlayer?.currentItem?.duration, CMTIME_IS_INDEFINITE(duration) {
       // Loading has failed, try it again.
       purgeMediaPlayer()
       loadMediaPlayer()
       return
     }
     if streamDuration == nil {
-      streamDuration = CMTimeGetSeconds(mediaPlayer!.currentItem!.duration)
-      slider.maximumValue = Float(streamDuration!)
-      slider.minimumValue = 0
-      slider.isEnabled = true
-      totalTime.text = GCKUIUtils.timeInterval(asString: streamDuration!)
+      if let duration = mediaPlayer?.currentItem?.duration {
+        streamDuration = CMTimeGetSeconds(duration)
+        if let streamDuration = streamDuration {
+          slider.maximumValue = Float(streamDuration)
+          slider.minimumValue = 0
+          slider.isEnabled = true
+          totalTime.text = GCKUIUtils.timeInterval(asString: streamDuration)
+        }
+      }
     }
     if !pendingPlayPosition.isNaN && pendingPlayPosition > 0 {
       print("seeking to pending position \(pendingPlayPosition)")
@@ -364,7 +372,7 @@ class LocalPlayerView: UIView {
         didTouchControl(nil)
         return nil
       } else if point.y > frame.size.height - kToolbarHeight {
-        return controlView.hitTest(point, with: event)!
+        return controlView.hitTest(point, with: event)
       }
     }
     return super.hitTest(point, with: event)
@@ -389,7 +397,7 @@ class LocalPlayerView: UIView {
       loadMediaPlayer()
       slider.isEnabled = false
       activityIndicator.startAnimating()
-      if (mediaPlayer?.currentItem != nil) && !CMTIME_IS_INDEFINITE((mediaPlayer?.currentItem?.duration)!) {
+      if let currentItem = mediaPlayer?.currentItem, !CMTIME_IS_INDEFINITE(currentItem.duration) {
         handleMediaPlayerReady()
       } else {
         playerState = .starting
@@ -473,7 +481,8 @@ class LocalPlayerView: UIView {
     // Background gradient
     gradientLayer = CAGradientLayer()
     gradientLayer?.frame = toolbarView.bounds
-    gradientLayer?.colors = [(UIColor.clear.cgColor), (UIColor(red: (50 / 255.0), green: (50 / 255.0), blue: (50 / 255.0), alpha: (200 / 255.0)).cgColor)]
+    gradientLayer?.colors = [(UIColor.clear.cgColor), (UIColor(red: (50 / 255.0), green: (50 / 255.0),
+                                                               blue: (50 / 255.0), alpha: (200 / 255.0)).cgColor)]
     gradientLayer?.startPoint = CGPoint.zero
     gradientLayer?.endPoint = CGPoint(x: 0, y: 1)
     // Play/Pause button.
@@ -509,7 +518,9 @@ class LocalPlayerView: UIView {
     toolbarView.addSubview(playButton)
     toolbarView.addSubview(totalTime)
     toolbarView.addSubview(slider)
-    toolbarView.layer.insertSublayer(gradientLayer!, at: 0)
+    if let gradientLayer = gradientLayer {
+      toolbarView.layer.insertSublayer(gradientLayer, at: 0)
+    }
     controlView.insertSubview(toolbarView, at: 0)
     activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
     activityIndicator.hidesWhenStopped = true
@@ -519,8 +530,10 @@ class LocalPlayerView: UIView {
       "-[totalTime(>=40)]-|"
     let vlayout: String = "V:|[playButton(==40)]"
     let viewsDictionary: [String: Any] = ["slider": slider, "totalTime": totalTime, "playButton": playButton]
-    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: hlayout, options: .alignAllCenterY, metrics: nil, views: viewsDictionary))
-    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: vlayout, options: [], metrics: nil, views: viewsDictionary))
+    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: hlayout, options: .alignAllCenterY,
+                                                              metrics: nil, views: viewsDictionary))
+    toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: vlayout,
+                                                              options: [], metrics: nil, views: viewsDictionary))
   }
 
   /* Hide the tool bar, and the navigation controller if in the appropriate state.
@@ -581,8 +594,8 @@ class LocalPlayerView: UIView {
   func removeMediaPlayerObservers() {
     print("removeMediaPlayerObservers")
     if observingMediaPlayer {
-      if mediaTimeObserver != nil {
-        mediaPlayer?.removeTimeObserver(mediaTimeObserver!)
+      if let mediaTimeObserverToRemove = mediaTimeObserver {
+        mediaPlayer?.removeTimeObserver(mediaTimeObserverToRemove)
         mediaTimeObserver = nil
       }
       if mediaPlayer?.currentItem != nil {

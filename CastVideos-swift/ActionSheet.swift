@@ -20,7 +20,7 @@ class ActionSheetAction: NSObject {
   private var target: AnyObject?
   private var selector: Selector?
 
-  init(title: String, target: AnyObject!, selector: Selector) {
+  init(title: String, target: AnyObject, selector: Selector) {
     super.init()
 
     self.title = title
@@ -30,7 +30,7 @@ class ActionSheetAction: NSObject {
 
   func trigger() {
     if let target=target, let selector = selector, target.responds(to: selector) {
-      target.perform(selector)
+      _ = target.perform(selector)
     }
   }
 }
@@ -84,7 +84,7 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
       parent.present(controller, animated: true)
     } else {
       // iOS 7 and below.
-      let alertView = UIAlertView(title: title!, message: message!,
+      let alertView = UIAlertView(title: title ?? "", message: message ?? "",
                                   delegate: self, cancelButtonTitle: cancelButtonText, otherButtonTitles: "")
       indexedActions = [AnyHashable: Any](minimumCapacity: actions.count) as? [Int : ActionSheetAction]
       for action: ActionSheetAction in actions {

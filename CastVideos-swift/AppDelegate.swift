@@ -64,12 +64,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     populateRegistrationDomain()
-    let applicationID: String = applicationIDFromUserDefaults()!
-    if applicationID == "" {
-      // Don't try to go on without a valid application ID - SDK will fail an
-      // assert and app will crash.
+    // Don't try to go on without a valid application ID - SDK will fail an
+    // assert and app will crash.
+    guard let applicationID = applicationIDFromUserDefaults(), applicationID != "" else {
       return true
     }
+
     // We are forcing a custom container view controller, but the Cast Container
     // is also available
     useCastContainerViewController = false
@@ -154,10 +154,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate {
 
   func populateRegistrationDomain() {
-    let settingsBundleURL = Bundle.main.url(forResource: "Settings", withExtension: "bundle")
     let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
     var appDefaults = [String: Any]()
-    loadDefaults(&appDefaults, fromSettingsPage: "Root", inSettingsBundleAt: settingsBundleURL!)
+    if let settingsBundleURL = Bundle.main.url(forResource: "Settings", withExtension: "bundle") {
+      loadDefaults(&appDefaults, fromSettingsPage: "Root", inSettingsBundleAt: settingsBundleURL)
+    }
     let userDefaults = UserDefaults.standard
     userDefaults.register(defaults: appDefaults)
     userDefaults.setValue(appVersion, forKey: kPrefAppVersion)
@@ -175,10 +176,11 @@ extension AppDelegate {
         let prefItemKey = prefItem["Key"] as? String
         let prefItemDefaultValue = prefItem["DefaultValue"] as? String
         if prefItemType == "PSChildPaneSpecifier" {
-          let prefItemFile = prefItem["File"]  as? String
-          loadDefaults(&appDefaults, fromSettingsPage: prefItemFile!, inSettingsBundleAt: settingsBundleURL)
-        } else if (prefItemKey != nil) && (prefItemDefaultValue != nil) {
-          appDefaults[prefItemKey!] = prefItemDefaultValue
+          if let prefItemFile = prefItem["File"]  as? String {
+            loadDefaults(&appDefaults, fromSettingsPage: prefItemFile, inSettingsBundleAt: settingsBundleURL)
+          }
+        } else if let prefItemKey = prefItemKey, let prefItemDefaultValue = prefItemDefaultValue {
+          appDefaults[prefItemKey] = prefItemDefaultValue
         }
       }
     }
@@ -190,15 +192,10 @@ extension AppDelegate {
     if prefApplicationID == kPrefCustomReceiverSelectedValue {
       prefApplicationID = userDefaults.string(forKey: kPrefCustomReceiverAppID)
     }
-    if prefApplicationID == nil {
-      let message: String = "You don't seem to have an application ID.\n" +
-      "Please fix the app settings."
-      showAlert(withTitle: "Invalid Receiver Application ID", message: message)
-      return nil
-    } else {
+    if let prefApplicationID = prefApplicationID {
       let appIdRegex = try? NSRegularExpression(pattern: "\\b[0-9A-F]{8}\\b", options: [])
-      let rangeToCheck = NSRange(location: 0, length: (prefApplicationID?.characters.count ?? 0))
-      let numberOfMatches = appIdRegex?.numberOfMatches(in: prefApplicationID!,
+      let rangeToCheck = NSRange(location: 0, length: (prefApplicationID.characters.count))
+      let numberOfMatches = appIdRegex?.numberOfMatches(in: prefApplicationID,
                                                         options: [],
                                                         range: rangeToCheck)
       if numberOfMatches == 0 {
@@ -207,6 +204,11 @@ extension AppDelegate {
         showAlert(withTitle: "Invalid Receiver Application ID", message: message)
         return nil
       }
+    } else {
+      let message: String = "You don't seem to have an application ID.\n" +
+      "Please fix the app settings."
+      showAlert(withTitle: "Invalid Receiver Application ID", message: message)
+      return nil
     }
     return prefApplicationID
   }
@@ -248,7 +250,9 @@ extension AppDelegate: GCKSessionManagerListener {
 
   func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
     if error == nil {
-      Toast.displayMessage("Session ended", for: 3, in: (window?.rootViewController?.view)!)
+      if let view = window?.rootViewController?.view {
+        Toast.displayMessage("Session ended", for: 3, in: view)
+      }
     } else {
       let message = "Session ended unexpectedly:\n\(error?.localizedDescription)"
       showAlert(withTitle: "Session error", message: message)
