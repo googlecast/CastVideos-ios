@@ -81,7 +81,7 @@ class LocalPlayerView: UIView {
   }
 
   /* The media we are playing. */
-  private(set) var media: GCKMediaInformation!
+  private(set) var media: GCKMediaInformation?
   private(set) var playerState = LocalPlayerState.stopped
 
   func orientationChanged() {
@@ -241,7 +241,7 @@ class LocalPlayerView: UIView {
   // MARK: - Media player management
   /* Asynchronously load the splash screen image. */
   func loadMediaImage() {
-    if let images = media.metadata?.images(), !images.isEmpty {
+    if let images = media?.metadata?.images(), !images.isEmpty {
       if let imageToFetch = images[0] as? GCKImage {
         GCKCastContext.sharedInstance().imageCache?.fetchImage(for: imageToFetch.url) { (image) in
           self.splashImage.image = image
@@ -252,15 +252,17 @@ class LocalPlayerView: UIView {
 
   func loadMediaPlayer() {
     if mediaPlayer == nil {
-      if let mediaURL = URL(string: media.contentID) {
-        mediaPlayer = AVPlayer.init(url: mediaURL)
-        mediaPlayerLayer = AVPlayerLayer.init(player: mediaPlayer)
-        if let mediaPlayerLayer = mediaPlayerLayer {
-          mediaPlayerLayer.frame = fullFrame()
-          mediaPlayerLayer.backgroundColor = UIColor.black.cgColor
-          layer.insertSublayer(mediaPlayerLayer, above: splashImage.layer)
+      if let contentID = media?.contentID {
+        if let mediaURL = URL(string: contentID) {
+          mediaPlayer = AVPlayer.init(url: mediaURL)
+          mediaPlayerLayer = AVPlayerLayer.init(player: mediaPlayer)
+          if let mediaPlayerLayer = mediaPlayerLayer {
+            mediaPlayerLayer.frame = fullFrame()
+            mediaPlayerLayer.backgroundColor = UIColor.black.cgColor
+            layer.insertSublayer(mediaPlayerLayer, above: splashImage.layer)
+          }
+          addMediaPlayerObservers()
         }
-        addMediaPlayerObservers()
       }
     }
   }
