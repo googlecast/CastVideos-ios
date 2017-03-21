@@ -287,34 +287,6 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   }
 }
 
-// TODO
-- (IBAction)playButtonClickedOld:(id)sender {
-  UITableViewCell *tableViewCell =
-      (UITableViewCell *)[sender superview].superview;
-  NSIndexPath *indexPathForCell =
-      [self.tableView indexPathForCell:tableViewCell];
-  selectedItem =
-      (MediaItem *)(self.rootItem.children)[indexPathForCell.row];
-  BOOL hasConnectedCastSession =
-      [GCKCastContext sharedInstance].sessionManager.hasConnectedCastSession;
-  if (selectedItem.mediaInfo && hasConnectedCastSession) {
-    // Display an alert box to allow the user to add to queue or play
-    // immediately.
-    if (!_actionSheet) {
-      _actionSheet = [[ActionSheet alloc] initWithTitle:@"Play Item"
-                                                message:@"Select an action"
-                                       cancelButtonText:@"Cancel"];
-      [_actionSheet addActionWithTitle:@"Play Now"
-                                target:self
-                              selector:@selector(playSelectedItemRemotely)];
-      [_actionSheet addActionWithTitle:@"Add to Queue"
-                                target:self
-                              selector:@selector(enqueueSelectedItemRemotely)];
-    }
-    [_actionSheet presentInController:self sourceView:tableViewCell];
-  }
-}
-
 - (void)tableView:(UITableView *)tableView
     didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   MediaItem *item = (self.rootItem.children)[indexPath.row];

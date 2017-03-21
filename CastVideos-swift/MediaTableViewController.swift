@@ -126,26 +126,26 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if self.rootItem != nil {
-      return self.rootItem!.children.count
+    if let rootItem = self.rootItem {
+      return rootItem.children.count
     } else {
       return 0
     }
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
-    let item = self.rootItem?.children[indexPath.row] as? MediaItem
+    let cell = tableView.dequeueReusableCell(withIdentifier: "MediaCell", for: indexPath)
+    guard let item = self.rootItem?.children[indexPath.row] as? MediaItem else { return cell }
     var detail: String? = nil
-    if let mediaInfo  = item?.mediaInfo {
+    if let mediaInfo  = item.mediaInfo {
       detail = mediaInfo.metadata?.string(forKey: kGCKMetadataKeyStudio)
       if detail == nil {
         detail = mediaInfo.metadata?.string(forKey: kGCKMetadataKeyArtist)
       }
     }
-    let mediaTitle = (cell?.viewWithTag(1) as? UILabel)
-    let mediaOwner = (cell?.viewWithTag(2) as? UILabel)
-      var titleText = item?.title
+    let mediaTitle = (cell.viewWithTag(1) as? UILabel)
+    let mediaOwner = (cell.viewWithTag(2) as? UILabel)
+      var titleText = item.title
       var ownerText = detail
       let text = "\(titleText ?? "")\n\(ownerText ?? "")"
       let attribs = [NSForegroundColorAttributeName: mediaTitle?.textColor, NSFontAttributeName: mediaTitle?.font]
@@ -162,18 +162,18 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       mediaTitle?.attributedText = attributedText
       mediaOwner?.isHidden = true
 
-    if item?.mediaInfo != nil {
-      cell?.accessoryType = .none
+    if item.mediaInfo != nil {
+      cell.accessoryType = .none
     } else {
-      cell?.accessoryType = .disclosureIndicator
+      cell.accessoryType = .disclosureIndicator
     }
-    let imageView: UIImageView? = (cell?.contentView.viewWithTag(3) as? UIImageView)
-    GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (item?.imageURL)!,
-                                                           completion: {(_ image: UIImage?) -> Void in
-      imageView?.image = image
-      cell?.setNeedsLayout()
-    })
-    let addButton: UIButton? = (cell?.viewWithTag(4) as? UIButton)
+    if let imageView = (cell.contentView.viewWithTag(3) as? UIImageView), let imageURL = item.imageURL {
+      GCKCastContext.sharedInstance().imageCache?.fetchImage(for: imageURL, completion: {(_ image: UIImage?) -> Void in
+        imageView.image = image
+        cell.setNeedsLayout()
+      })
+    }
+    let addButton: UIButton? = (cell.viewWithTag(4) as? UIButton)
     let hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
     if hasConnectedCastSession {
       addButton?.isHidden = false
@@ -181,36 +181,16 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     } else {
       addButton?.isHidden = true
     }
-    return cell!
+    return cell
   }
 
   @IBAction func playButtonClicked(_ sender: Any) {
-    let tableViewCell = ((sender as AnyObject).superview??.superview as? UITableViewCell)
-    var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell!)
-    selectedItem = (self.rootItem?.children[(indexPathForCell?.row)!] as? MediaItem)
+    guard let tableViewCell = (sender as AnyObject).superview??.superview as? UITableViewCell else { return }
+    guard let indexPathForCell = self.tableView.indexPath(for: tableViewCell) else { return }
+    selectedItem = (self.rootItem?.children[indexPathForCell.row] as? MediaItem)
     let hasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
     if (selectedItem.mediaInfo != nil) && hasConnectedCastSession {
       // Display an popover to allow the user to add to queue or play
-      // immediately.
-      if self.actionSheet == nil {
-        self.actionSheet = ActionSheet(title: "Play Item", message: "Select an action", cancelButtonText: "Cancel")
-        self.actionSheet.addAction(withTitle: "Play Now", target: self,
-                                   selector: #selector(self.playSelectedItemRemotely))
-        self.actionSheet.addAction(withTitle: "Add to Queue", target: self,
-                                   selector: #selector(self.enqueueSelectedItemRemotely))
-      }
-      self.actionSheet.present(in: self, sourceView: tableViewCell!)
-    }
-  }
-  // TODO
-
-  @IBAction func playButtonClickedOld(_ sender: Any) {
-    guard let tableViewCell = (sender as AnyObject).superview??.superview as? UITableViewCell else { return }
-    var indexPathForCell: IndexPath? = self.tableView.indexPath(for: tableViewCell)
-    selectedItem = (self.rootItem?.children[(indexPathForCell?.row)!] as? MediaItem)
-    let isHasConnectedCastSession: Bool = GCKCastContext.sharedInstance().sessionManager.hasConnectedCastSession()
-    if (selectedItem.mediaInfo != nil) && isHasConnectedCastSession {
-      // Display an alert box to allow the user to add to queue or play
       // immediately.
       if self.actionSheet == nil {
         self.actionSheet = ActionSheet(title: "Play Item", message: "Select an action", cancelButtonText: "Cancel")
@@ -224,7 +204,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    if let item = self.rootItem?.children[indexPath.row] as? MediaItem, let _ = item.mediaInfo {
+    if let item = self.rootItem?.children[indexPath.row] as? MediaItem, item.mediaInfo != nil {
       self.performSegue(withIdentifier: "mediaDetails", sender: self)
     }
   }
@@ -233,7 +213,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     print("prepareForSegue")
     if segue.identifier == "mediaDetails" {
       let viewController: MediaViewController? = (segue.destination as? MediaViewController)
-      if let mediaInfo  = self.getSelectedItem().mediaInfo {
+      if let mediaInfo  = self.getSelectedItem()?.mediaInfo {
         viewController?.mediaInfo = mediaInfo
       }
     }
@@ -260,35 +240,28 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func loadSelectedItem(byAppending appending: Bool) {
     print("enqueue item \(selectedItem.mediaInfo)")
-    if let castSession = GCKCastContext.sharedInstance().sessionManager.currentSession as? GCKCastSession {
-      if (castSession.remoteMediaClient) != nil {
-        let builder = GCKMediaQueueItemBuilder()
-        builder.mediaInformation = selectedItem.mediaInfo
-        builder.autoplay = true
-        builder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
-        let item = builder.build
-        if ((castSession.remoteMediaClient?.mediaStatus) != nil) && appending {
-          let request: GCKRequest? =
-            castSession.remoteMediaClient?.queueInsert(item(), beforeItemWithID: kGCKMediaQueueInvalidItemID)
-          request?.delegate = self
+    if let remoteMediaClient = GCKCastContext.sharedInstance().sessionManager.currentCastSession?.remoteMediaClient {
+      let builder = GCKMediaQueueItemBuilder()
+      builder.mediaInformation = selectedItem.mediaInfo
+      builder.autoplay = true
+      builder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
+      let item = builder.build
+        if (remoteMediaClient.mediaStatus != nil) && appending {
+          let request = remoteMediaClient.queueInsert(item(), beforeItemWithID: kGCKMediaQueueInvalidItemID)
+          request.delegate = self
         } else {
-          let repeatMode = (castSession.remoteMediaClient?.mediaStatus != nil) ?
-            castSession.remoteMediaClient?.mediaStatus?.queueRepeatMode : .off
+          let repeatMode = remoteMediaClient.mediaStatus?.queueRepeatMode ?? .off
           let request = castSession.remoteMediaClient?.queueLoad([item()], start: 0, playPosition: 0,
-                                                                 repeatMode: repeatMode!, customData: nil)
+                                                                 repeatMode: repeatMode, customData: nil)
           request?.delegate = self
         }
       }
     }
-  }
 
-  func getSelectedItem() -> MediaItem {
-    var item: MediaItem? = nil
-    if let indexPath = self.tableView.indexPathForSelectedRow {
-      print("selected row is \(indexPath)")
-      item = (self.rootItem?.children[(indexPath.row)] as? MediaItem)
-    }
-    return item!
+  func getSelectedItem() -> MediaItem? {
+    guard let indexPath = self.tableView.indexPathForSelectedRow else { return nil }
+    print("selected row is \(indexPath)")
+    return (self.rootItem?.children[(indexPath.row)] as? MediaItem)
   }
   // MARK: - MediaListModelDelegate
 
@@ -310,18 +283,18 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   func loadMediaList() {
     // Look up the media list URL.
     let userDefaults = UserDefaults.standard
-    let urlKey: String? = userDefaults.string(forKey: kPrefMediaListURL)
-    let urlText: String? = userDefaults.string(forKey: urlKey!)
-    let mediaListURL = URL(string: urlText!)
+    guard let urlKey = userDefaults.string(forKey: kPrefMediaListURL) else { return }
+    guard let urlText = userDefaults.string(forKey: urlKey) else { return }
+    let mediaListURL = URL(string: urlText)
     if mediaListURL == self.mediaListURL {
       // The URL hasn't changed; do nothing.
       return
     }
     self.mediaListURL = mediaListURL
     // Asynchronously load the media json.
-    let delegate: AppDelegate? = (UIApplication.shared.delegate as? AppDelegate)
-    delegate?.mediaList = MediaListModel()
-    self.mediaList = delegate?.mediaList
+    guard let delegate = (UIApplication.shared.delegate as? AppDelegate) else { return }
+    delegate.mediaList = MediaListModel()
+    self.mediaList = delegate.mediaList
     self.mediaList?.delegate = self
     self.mediaList?.load(from: self.mediaListURL)
   }
@@ -359,8 +332,9 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func sessionManager(_ sessionManager: GCKSessionManager,
                       didFailToResumeSession session: GCKSession, withError error: Error?) {
-    Toast.displayMessage("The Casting session could not be resumed.",
-                         for: 3, in: (UIApplication.shared.delegate?.window)!)
+    if let window = UIApplication.shared.delegate?.window {
+      Toast.displayMessage("The Casting session could not be resumed.", for: 3, in: window)
+    }
     self.setQueueButtonVisible(false)
     self.tableView.reloadData()
   }

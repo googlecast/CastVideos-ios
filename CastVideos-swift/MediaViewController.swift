@@ -402,22 +402,17 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
 
   func loadSelectedItem(byAppending appending: Bool) {
     print("enqueue item \(self.mediaInfo)")
-    if let castSession = GCKCastContext.sharedInstance().sessionManager.currentSession as? GCKCastSession,
-      let remoteMediaClient = castSession.remoteMediaClient {
+    if let remoteMediaClient = GCKCastContext.sharedInstance().sessionManager.currentCastSession?.remoteMediaClient {
       let builder = GCKMediaQueueItemBuilder()
       builder.mediaInformation = self.mediaInfo
       builder.autoplay = true
       builder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
       let item = builder.build()
       if ((remoteMediaClient.mediaStatus) != nil) && appending {
-        let request =
-          remoteMediaClient.queueInsert(item, beforeItemWithID: kGCKMediaQueueInvalidItemID)
+        let request = remoteMediaClient.queueInsert(item, beforeItemWithID: kGCKMediaQueueInvalidItemID)
         request.delegate = self
       } else {
-        var repeatMode = GCKMediaRepeatMode.off
-        if let mediaStatus = remoteMediaClient.mediaStatus {
-          repeatMode = mediaStatus.queueRepeatMode
-        }
+        let repeatMode = remoteMediaClient.mediaStatus?.queueRepeatMode ?? .off
         let request = remoteMediaClient.queueLoad([item], start: 0, playPosition: 0,
                                                                             repeatMode: repeatMode, customData: nil)
         request.delegate = self
