@@ -2,7 +2,7 @@
 
 CastVideos-ios application shows how to cast videos from an iOS device in a way that is fully compliant with the Cast Design Checklist.
 
-**This is a reference sender app to be used as the starting point for your iOS sender app**
+**This is a reference sender app to be used as the starting point for your iOS sender app. The project contains targets for both Objective-C and Swift.**
 
 Here is the list of other reference apps:
 * [Android Sender: CastVideos-android](https://github.com/googlecast/CastVideos-android)
