@@ -79,12 +79,12 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func setQueueButtonVisible(_ visible: Bool) {
     if visible && !self.queueAdded {
-      var barItems = (arrayLiteral: self.navigationItem.rightBarButtonItems)
+      var barItems = self.navigationItem.rightBarButtonItems
       barItems?.append(self.queueButton)
       self.navigationItem.rightBarButtonItems = barItems
       self.queueAdded = true
     } else if !visible && self.queueAdded {
-      var barItems = (arrayLiteral: self.navigationItem.rightBarButtonItems)
+      var barItems = self.navigationItem.rightBarButtonItems
       barItems?.remove(at: barItems?.index(of: self.queueButton) ?? -1)
       self.navigationItem.rightBarButtonItems = barItems
       self.queueAdded = false
@@ -143,12 +143,11 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
         detail = mediaInfo.metadata?.string(forKey: kGCKMetadataKeyArtist)
       }
     }
-    let mediaTitle = (cell.viewWithTag(1) as? UILabel)
-    let mediaOwner = (cell.viewWithTag(2) as? UILabel)
+    if let mediaTitle = (cell.viewWithTag(1) as? UILabel) {
       var titleText = item.title
       var ownerText = detail
       let text = "\(titleText ?? "")\n\(ownerText ?? "")"
-      let attribs = [NSForegroundColorAttributeName: mediaTitle?.textColor, NSFontAttributeName: mediaTitle?.font]
+      let attribs = [NSForegroundColorAttributeName: mediaTitle.textColor, NSFontAttributeName: mediaTitle.font] as [String : Any]
       let attributedText = NSMutableAttributedString(string: text, attributes: attribs)
       let blackColor = UIColor.black
       let titleTextRange = NSRange(location: 0, length: (titleText?.characters.count ?? 0))
@@ -157,10 +156,11 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       let ownerTextRange = NSRange(location: (titleText?.characters.count ?? 0) + 1,
                                    length: (ownerText?.characters.count ?? 0))
       attributedText.setAttributes([NSForegroundColorAttributeName: lightGrayColor,
-                                    NSFontAttributeName: UIFont.systemFont(ofSize: CGFloat(12))],
-                                   range: ownerTextRange)
-      mediaTitle?.attributedText = attributedText
-      mediaOwner?.isHidden = true
+                                    NSFontAttributeName: UIFont.systemFont(ofSize: CGFloat(12))], range: ownerTextRange)
+      mediaTitle.attributedText = attributedText
+    }
+    let mediaOwner = (cell.viewWithTag(2) as? UILabel)
+    mediaOwner?.isHidden = true
 
     if item.mediaInfo != nil {
       cell.accessoryType = .none
@@ -227,7 +227,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   func enqueueSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: true)
     // selectedItem = [self getSelectedItem];
-    let message = "Added \"\(selectedItem.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyTitle))\" to queue."
+    let message = "Added \"\(selectedItem.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyTitle) ?? "")\" to queue."
     Toast.displayMessage(message, for: 3, in: appDelegate?.window)
     self.setQueueButtonVisible(true)
   }
@@ -239,7 +239,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
    */
 
   func loadSelectedItem(byAppending appending: Bool) {
-    print("enqueue item \(selectedItem.mediaInfo)")
+    print("enqueue item \(String(describing: selectedItem.mediaInfo))")
     if let remoteMediaClient = GCKCastContext.sharedInstance().sessionManager.currentCastSession?.remoteMediaClient {
       let builder = GCKMediaQueueItemBuilder()
       builder.mediaInformation = selectedItem.mediaInfo
@@ -313,8 +313,8 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
-    print("session ended with error: \(error)")
-    let message = "The Casting session has ended.\n\(error)"
+    print("session ended with error: \(String(describing: error))")
+    let message = "The Casting session has ended.\n\(String(describing: error))"
     if let window = appDelegate?.window {
       Toast.displayMessage(message, for: 3, in: window)
     }

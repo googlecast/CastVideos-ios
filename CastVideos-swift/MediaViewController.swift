@@ -85,7 +85,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
   }
 
   override func viewWillAppear(_ animated: Bool) {
-    print("viewWillAppear; mediaInfo is \(self.mediaInfo), mode is \(self.playbackMode)")
+    print("viewWillAppear; mediaInfo is \(String(describing: self.mediaInfo)), mode is \(self.playbackMode)")
     appDelegate?.isCastControlBarsEnabled = true
     if (self.playbackMode == .local) && self.localPlaybackImplicitlyPaused {
       self._localPlayerView.play()
@@ -124,12 +124,12 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
 
   func setQueueButtonVisible(_ visible: Bool) {
     if visible && !self.queueAdded {
-      var barItems = (arrayLiteral: self.navigationItem.rightBarButtonItems)
+      var barItems = self.navigationItem.rightBarButtonItems
       barItems?.append(self.queueButton)
       self.navigationItem.rightBarButtonItems = barItems
       self.queueAdded = true
     } else if !visible && self.queueAdded {
-      var barItems = (arrayLiteral: self.navigationItem.rightBarButtonItems)
+      var barItems = self.navigationItem.rightBarButtonItems
       barItems?.remove(at: barItems?.index(of: self.queueButton) ?? -1)
       self.navigationItem.rightBarButtonItems = barItems
       self.queueAdded = false
@@ -210,7 +210,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
   }
 
   func switchToRemotePlayback() {
-    print("switchToRemotePlayback; mediaInfo is \(self.mediaInfo)")
+    print("switchToRemotePlayback; mediaInfo is \(String(describing: self.mediaInfo))")
     if self.playbackMode == .remote {
       return
     }
@@ -219,7 +219,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
     }
     // If we were playing locally, load the local media on the remote player
     if (self.playbackMode == .local) && (self._localPlayerView.playerState != .stopped) && (self.mediaInfo != nil) {
-      print("loading media: \(self.mediaInfo)")
+      print("loading media: \(String(describing: self.mediaInfo))")
       let paused: Bool = (self._localPlayerView.playerState == .paused)
       let builder = GCKMediaQueueItemBuilder()
       builder.mediaInformation = self.mediaInfo
@@ -277,8 +277,8 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
   }
 
   func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
-    print("session ended with error: \(error)")
-    let message = "The Casting session has ended.\n\(error)"
+    print("session ended with error: \(String(describing: error))")
+    let message = "The Casting session has ended.\n\(String(describing: error))"
     if let window = appDelegate?.window {
       Toast.displayMessage(message, for: 3, in: window)
     }
@@ -387,7 +387,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
 
   func enqueueSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: true)
-    let message = "Added \"\(self.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyTitle))\" to queue."
+    let message = "Added \"\(self.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyTitle) ?? "")\" to queue."
     if let window = UIApplication.shared.delegate?.window {
       Toast.displayMessage(message, for: 3, in: window)
     }
@@ -401,7 +401,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
    */
 
   func loadSelectedItem(byAppending appending: Bool) {
-    print("enqueue item \(self.mediaInfo)")
+    print("enqueue item \(String(describing: self.mediaInfo))")
     if let remoteMediaClient = GCKCastContext.sharedInstance().sessionManager.currentCastSession?.remoteMediaClient {
       let builder = GCKMediaQueueItemBuilder()
       builder.mediaInformation = self.mediaInfo

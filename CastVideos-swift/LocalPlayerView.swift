@@ -613,7 +613,7 @@ class LocalPlayerView: UIView {
 
   override func observeValue(forKeyPath keyPath: String?, of object: Any?,
                              change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-    print("observeValueForKeyPath \(keyPath)")
+    print("observeValueForKeyPath \(keyPath ?? "")")
     guard let currentItem = mediaPlayer?.currentItem, let object = object as? AVPlayerItem, object == currentItem else {
       return
     }
