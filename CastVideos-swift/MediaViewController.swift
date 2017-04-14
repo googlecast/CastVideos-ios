@@ -304,8 +304,8 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
   }
   // MARK: - GCKRemoteMediaClientListener
 
-  func remoteMediaClient(_ player: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus) {
-    self.mediaInfo = mediaStatus.mediaInformation
+  func remoteMediaClient(_ player: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
+    self.mediaInfo = mediaStatus?.mediaInformation
   }
   // MARK: - LocalPlayerViewDelegate
   /* Signal the requested style for the view. */

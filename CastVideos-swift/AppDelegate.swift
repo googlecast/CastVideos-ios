@@ -254,7 +254,7 @@ extension AppDelegate: GCKSessionManagerListener {
         Toast.displayMessage("Session ended", for: 3, in: view)
       }
     } else {
-      let message = "Session ended unexpectedly:\n\(error?.localizedDescription)"
+      let message = "Session ended unexpectedly:\n\(error?.localizedDescription ?? "")"
       showAlert(withTitle: "Session error", message: message)
     }
   }

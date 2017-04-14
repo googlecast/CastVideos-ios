@@ -17,7 +17,7 @@
 #import "AppDelegate.h"
 
 #import <AVFoundation/AVFoundation.h>
-#import <GoogleCast/Googlecast.h>
+#import <GoogleCast/GoogleCast.h>
 
 #import "MediaViewController.h"
 #import "RootContainerViewController.h"

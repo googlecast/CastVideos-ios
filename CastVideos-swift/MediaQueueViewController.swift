@@ -118,7 +118,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     if artist == nil {
       artist = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyStudio)
     }
-    let detail: String? = "(\(GCKUIUtils.timeInterval(asString: (item?.mediaInformation.streamDuration)!))) \(artist)"
+    let detail: String? = "(\(GCKUIUtils.timeInterval(asString: (item?.mediaInformation.streamDuration)!))) \(artist ?? "")"
     let mediaTitle: UILabel? = (cell?.viewWithTag(1) as? UILabel)
     mediaTitle?.text = title
     let mediaOwner: UILabel? = (cell?.viewWithTag(2) as? UILabel)
@@ -210,7 +210,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   }
   // MARK: - GCKRemoteMediaClientListener
 
-  func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus) {
+  func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus?) {
     self._tableView.reloadData()
   }
 
