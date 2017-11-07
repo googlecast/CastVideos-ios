@@ -21,6 +21,7 @@ to have your own ID.
 * This sample includes a published app id in the user defaults so the project can be built and run without a need
    to register an app id. If you want to use your own receiver (which is required if you need to debug the receiver),
     update the user defaults or AppDelegate.m with your own app id.
+* XCode setup steps: https://developers.google.com/cast/docs/ios_sender_setup#xcode_setup
 
 ## Documentation
 Google Cast iOS Sender Overview:  [https://developers.google.com/cast/docs/ios_sender_integrate](https://developers.google.com/cast/docs/ios_sender_integrate "Google Cast iOS Sender Overview")
