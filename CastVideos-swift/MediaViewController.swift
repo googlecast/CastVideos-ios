@@ -76,7 +76,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
                                            object: GCKCastContext.sharedInstance())
   }
 
-  func castDeviceDidChange(_ notification: Notification) {
+    @objc func castDeviceDidChange(_ notification: Notification) {
     if GCKCastContext.sharedInstance().castState != .noDevicesAvailable {
       // You can present the instructions on how to use Google Cast on
       // the first time the user uses you app
@@ -130,7 +130,8 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
       self.queueAdded = true
     } else if !visible && self.queueAdded {
       var barItems = self.navigationItem.rightBarButtonItems
-      barItems?.remove(at: barItems?.index(of: self.queueButton) ?? -1)
+      let index = barItems?.index(of: self.queueButton) ?? -1
+      barItems?.remove(at: index)
       self.navigationItem.rightBarButtonItems = barItems
       self.queueAdded = false
     }
@@ -157,7 +158,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
     super.viewWillDisappear(animated)
   }
 
-  func deviceOrientationDidChange(_ notification: Notification) {
+    @objc func deviceOrientationDidChange(_ notification: Notification) {
     print("Orientation changed.")
     let orientation: UIInterfaceOrientation = UIApplication.shared.statusBarOrientation
     if UIInterfaceOrientationIsLandscape(orientation) {
@@ -169,7 +170,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
     self._localPlayerView.orientationChanged()
   }
 
-  func didTapQueueButton(_ sender: Any) {
+    @objc func didTapQueueButton(_ sender: Any) {
     appDelegate?.isCastControlBarsEnabled = false
     self.performSegue(withIdentifier: "MediaQueueSegue", sender: self)
   }
@@ -380,12 +381,12 @@ class MediaViewController: UIViewController, GCKSessionManagerListener,
     return true
   }
 
-  func playSelectedItemRemotely() {
+    @objc func playSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: false)
     GCKCastContext.sharedInstance().presentDefaultExpandedMediaControls()
   }
 
-  func enqueueSelectedItemRemotely() {
+    @objc func enqueueSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: true)
     let message = "Added \"\(self.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyTitle) ?? "")\" to queue."
     if let window = UIApplication.shared.delegate?.window {

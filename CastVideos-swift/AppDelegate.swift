@@ -129,7 +129,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     GCKLogger.sharedInstance().delegate = self
   }
 
-  func presentExpandedMediaControls() {
+    @objc func presentExpandedMediaControls() {
     print("present expanded media controls")
     // Segue directly to the ExpandedViewController.
     let navigationController: UINavigationController?
@@ -194,7 +194,7 @@ extension AppDelegate {
     }
     if let prefApplicationID = prefApplicationID {
       let appIdRegex = try? NSRegularExpression(pattern: "\\b[0-9A-F]{8}\\b", options: [])
-      let rangeToCheck = NSRange(location: 0, length: (prefApplicationID.characters.count))
+      let rangeToCheck = NSRange(location: 0, length: (prefApplicationID.count))
       let numberOfMatches = appIdRegex?.numberOfMatches(in: prefApplicationID,
                                                         options: [],
                                                         range: rangeToCheck)
@@ -213,7 +213,7 @@ extension AppDelegate {
     return prefApplicationID
   }
 
-  func syncWithUserDefaults() {
+    @objc func syncWithUserDefaults() {
     let userDefaults = UserDefaults.standard
     // Forcing no logging from the SDK
     enableSDKLogging = false

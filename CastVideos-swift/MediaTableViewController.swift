@@ -65,7 +65,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
                                            object: GCKCastContext.sharedInstance())
   }
 
-  func castDeviceDidChange(_ notification: Notification) {
+    @objc func castDeviceDidChange(_ notification: Notification) {
     if GCKCastContext.sharedInstance().castState != .noDevicesAvailable {
       // You can present the instructions on how to use Google Cast on
       // the first time the user uses you app
@@ -73,7 +73,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     }
   }
 
-  func deviceOrientationDidChange(_ notification: Notification) {
+    @objc func deviceOrientationDidChange(_ notification: Notification) {
     self.tableView.reloadData()
   }
 
@@ -85,14 +85,15 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       self.queueAdded = true
     } else if !visible && self.queueAdded {
       var barItems = self.navigationItem.rightBarButtonItems
-      barItems?.remove(at: barItems?.index(of: self.queueButton) ?? -1)
+      let index = barItems?.index(of: self.queueButton) ?? -1
+      barItems?.remove(at: index)
       self.navigationItem.rightBarButtonItems = barItems
       self.queueAdded = false
     }
 
   }
 
-  func didTapQueueButton(_ sender: Any) {
+    @objc func didTapQueueButton(_ sender: Any) {
     self.performSegue(withIdentifier: "MediaQueueSegue", sender: self)
   }
 
@@ -144,19 +145,20 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       }
     }
     if let mediaTitle = (cell.viewWithTag(1) as? UILabel) {
-      var titleText = item.title
-      var ownerText = detail
+      let titleText = item.title
+      let ownerText = detail
       let text = "\(titleText ?? "")\n\(ownerText ?? "")"
-      let attribs = [NSForegroundColorAttributeName: mediaTitle.textColor, NSFontAttributeName: mediaTitle.font] as [String : Any]
+        
+      let attribs = [NSAttributedStringKey.foregroundColor: mediaTitle.textColor, NSAttributedStringKey.font: mediaTitle.font] as [NSAttributedStringKey : Any]
       let attributedText = NSMutableAttributedString(string: text, attributes: attribs)
       let blackColor = UIColor.black
-      let titleTextRange = NSRange(location: 0, length: (titleText?.characters.count ?? 0))
-      attributedText.setAttributes([NSForegroundColorAttributeName: blackColor], range: titleTextRange)
+      let titleTextRange = NSRange(location: 0, length: (titleText?.count ?? 0))
+      attributedText.setAttributes([NSAttributedStringKey.foregroundColor: blackColor], range: titleTextRange)
       let lightGrayColor = UIColor.lightGray
-      let ownerTextRange = NSRange(location: (titleText?.characters.count ?? 0) + 1,
-                                   length: (ownerText?.characters.count ?? 0))
-      attributedText.setAttributes([NSForegroundColorAttributeName: lightGrayColor,
-                                    NSFontAttributeName: UIFont.systemFont(ofSize: CGFloat(12))], range: ownerTextRange)
+      let ownerTextRange = NSRange(location: (titleText?.count ?? 0) + 1,
+                                   length: (ownerText?.count ?? 0))
+      attributedText.setAttributes([NSAttributedStringKey.foregroundColor: lightGrayColor,
+                                    NSAttributedStringKey.font: UIFont.systemFont(ofSize: CGFloat(12))], range: ownerTextRange)
       mediaTitle.attributedText = attributedText
     }
     let mediaOwner = (cell.viewWithTag(2) as? UILabel)
@@ -219,12 +221,12 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     }
   }
 
-  func playSelectedItemRemotely() {
+    @objc func playSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: false)
     GCKCastContext.sharedInstance().presentDefaultExpandedMediaControls()
   }
 
-  func enqueueSelectedItemRemotely() {
+    @objc func enqueueSelectedItemRemotely() {
     self.loadSelectedItem(byAppending: true)
     // selectedItem = [self getSelectedItem];
     let message = "Added \"\(selectedItem.mediaInfo?.metadata?.string(forKey: kGCKMetadataKeyTitle) ?? "")\" to queue."
@@ -280,7 +282,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     alert.show()
   }
 
-  func loadMediaList() {
+    @objc func loadMediaList() {
     // Look up the media list URL.
     let userDefaults = UserDefaults.standard
     guard let urlKey = userDefaults.string(forKey: kPrefMediaListURL) else { return }
