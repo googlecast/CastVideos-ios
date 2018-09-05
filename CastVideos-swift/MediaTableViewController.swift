@@ -69,7 +69,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     if GCKCastContext.sharedInstance().castState != .noDevicesAvailable {
       // You can present the instructions on how to use Google Cast on
       // the first time the user uses you app
-      GCKCastContext.sharedInstance().presentCastInstructionsViewControllerOnce()
+      GCKCastContext.sharedInstance().presentCastInstructionsViewControllerOnce(with: self.castButton)
     }
   }
 
@@ -252,9 +252,9 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
           let request = remoteMediaClient.queueInsert(item(), beforeItemWithID: kGCKMediaQueueInvalidItemID)
           request.delegate = self
         } else {
-          let repeatMode = remoteMediaClient.mediaStatus?.queueRepeatMode ?? .off
-          let request = castSession.remoteMediaClient?.queueLoad([item()], start: 0, playPosition: 0,
-                                                                 repeatMode: repeatMode, customData: nil)
+          let options = GCKMediaQueueLoadOptions()
+          options.repeatMode = remoteMediaClient.mediaStatus?.queueRepeatMode ?? .off
+          let request = castSession.remoteMediaClient?.queueLoad([item()], with: options)
           request?.delegate = self
         }
       }

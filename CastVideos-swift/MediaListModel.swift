@@ -148,7 +148,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
     self.connection = NSURLConnection(request: self.request, delegate: self)
     self.responseData = nil
     self.connection.start()
-    GCKLogger.sharedInstance().delegate?.logMessage!("loading media list from URL \(url)", fromFunction: #function)
+    GCKLogger.sharedInstance().delegate?.logMessage?("loading media list from URL \(url)", at: .debug, fromFunction: #function, location: "MediaListModel.class")
   }
 
   override init() {
@@ -172,7 +172,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
     self.request = nil
     self.responseData = nil
     self.connection = nil
-    GCKLogger.sharedInstance().delegate?.logMessage!("httpRequest failed with \(error)", fromFunction: #function)
+    GCKLogger.sharedInstance().delegate?.logMessage?("httpRequest failed with \(error)", at: .debug, fromFunction: #function, location: "MediaListModel.class")
     self.delegate?.mediaListModel(self, didFailToLoadWithError: error)
   }
   // MARK: - NSURLConnectionDataDelegate
@@ -191,8 +191,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
   }
 
   func connectionDidFinishLoading(_ connection: NSURLConnection) {
-    GCKLogger.sharedInstance().delegate?.logMessage!("httpRequest completed with \(self.responseStatus)",
-                                                     fromFunction: #function)
+    GCKLogger.sharedInstance().delegate?.logMessage?("httpRequest completed with \(self.responseStatus)", at: .debug, fromFunction: #function, location: "MediaListModel.class")
     if self.responseStatus == 200 {
       let jsonData = (try? JSONSerialization.jsonObject(with: self.responseData,
                                                         options: .mutableContainers)) as? NSDictionary
@@ -302,11 +301,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
         if mediaTracks?.count == 0 {
           mediaTracks = nil
         }
-        let mediaInfo = GCKMediaInformation(contentID: url!.absoluteString, streamType: .buffered,
-                                            contentType: mimeType!, metadata: metadata,
-                                            streamDuration: TimeInterval(duration!),
-                                            mediaTracks: mediaTracks,
-                                            textTrackStyle: self.trackStyle, customData: nil)
+        let mediaInfo = GCKMediaInformation(contentID: url!.absoluteString, streamType: .buffered, contentType: mimeType!, metadata: metadata, adBreaks: nil, adBreakClips: nil, streamDuration: TimeInterval(duration!), mediaTracks: mediaTracks, textTrackStyle: trackStyle, customData: nil)
         let childItem = MediaItem(mediaInformation: mediaInfo, parent: item)
           item.children.append(childItem)
 

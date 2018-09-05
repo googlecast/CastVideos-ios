@@ -74,7 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // is also available
     useCastContainerViewController = false
 
-    let options = GCKCastOptions(receiverApplicationID: applicationID)
+    let options = GCKCastOptions(discoveryCriteria: GCKDiscoveryCriteria(applicationID: applicationID))
     GCKCastContext.setSharedInstanceWith(options)
     GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
     window?.clipsToBounds = true
@@ -218,8 +218,7 @@ extension AppDelegate {
     // Forcing no logging from the SDK
     enableSDKLogging = false
     let mediaNotificationsEnabled = userDefaults.bool(forKey: kPrefEnableMediaNotifications)
-    GCKLogger.sharedInstance().delegate?.logMessage?("Notifications on? \(mediaNotificationsEnabled)",
-                                                     fromFunction: #function)
+    GCKLogger.sharedInstance().delegate?.logMessage?("Notifications on? \(mediaNotificationsEnabled)", at: .debug, fromFunction: #function, location: "AppDelegate.swift")
     if firstUserDefaultsSync || (self.mediaNotificationsEnabled != mediaNotificationsEnabled) {
       self.mediaNotificationsEnabled = mediaNotificationsEnabled
       if useCastContainerViewController {
