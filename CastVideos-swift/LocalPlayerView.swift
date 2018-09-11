@@ -339,7 +339,7 @@ class LocalPlayerView: UIView {
   }
   /* Callback registered for when the AVPlayer completes playing of the media. */
 
-  func handleMediaPlaybackEnded() {
+    @objc func handleMediaPlaybackEnded() {
     playerState = .stopped
     streamDuration = 0
     streamPosition = 0
@@ -387,10 +387,8 @@ class LocalPlayerView: UIView {
     print("playButtonClicked \(pendingPlay)")
     if playerState == .stopped {
       if let delegate = self.delegate {
-        if delegate.responds(to: #selector(MediaViewController.continueAfterPlayButtonClicked)) {
-          if !delegate.continueAfterPlayButtonClicked() {
-           return
-          }
+        if !delegate.continueAfterPlayButtonClicked() {
+          return
         }
       }
     }
@@ -540,7 +538,7 @@ class LocalPlayerView: UIView {
 
   /* Hide the tool bar, and the navigation controller if in the appropriate state.
    * If there has been a recent interaction, retry in kToolbarDelay seconds. */
-  func hideToolBar() {
+    @objc func hideToolBar() {
     print("hideToolBar \(playerState)")
     if !(playerState == .playing || playerState == .starting) {
       return
@@ -561,7 +559,7 @@ class LocalPlayerView: UIView {
   /* Called when used touches the controlView. Display the controls, and if the
    * user is playing
    * set a timeout to hide them again. */
-  func didTouchControl(_ sender: Any?) {
+    @objc func didTouchControl(_ sender: Any?) {
     print("didTouchControl \(playerState)")
     showControls()
     print("hideNavigationBar: did touch control")

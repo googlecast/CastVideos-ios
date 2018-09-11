@@ -88,7 +88,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     alert.show()
   }
 
-  func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+    @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     let point: CGPoint = gestureRecognizer.location(in: self._tableView)
     if let indexPath = self._tableView.indexPathForRow(at: point) {
       let item: GCKMediaQueueItem? = self.mediaClient.mediaStatus?.queueItem(at: UInt(indexPath.row))

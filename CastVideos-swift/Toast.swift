@@ -73,7 +73,7 @@ class Toast: UIView {
     isToastActive = false
   }
 
-  class func orientationChanged(_ notification: Notification) {
+    @objc class func orientationChanged(_ notification: Notification) {
     if isToastActive {
       activeToast?.removeFromSuperview()
       isToastActive = false
