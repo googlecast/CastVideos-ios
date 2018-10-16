@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F9DD2AD029DBDD2782314F9 /* Pods_CastVideos_objc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 637E433DD77556EEE12772C9 /* Pods_CastVideos_objc.framework */; };
 		10FCA0071E42A2A700BE6122 /* play@3.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCE60BB1CC6CB24000129A3 /* play@3.png */; };
 		10FCA0081E42A2A700BE6122 /* play@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCE60BC1CC6CB24000129A3 /* play@2.png */; };
 		10FCA0091E42A2A700BE6122 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCE60BD1CC6CB24000129A3 /* play.png */; };
@@ -49,16 +50,6 @@
 		10FCA02E1E42A2A700BE6122 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F233F5A1CA46A0A00E484F1 /* Main.storyboard */; };
 		10FCA02F1E42A2AC00BE6122 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F233EBA1CA4610200E484F1 /* Images.xcassets */; };
 		10FCA0301E42A2B300BE6122 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6F233EED1CA4610200E484F1 /* Settings.bundle */; };
-		10FCA03D1E42AB3C00BE6122 /* ActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FCA0311E42AB3C00BE6122 /* ActionSheet.swift */; };
-		10FCA03E1E42AB3C00BE6122 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FCA0321E42AB3C00BE6122 /* AppDelegate.swift */; };
-		10FCA0411E42AB3D00BE6122 /* LocalPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FCA0351E42AB3C00BE6122 /* LocalPlayerView.swift */; };
-		10FCA0421E42AB3D00BE6122 /* MediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FCA0361E42AB3C00BE6122 /* MediaItem.swift */; };
-		10FCA0431E42AB3D00BE6122 /* MediaListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FCA0371E42AB3C00BE6122 /* MediaListModel.swift */; };
-		10FCA0441E42AB3D00BE6122 /* MediaQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FCA0381E42AB3C00BE6122 /* MediaQueueViewController.swift */; };
-		10FCA0451E42AB3D00BE6122 /* MediaTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FCA0391E42AB3C00BE6122 /* MediaTableViewController.swift */; };
-		10FCA0461E42AB3D00BE6122 /* MediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FCA03A1E42AB3C00BE6122 /* MediaViewController.swift */; };
-		10FCA0471E42AB3D00BE6122 /* RootContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FCA03B1E42AB3C00BE6122 /* RootContainerViewController.swift */; };
-		10FCA0481E42AB3D00BE6122 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10FCA03C1E42AB3C00BE6122 /* Toast.swift */; };
 		10FCA0491E42AF6700BE6122 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FCE60A91CC57BFF000129A3 /* QuartzCore.framework */; };
 		10FCA04A1E42AF6700BE6122 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F233F771CA4791000E484F1 /* Foundation.framework */; };
 		10FCA04B1E42AF6700BE6122 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F233F751CA4790200E484F1 /* UIKit.framework */; };
@@ -73,20 +64,9 @@
 		10FCA0541E42AF6700BE6122 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F233F5F1CA4776600E484F1 /* AudioToolbox.framework */; };
 		10FCA0551E42AF6700BE6122 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F233F5D1CA4776100E484F1 /* Accelerate.framework */; };
 		10FCA0561E42AF6C00BE6122 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FAEDDF51CF77F8000E1691F /* libc++.tbd */; };
-		6F1300891CB427810015E8D4 /* RootContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1300881CB427810015E8D4 /* RootContainerViewController.m */; };
-		6F13008E1CB478C40015E8D4 /* MediaItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F13008B1CB478C40015E8D4 /* MediaItem.m */; };
-		6F13008F1CB478C40015E8D4 /* MediaListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F13008D1CB478C40015E8D4 /* MediaListModel.m */; };
 		6F1300911CB47B7A0015E8D4 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F1300901CB47B7A0015E8D4 /* Default-568h@2x.png */; };
 		6F233EF31CA4610200E484F1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F233EBA1CA4610200E484F1 /* Images.xcassets */; };
 		6F233F261CA4610200E484F1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6F233EED1CA4610200E484F1 /* Settings.bundle */; };
-		6F233F491CA4612C00E484F1 /* ActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F233F2F1CA4612C00E484F1 /* ActionSheet.m */; };
-		6F233F4A1CA4612C00E484F1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F233F311CA4612C00E484F1 /* AppDelegate.m */; };
-		6F233F4E1CA4612C00E484F1 /* LocalPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F233F371CA4612C00E484F1 /* LocalPlayerView.m */; };
-		6F233F501CA4612C00E484F1 /* MediaQueueViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F233F3A1CA4612C00E484F1 /* MediaQueueViewController.m */; };
-		6F233F511CA4612C00E484F1 /* MediaTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F233F3C1CA4612C00E484F1 /* MediaTableViewController.m */; };
-		6F233F521CA4612C00E484F1 /* MediaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F233F3E1CA4612C00E484F1 /* MediaViewController.m */; };
-		6F233F561CA4612C00E484F1 /* Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F233F461CA4612C00E484F1 /* Toast.m */; };
-		6F233F591CA4697D00E484F1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6F233F581CA4697D00E484F1 /* InfoPlist.strings */; };
 		6F233F5B1CA46A0A00E484F1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F233F5A1CA46A0A00E484F1 /* Main.storyboard */; };
 		6F233F5E1CA4776100E484F1 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F233F5D1CA4776100E484F1 /* Accelerate.framework */; };
 		6F233F601CA4776600E484F1 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F233F5F1CA4776600E484F1 /* AudioToolbox.framework */; };
@@ -103,7 +83,6 @@
 		6F3F70BD1CB5CFAE006AF097 /* logo_castvideos.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F3F70BB1CB5CFAE006AF097 /* logo_castvideos.png */; };
 		6F3F70BE1CB5CFAE006AF097 /* logo_castvideos@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F3F70BC1CB5CFAE006AF097 /* logo_castvideos@2x.png */; };
 		6FAEDDF61CF77F8100E1691F /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FAEDDF51CF77F8000E1691F /* libc++.tbd */; };
-		6FBC43E41CA3138500AAB267 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FBC43E31CA3138500AAB267 /* main.m */; };
 		6FCE60AA1CC57BFF000129A3 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FCE60A91CC57BFF000129A3 /* QuartzCore.framework */; };
 		6FCE60B41CC6AA85000129A3 /* play_circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCE60B31CC6AA85000129A3 /* play_circle.png */; };
 		6FCE60B81CC6C388000129A3 /* pause_circle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FCE60B51CC6C388000129A3 /* pause_circle@3x.png */; };
@@ -141,45 +120,38 @@
 		6FEF798E1CB8222E001211D3 /* playlist@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF798A1CB8222E001211D3 /* playlist@3x.png */; };
 		6FEF79B41CBC340B001211D3 /* play_circle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF79B21CBC340B001211D3 /* play_circle@2x.png */; };
 		6FEF79B51CBC340B001211D3 /* play_circle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF79B31CBC340B001211D3 /* play_circle@3x.png */; };
+		CDAAEE47DBD3383E2C4014EB /* Pods_CastVideos_swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ACF8F6F322F6EF276A428650 /* Pods_CastVideos_swift.framework */; };
+		D5EA03DE2175448300013FC8 /* MediaListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03C72175448300013FC8 /* MediaListModel.m */; };
+		D5EA03DF2175448300013FC8 /* MediaItem.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03CB2175448300013FC8 /* MediaItem.m */; };
+		D5EA03E02175448300013FC8 /* MediaTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03CD2175448300013FC8 /* MediaTableViewController.m */; };
+		D5EA03E12175448300013FC8 /* LocalPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03CF2175448300013FC8 /* LocalPlayerView.m */; };
+		D5EA03E22175448300013FC8 /* Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03D02175448300013FC8 /* Toast.m */; };
+		D5EA03E32175448300013FC8 /* ActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03D32175448300013FC8 /* ActionSheet.m */; };
+		D5EA03E42175448300013FC8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03D42175448300013FC8 /* AppDelegate.m */; };
+		D5EA03E52175448300013FC8 /* MediaQueueViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03D52175448300013FC8 /* MediaQueueViewController.m */; };
+		D5EA03E62175448300013FC8 /* MediaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03D72175448300013FC8 /* MediaViewController.m */; };
+		D5EA03E72175448300013FC8 /* RootContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03D92175448300013FC8 /* RootContainerViewController.m */; };
+		D5EA03E82175448300013FC8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03DD2175448300013FC8 /* main.m */; };
+		D5EA040D217544B700013FC8 /* MediaTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EA0403217544B700013FC8 /* MediaTableViewController.swift */; };
+		D5EA040E217544B700013FC8 /* RootContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EA0404217544B700013FC8 /* RootContainerViewController.swift */; };
+		D5EA040F217544B700013FC8 /* MediaQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EA0405217544B700013FC8 /* MediaQueueViewController.swift */; };
+		D5EA0410217544B700013FC8 /* MediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EA0406217544B700013FC8 /* MediaItem.swift */; };
+		D5EA0411217544B700013FC8 /* ActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EA0407217544B700013FC8 /* ActionSheet.swift */; };
+		D5EA0412217544B700013FC8 /* MediaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EA0408217544B700013FC8 /* MediaViewController.swift */; };
+		D5EA0413217544B700013FC8 /* LocalPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EA0409217544B700013FC8 /* LocalPlayerView.swift */; };
+		D5EA0414217544B700013FC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EA040A217544B700013FC8 /* AppDelegate.swift */; };
+		D5EA0415217544B700013FC8 /* MediaListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EA040B217544B700013FC8 /* MediaListModel.swift */; };
+		D5EA0416217544B800013FC8 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5EA040C217544B700013FC8 /* Toast.swift */; };
+		D5EA041A217545A800013FC8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D5EA0418217545A700013FC8 /* InfoPlist.strings */; };
+		D5EA041B217545A800013FC8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D5EA0418217545A700013FC8 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		10FC9FF51E42A16F00BE6122 /* CastVideos-swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CastVideos-swift.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		10FCA0311E42AB3C00BE6122 /* ActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionSheet.swift; sourceTree = "<group>"; };
-		10FCA0321E42AB3C00BE6122 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		10FCA0351E42AB3C00BE6122 /* LocalPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalPlayerView.swift; sourceTree = "<group>"; };
-		10FCA0361E42AB3C00BE6122 /* MediaItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaItem.swift; sourceTree = "<group>"; };
-		10FCA0371E42AB3C00BE6122 /* MediaListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaListModel.swift; sourceTree = "<group>"; };
-		10FCA0381E42AB3C00BE6122 /* MediaQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaQueueViewController.swift; sourceTree = "<group>"; };
-		10FCA0391E42AB3C00BE6122 /* MediaTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaTableViewController.swift; sourceTree = "<group>"; };
-		10FCA03A1E42AB3C00BE6122 /* MediaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaViewController.swift; sourceTree = "<group>"; };
-		10FCA03B1E42AB3C00BE6122 /* RootContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootContainerViewController.swift; sourceTree = "<group>"; };
-		10FCA03C1E42AB3C00BE6122 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
-		6F1300871CB427810015E8D4 /* RootContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RootContainerViewController.h; path = Classes/RootContainerViewController.h; sourceTree = "<group>"; };
-		6F1300881CB427810015E8D4 /* RootContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RootContainerViewController.m; path = Classes/RootContainerViewController.m; sourceTree = "<group>"; };
-		6F13008A1CB478C40015E8D4 /* MediaItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaItem.h; path = Classes/MediaItem.h; sourceTree = "<group>"; };
-		6F13008B1CB478C40015E8D4 /* MediaItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaItem.m; path = Classes/MediaItem.m; sourceTree = "<group>"; };
-		6F13008C1CB478C40015E8D4 /* MediaListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaListModel.h; path = Classes/MediaListModel.h; sourceTree = "<group>"; };
-		6F13008D1CB478C40015E8D4 /* MediaListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaListModel.m; path = Classes/MediaListModel.m; sourceTree = "<group>"; };
+		637E433DD77556EEE12772C9 /* Pods_CastVideos_objc.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CastVideos_objc.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F1300901CB47B7A0015E8D4 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Resources/Default-568h@2x.png"; sourceTree = "<group>"; };
 		6F233EBA1CA4610200E484F1 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Resources/Images.xcassets; sourceTree = "<group>"; };
 		6F233EED1CA4610200E484F1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = Resources/Settings.bundle; sourceTree = "<group>"; };
-		6F233F2E1CA4612C00E484F1 /* ActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActionSheet.h; path = Classes/ActionSheet.h; sourceTree = "<group>"; };
-		6F233F2F1CA4612C00E484F1 /* ActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActionSheet.m; path = Classes/ActionSheet.m; sourceTree = "<group>"; };
-		6F233F301CA4612C00E484F1 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; };
-		6F233F311CA4612C00E484F1 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
-		6F233F331CA4612C00E484F1 /* CastVideos-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CastVideos-Prefix.pch"; path = "../Classes/CastVideos-Prefix.pch"; sourceTree = "<group>"; };
-		6F233F361CA4612C00E484F1 /* LocalPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocalPlayerView.h; path = Classes/LocalPlayerView.h; sourceTree = "<group>"; };
-		6F233F371CA4612C00E484F1 /* LocalPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalPlayerView.m; path = Classes/LocalPlayerView.m; sourceTree = "<group>"; };
-		6F233F391CA4612C00E484F1 /* MediaQueueViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaQueueViewController.h; path = Classes/MediaQueueViewController.h; sourceTree = "<group>"; };
-		6F233F3A1CA4612C00E484F1 /* MediaQueueViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaQueueViewController.m; path = Classes/MediaQueueViewController.m; sourceTree = "<group>"; };
-		6F233F3B1CA4612C00E484F1 /* MediaTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaTableViewController.h; path = Classes/MediaTableViewController.h; sourceTree = "<group>"; };
-		6F233F3C1CA4612C00E484F1 /* MediaTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaTableViewController.m; path = Classes/MediaTableViewController.m; sourceTree = "<group>"; };
-		6F233F3D1CA4612C00E484F1 /* MediaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaViewController.h; path = Classes/MediaViewController.h; sourceTree = "<group>"; };
-		6F233F3E1CA4612C00E484F1 /* MediaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaViewController.m; path = Classes/MediaViewController.m; sourceTree = "<group>"; };
-		6F233F451CA4612C00E484F1 /* Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Toast.h; path = Classes/Toast.h; sourceTree = "<group>"; };
-		6F233F461CA4612C00E484F1 /* Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Toast.m; path = Classes/Toast.m; sourceTree = "<group>"; };
-		6F233F581CA4697D00E484F1 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = Classes/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
 		6F233F5A1CA46A0A00E484F1 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Resources/Main.storyboard; sourceTree = "<group>"; };
 		6F233F5D1CA4776100E484F1 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		6F233F5F1CA4776600E484F1 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -196,9 +168,7 @@
 		6F3F70BB1CB5CFAE006AF097 /* logo_castvideos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo_castvideos.png; path = Resources/logo_castvideos.png; sourceTree = "<group>"; };
 		6F3F70BC1CB5CFAE006AF097 /* logo_castvideos@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "logo_castvideos@2x.png"; path = "Resources/logo_castvideos@2x.png"; sourceTree = "<group>"; };
 		6FAEDDF51CF77F8000E1691F /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
-		6FBC43DF1CA3138500AAB267 /* CastVideos-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CastVideos-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6FBC43E31CA3138500AAB267 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		6FBC43F31CA3138500AAB267 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6FBC43DF1CA3138500AAB267 /* CastVideos-objc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CastVideos-objc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FCE60A91CC57BFF000129A3 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6FCE60B31CC6AA85000129A3 /* play_circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = play_circle.png; path = Resources/play_circle.png; sourceTree = "<group>"; };
 		6FCE60B51CC6C388000129A3 /* pause_circle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pause_circle@3x.png"; path = "Resources/pause_circle@3x.png"; sourceTree = "<group>"; };
@@ -236,8 +206,47 @@
 		6FEF798A1CB8222E001211D3 /* playlist@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "playlist@3x.png"; path = "Resources/playlist@3x.png"; sourceTree = "<group>"; };
 		6FEF79B21CBC340B001211D3 /* play_circle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play_circle@2x.png"; path = "Resources/play_circle@2x.png"; sourceTree = "<group>"; };
 		6FEF79B31CBC340B001211D3 /* play_circle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play_circle@3x.png"; path = "Resources/play_circle@3x.png"; sourceTree = "<group>"; };
-		D5A698862164151E003E38DF /* CastVideos-swift.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "CastVideos-swift.entitlements"; sourceTree = "<group>"; };
-		D5A6988721641521003E38DF /* CastVideos-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "CastVideos-ios.entitlements"; path = "CastVideos-ios/CastVideos-ios.entitlements"; sourceTree = "<group>"; };
+		ACF8F6F322F6EF276A428650 /* Pods_CastVideos_swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CastVideos_swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B57DA41DA050702FC44C584C /* Pods-CastVideos-objc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-objc.release.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc.release.xcconfig"; sourceTree = "<group>"; };
+		D5EA03C72175448300013FC8 /* MediaListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaListModel.m; sourceTree = "<group>"; };
+		D5EA03C82175448300013FC8 /* MediaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaViewController.h; sourceTree = "<group>"; };
+		D5EA03C92175448300013FC8 /* MediaQueueViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaQueueViewController.h; sourceTree = "<group>"; };
+		D5EA03CA2175448300013FC8 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		D5EA03CB2175448300013FC8 /* MediaItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaItem.m; sourceTree = "<group>"; };
+		D5EA03CC2175448300013FC8 /* ActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheet.h; sourceTree = "<group>"; };
+		D5EA03CD2175448300013FC8 /* MediaTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaTableViewController.m; sourceTree = "<group>"; };
+		D5EA03CE2175448300013FC8 /* RootContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootContainerViewController.h; sourceTree = "<group>"; };
+		D5EA03CF2175448300013FC8 /* LocalPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalPlayerView.m; sourceTree = "<group>"; };
+		D5EA03D02175448300013FC8 /* Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Toast.m; sourceTree = "<group>"; };
+		D5EA03D12175448300013FC8 /* CastVideos-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CastVideos-Prefix.pch"; sourceTree = "<group>"; };
+		D5EA03D22175448300013FC8 /* MediaListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaListModel.h; sourceTree = "<group>"; };
+		D5EA03D32175448300013FC8 /* ActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheet.m; sourceTree = "<group>"; };
+		D5EA03D42175448300013FC8 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		D5EA03D52175448300013FC8 /* MediaQueueViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaQueueViewController.m; sourceTree = "<group>"; };
+		D5EA03D62175448300013FC8 /* MediaItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaItem.h; sourceTree = "<group>"; };
+		D5EA03D72175448300013FC8 /* MediaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaViewController.m; sourceTree = "<group>"; };
+		D5EA03D82175448300013FC8 /* LocalPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalPlayerView.h; sourceTree = "<group>"; };
+		D5EA03D92175448300013FC8 /* RootContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootContainerViewController.m; sourceTree = "<group>"; };
+		D5EA03DA2175448300013FC8 /* MediaTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaTableViewController.h; sourceTree = "<group>"; };
+		D5EA03DB2175448300013FC8 /* Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Toast.h; sourceTree = "<group>"; };
+		D5EA03DC2175448300013FC8 /* CastVideos-objc.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "CastVideos-objc.entitlements"; sourceTree = "<group>"; };
+		D5EA03DD2175448300013FC8 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D5EA0401217544B700013FC8 /* CastVideos-swift.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "CastVideos-swift.entitlements"; sourceTree = "<group>"; };
+		D5EA0403217544B700013FC8 /* MediaTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaTableViewController.swift; sourceTree = "<group>"; };
+		D5EA0404217544B700013FC8 /* RootContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootContainerViewController.swift; sourceTree = "<group>"; };
+		D5EA0405217544B700013FC8 /* MediaQueueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaQueueViewController.swift; sourceTree = "<group>"; };
+		D5EA0406217544B700013FC8 /* MediaItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaItem.swift; sourceTree = "<group>"; };
+		D5EA0407217544B700013FC8 /* ActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionSheet.swift; sourceTree = "<group>"; };
+		D5EA0408217544B700013FC8 /* MediaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaViewController.swift; sourceTree = "<group>"; };
+		D5EA0409217544B700013FC8 /* LocalPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalPlayerView.swift; sourceTree = "<group>"; };
+		D5EA040A217544B700013FC8 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D5EA040B217544B700013FC8 /* MediaListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaListModel.swift; sourceTree = "<group>"; };
+		D5EA040C217544B700013FC8 /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		D5EA0418217545A700013FC8 /* InfoPlist.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
+		D5EA0419217545A700013FC8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D6E81D9BE23DEC10A8A38E51 /* Pods-CastVideos-objc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-objc.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc.debug.xcconfig"; sourceTree = "<group>"; };
+		DD3EBFC8B8F0C87B13BE4F62 /* Pods-CastVideos-swift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-swift.release.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift.release.xcconfig"; sourceTree = "<group>"; };
+		DECF2C0172234433ACF8129C /* Pods-CastVideos-swift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-swift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -259,6 +268,7 @@
 				10FCA0531E42AF6700BE6122 /* AVFoundation.framework in Frameworks */,
 				10FCA0501E42AF6700BE6122 /* MediaToolbox.framework in Frameworks */,
 				10FCA04F1E42AF6700BE6122 /* MediaPlayer.framework in Frameworks */,
+				CDAAEE47DBD3383E2C4014EB /* Pods_CastVideos_swift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,58 +290,13 @@
 				6F233F621CA4776B00E484F1 /* AVFoundation.framework in Frameworks */,
 				6F233F601CA4776600E484F1 /* AudioToolbox.framework in Frameworks */,
 				6F233F5E1CA4776100E484F1 /* Accelerate.framework in Frameworks */,
+				0F9DD2AD029DBDD2782314F9 /* Pods_CastVideos_objc.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		10FC9FF61E42A16F00BE6122 /* CastVideos-swift */ = {
-			isa = PBXGroup;
-			children = (
-				D5A698862164151E003E38DF /* CastVideos-swift.entitlements */,
-				10FCA0311E42AB3C00BE6122 /* ActionSheet.swift */,
-				10FCA0321E42AB3C00BE6122 /* AppDelegate.swift */,
-				10FCA0351E42AB3C00BE6122 /* LocalPlayerView.swift */,
-				10FCA0361E42AB3C00BE6122 /* MediaItem.swift */,
-				10FCA0371E42AB3C00BE6122 /* MediaListModel.swift */,
-				10FCA0381E42AB3C00BE6122 /* MediaQueueViewController.swift */,
-				10FCA0391E42AB3C00BE6122 /* MediaTableViewController.swift */,
-				10FCA03A1E42AB3C00BE6122 /* MediaViewController.swift */,
-				10FCA03B1E42AB3C00BE6122 /* RootContainerViewController.swift */,
-				10FCA03C1E42AB3C00BE6122 /* Toast.swift */,
-			);
-			path = "CastVideos-swift";
-			sourceTree = "<group>";
-		};
-		6F233EB71CA460AC00E484F1 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				6F13008A1CB478C40015E8D4 /* MediaItem.h */,
-				6F13008B1CB478C40015E8D4 /* MediaItem.m */,
-				6F13008C1CB478C40015E8D4 /* MediaListModel.h */,
-				6F13008D1CB478C40015E8D4 /* MediaListModel.m */,
-				6F1300871CB427810015E8D4 /* RootContainerViewController.h */,
-				6F1300881CB427810015E8D4 /* RootContainerViewController.m */,
-				6F233F2E1CA4612C00E484F1 /* ActionSheet.h */,
-				6F233F2F1CA4612C00E484F1 /* ActionSheet.m */,
-				6F233F301CA4612C00E484F1 /* AppDelegate.h */,
-				6F233F311CA4612C00E484F1 /* AppDelegate.m */,
-				6F233F361CA4612C00E484F1 /* LocalPlayerView.h */,
-				6F233F371CA4612C00E484F1 /* LocalPlayerView.m */,
-				6F233F391CA4612C00E484F1 /* MediaQueueViewController.h */,
-				6F233F3A1CA4612C00E484F1 /* MediaQueueViewController.m */,
-				6F233F3B1CA4612C00E484F1 /* MediaTableViewController.h */,
-				6F233F3C1CA4612C00E484F1 /* MediaTableViewController.m */,
-				6F233F3D1CA4612C00E484F1 /* MediaViewController.h */,
-				6F233F3E1CA4612C00E484F1 /* MediaViewController.m */,
-				6F233F451CA4612C00E484F1 /* Toast.h */,
-				6F233F461CA4612C00E484F1 /* Toast.m */,
-				6FBC43E21CA3138500AAB267 /* Supporting Files */,
-			);
-			name = Classes;
-			sourceTree = "<group>";
-		};
 		6F233EB81CA460B100E484F1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -349,6 +314,8 @@
 				6F233F611CA4776B00E484F1 /* AVFoundation.framework */,
 				6F233F5F1CA4776600E484F1 /* AudioToolbox.framework */,
 				6F233F5D1CA4776100E484F1 /* Accelerate.framework */,
+				637E433DD77556EEE12772C9 /* Pods_CastVideos_objc.framework */,
+				ACF8F6F322F6EF276A428650 /* Pods_CastVideos_swift.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -356,6 +323,7 @@
 		6F233EB91CA460BB00E484F1 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6F233F5A1CA46A0A00E484F1 /* Main.storyboard */,
 				6FCE60BB1CC6CB24000129A3 /* play@3.png */,
 				6FCE60BC1CC6CB24000129A3 /* play@2.png */,
 				6FCE60BD1CC6CB24000129A3 /* play.png */,
@@ -395,7 +363,6 @@
 				6F3F70BB1CB5CFAE006AF097 /* logo_castvideos.png */,
 				6F3F70BC1CB5CFAE006AF097 /* logo_castvideos@2x.png */,
 				6F1300901CB47B7A0015E8D4 /* Default-568h@2x.png */,
-				6F233F5A1CA46A0A00E484F1 /* Main.storyboard */,
 				6F233EBA1CA4610200E484F1 /* Images.xcassets */,
 				6F233EED1CA4610200E484F1 /* Settings.bundle */,
 			);
@@ -405,34 +372,107 @@
 		6FBC43D61CA3138500AAB267 = {
 			isa = PBXGroup;
 			children = (
-				D5A6988721641521003E38DF /* CastVideos-ios.entitlements */,
+				D5EA0400217544B700013FC8 /* CastVideos-swift */,
+				D5EA03C52175448300013FC8 /* CastVideos-objc */,
 				6F233EB91CA460BB00E484F1 /* Resources */,
-				10FC9FF61E42A16F00BE6122 /* CastVideos-swift */,
+				D5EA0417217545A700013FC8 /* Supporting Files */,
 				6F233EB81CA460B100E484F1 /* Frameworks */,
-				6F233EB71CA460AC00E484F1 /* Classes */,
 				6FBC43E01CA3138500AAB267 /* Products */,
+				EFDCCCCCF67943ADFDDD3777 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
 		6FBC43E01CA3138500AAB267 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6FBC43DF1CA3138500AAB267 /* CastVideos-ios.app */,
+				6FBC43DF1CA3138500AAB267 /* CastVideos-objc.app */,
 				10FC9FF51E42A16F00BE6122 /* CastVideos-swift.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		6FBC43E21CA3138500AAB267 /* Supporting Files */ = {
+		D5EA03C52175448300013FC8 /* CastVideos-objc */ = {
 			isa = PBXGroup;
 			children = (
-				6F233F581CA4697D00E484F1 /* InfoPlist.strings */,
-				6FBC43F31CA3138500AAB267 /* Info.plist */,
-				6FBC43E31CA3138500AAB267 /* main.m */,
-				6F233F331CA4612C00E484F1 /* CastVideos-Prefix.pch */,
+				D5EA03C62175448300013FC8 /* Classes */,
+				D5EA03DC2175448300013FC8 /* CastVideos-objc.entitlements */,
+				D5EA03DD2175448300013FC8 /* main.m */,
 			);
-			name = "Supporting Files";
-			path = "CastVideos-ios";
+			path = "CastVideos-objc";
+			sourceTree = "<group>";
+		};
+		D5EA03C62175448300013FC8 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				D5EA03C72175448300013FC8 /* MediaListModel.m */,
+				D5EA03C82175448300013FC8 /* MediaViewController.h */,
+				D5EA03C92175448300013FC8 /* MediaQueueViewController.h */,
+				D5EA03CA2175448300013FC8 /* AppDelegate.h */,
+				D5EA03CB2175448300013FC8 /* MediaItem.m */,
+				D5EA03CC2175448300013FC8 /* ActionSheet.h */,
+				D5EA03CD2175448300013FC8 /* MediaTableViewController.m */,
+				D5EA03CE2175448300013FC8 /* RootContainerViewController.h */,
+				D5EA03CF2175448300013FC8 /* LocalPlayerView.m */,
+				D5EA03D02175448300013FC8 /* Toast.m */,
+				D5EA03D12175448300013FC8 /* CastVideos-Prefix.pch */,
+				D5EA03D22175448300013FC8 /* MediaListModel.h */,
+				D5EA03D32175448300013FC8 /* ActionSheet.m */,
+				D5EA03D42175448300013FC8 /* AppDelegate.m */,
+				D5EA03D52175448300013FC8 /* MediaQueueViewController.m */,
+				D5EA03D62175448300013FC8 /* MediaItem.h */,
+				D5EA03D72175448300013FC8 /* MediaViewController.m */,
+				D5EA03D82175448300013FC8 /* LocalPlayerView.h */,
+				D5EA03D92175448300013FC8 /* RootContainerViewController.m */,
+				D5EA03DA2175448300013FC8 /* MediaTableViewController.h */,
+				D5EA03DB2175448300013FC8 /* Toast.h */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		D5EA0400217544B700013FC8 /* CastVideos-swift */ = {
+			isa = PBXGroup;
+			children = (
+				D5EA0401217544B700013FC8 /* CastVideos-swift.entitlements */,
+				D5EA0402217544B700013FC8 /* Classes */,
+			);
+			path = "CastVideos-swift";
+			sourceTree = "<group>";
+		};
+		D5EA0402217544B700013FC8 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				D5EA0403217544B700013FC8 /* MediaTableViewController.swift */,
+				D5EA0404217544B700013FC8 /* RootContainerViewController.swift */,
+				D5EA0405217544B700013FC8 /* MediaQueueViewController.swift */,
+				D5EA0406217544B700013FC8 /* MediaItem.swift */,
+				D5EA0407217544B700013FC8 /* ActionSheet.swift */,
+				D5EA0408217544B700013FC8 /* MediaViewController.swift */,
+				D5EA0409217544B700013FC8 /* LocalPlayerView.swift */,
+				D5EA040A217544B700013FC8 /* AppDelegate.swift */,
+				D5EA040B217544B700013FC8 /* MediaListModel.swift */,
+				D5EA040C217544B700013FC8 /* Toast.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		D5EA0417217545A700013FC8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D5EA0418217545A700013FC8 /* InfoPlist.strings */,
+				D5EA0419217545A700013FC8 /* Info.plist */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EFDCCCCCF67943ADFDDD3777 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D6E81D9BE23DEC10A8A38E51 /* Pods-CastVideos-objc.debug.xcconfig */,
+				B57DA41DA050702FC44C584C /* Pods-CastVideos-objc.release.xcconfig */,
+				DECF2C0172234433ACF8129C /* Pods-CastVideos-swift.debug.xcconfig */,
+				DD3EBFC8B8F0C87B13BE4F62 /* Pods-CastVideos-swift.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -442,9 +482,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 10FCA0061E42A16F00BE6122 /* Build configuration list for PBXNativeTarget "CastVideos-swift" */;
 			buildPhases = (
+				2D7C3106783B3E105F6BEEF4 /* [CP] Check Pods Manifest.lock */,
 				10FC9FF11E42A16F00BE6122 /* Sources */,
 				10FC9FF21E42A16F00BE6122 /* Frameworks */,
 				10FC9FF31E42A16F00BE6122 /* Resources */,
+				2F0E09231C002D361A5962CF /* [CP] Embed Pods Frameworks */,
+				EDCF677278456D53CB09A1A6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -455,21 +498,24 @@
 			productReference = 10FC9FF51E42A16F00BE6122 /* CastVideos-swift.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6FBC43DE1CA3138500AAB267 /* CastVideos-ios */ = {
+		6FBC43DE1CA3138500AAB267 /* CastVideos-objc */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6FBC43F61CA3138500AAB267 /* Build configuration list for PBXNativeTarget "CastVideos-ios" */;
+			buildConfigurationList = 6FBC43F61CA3138500AAB267 /* Build configuration list for PBXNativeTarget "CastVideos-objc" */;
 			buildPhases = (
+				67FFA091359A54C9DEC8711E /* [CP] Check Pods Manifest.lock */,
 				6FBC43DB1CA3138500AAB267 /* Sources */,
 				6FBC43DC1CA3138500AAB267 /* Frameworks */,
 				6FBC43DD1CA3138500AAB267 /* Resources */,
+				CE81906B30D4EAE698E29E43 /* [CP] Embed Pods Frameworks */,
+				D4F0C6A4A4627F077BC22B88 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "CastVideos-ios";
+			name = "CastVideos-objc";
 			productName = "CastVideosCaf-ios";
-			productReference = 6FBC43DF1CA3138500AAB267 /* CastVideos-ios.app */;
+			productReference = 6FBC43DF1CA3138500AAB267 /* CastVideos-objc.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -479,7 +525,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = Google;
 				TargetAttributes = {
 					10FC9FF41E42A16F00BE6122 = {
@@ -494,6 +540,7 @@
 					};
 					6FBC43DE1CA3138500AAB267 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = EQHXZ8M8AV;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.AccessWiFi = {
@@ -516,7 +563,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6FBC43DE1CA3138500AAB267 /* CastVideos-ios */,
+				6FBC43DE1CA3138500AAB267 /* CastVideos-objc */,
 				10FC9FF41E42A16F00BE6122 /* CastVideos-swift */,
 			);
 		};
@@ -535,6 +582,7 @@
 				10FCA0271E42A2A700BE6122 /* playlist_white@2x.png in Resources */,
 				10FCA0131E42A2A700BE6122 /* volume0.png in Resources */,
 				10FCA00B1E42A2A700BE6122 /* pause@2.png in Resources */,
+				D5EA041B217545A800013FC8 /* InfoPlist.strings in Resources */,
 				10FCA0121E42A2A700BE6122 /* volume0@2x.png in Resources */,
 				10FCA02F1E42A2AC00BE6122 /* Images.xcassets in Resources */,
 				10FCA0161E42A2A700BE6122 /* volume3.png in Resources */,
@@ -588,7 +636,6 @@
 				6FE3DD001CC056690064C1E9 /* media_next@2x.png in Resources */,
 				6FE3DCFA1CC056690064C1E9 /* volume3@3x.png in Resources */,
 				6FE3DD071CC150890064C1E9 /* volume0@2x.png in Resources */,
-				6F233F591CA4697D00E484F1 /* InfoPlist.strings in Resources */,
 				6FE3DCE81CC052EB0064C1E9 /* thumb.png in Resources */,
 				6F233EF31CA4610200E484F1 /* Images.xcassets in Resources */,
 				6FEF798B1CB8222E001211D3 /* playlist_white@2x.png in Resources */,
@@ -601,6 +648,7 @@
 				6FCE60C21CC6CB24000129A3 /* play@2.png in Resources */,
 				6FE3DCEE1CC0557C0064C1E9 /* media_previous@3x.png in Resources */,
 				6FE3DCF01CC0557C0064C1E9 /* media_previous.png in Resources */,
+				D5EA041A217545A800013FC8 /* InfoPlist.strings in Resources */,
 				6FCE60C61CC6CB24000129A3 /* pause.png in Resources */,
 				6FE3DD061CC150890064C1E9 /* volume0@3x.png in Resources */,
 				6FE3DCE31CBF39E20064C1E9 /* overflow_2x.png in Resources */,
@@ -624,21 +672,136 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2D7C3106783B3E105F6BEEF4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CastVideos-swift-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2F0E09231C002D361A5962CF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		67FFA091359A54C9DEC8711E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CastVideos-objc-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CE81906B30D4EAE698E29E43 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D4F0C6A4A4627F077BC22B88 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-resources.sh",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.2_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.2_static/GoogleCast.framework/GoogleCastUIResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastCoreResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastUIResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EDCF677278456D53CB09A1A6 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-resources.sh",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.2_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.2_static/GoogleCast.framework/GoogleCastUIResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastCoreResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastUIResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		10FC9FF11E42A16F00BE6122 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				10FCA0471E42AB3D00BE6122 /* RootContainerViewController.swift in Sources */,
-				10FCA0451E42AB3D00BE6122 /* MediaTableViewController.swift in Sources */,
-				10FCA03E1E42AB3C00BE6122 /* AppDelegate.swift in Sources */,
-				10FCA03D1E42AB3C00BE6122 /* ActionSheet.swift in Sources */,
-				10FCA0421E42AB3D00BE6122 /* MediaItem.swift in Sources */,
-				10FCA0441E42AB3D00BE6122 /* MediaQueueViewController.swift in Sources */,
-				10FCA0431E42AB3D00BE6122 /* MediaListModel.swift in Sources */,
-				10FCA0481E42AB3D00BE6122 /* Toast.swift in Sources */,
-				10FCA0461E42AB3D00BE6122 /* MediaViewController.swift in Sources */,
-				10FCA0411E42AB3D00BE6122 /* LocalPlayerView.swift in Sources */,
+				D5EA0414217544B700013FC8 /* AppDelegate.swift in Sources */,
+				D5EA040F217544B700013FC8 /* MediaQueueViewController.swift in Sources */,
+				D5EA0412217544B700013FC8 /* MediaViewController.swift in Sources */,
+				D5EA0410217544B700013FC8 /* MediaItem.swift in Sources */,
+				D5EA0413217544B700013FC8 /* LocalPlayerView.swift in Sources */,
+				D5EA040E217544B700013FC8 /* RootContainerViewController.swift in Sources */,
+				D5EA0411217544B700013FC8 /* ActionSheet.swift in Sources */,
+				D5EA0416217544B800013FC8 /* Toast.swift in Sources */,
+				D5EA0415217544B700013FC8 /* MediaListModel.swift in Sources */,
+				D5EA040D217544B700013FC8 /* MediaTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -646,17 +809,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F1300891CB427810015E8D4 /* RootContainerViewController.m in Sources */,
-				6F13008E1CB478C40015E8D4 /* MediaItem.m in Sources */,
-				6F233F501CA4612C00E484F1 /* MediaQueueViewController.m in Sources */,
-				6F13008F1CB478C40015E8D4 /* MediaListModel.m in Sources */,
-				6F233F4E1CA4612C00E484F1 /* LocalPlayerView.m in Sources */,
-				6F233F561CA4612C00E484F1 /* Toast.m in Sources */,
-				6FBC43E41CA3138500AAB267 /* main.m in Sources */,
-				6F233F491CA4612C00E484F1 /* ActionSheet.m in Sources */,
-				6F233F4A1CA4612C00E484F1 /* AppDelegate.m in Sources */,
-				6F233F511CA4612C00E484F1 /* MediaTableViewController.m in Sources */,
-				6F233F521CA4612C00E484F1 /* MediaViewController.m in Sources */,
+				D5EA03E22175448300013FC8 /* Toast.m in Sources */,
+				D5EA03E52175448300013FC8 /* MediaQueueViewController.m in Sources */,
+				D5EA03E72175448300013FC8 /* RootContainerViewController.m in Sources */,
+				D5EA03DE2175448300013FC8 /* MediaListModel.m in Sources */,
+				D5EA03DF2175448300013FC8 /* MediaItem.m in Sources */,
+				D5EA03E62175448300013FC8 /* MediaViewController.m in Sources */,
+				D5EA03E32175448300013FC8 /* ActionSheet.m in Sources */,
+				D5EA03E02175448300013FC8 /* MediaTableViewController.m in Sources */,
+				D5EA03E12175448300013FC8 /* LocalPlayerView.m in Sources */,
+				D5EA03E82175448300013FC8 /* main.m in Sources */,
+				D5EA03E42175448300013FC8 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -665,6 +828,7 @@
 /* Begin XCBuildConfiguration section */
 		10FCA0041E42A16F00BE6122 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DECF2C0172234433ACF8129C /* Pods-CastVideos-swift.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -672,13 +836,12 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				DEVELOPMENT_TEAM = "";
 				CODE_SIGN_ENTITLEMENTS = "CastVideos-swift/CastVideos-swift.entitlements";
 				CODE_SIGN_STYLE = Manual;
-				INFOPLIST_FILE = "$(SRCROOT)/CastVideos-ios/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.google.sample.ChromeCast.CastVideos-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.GoogleCast.CastVideos-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -689,6 +852,7 @@
 		};
 		10FCA0051E42A16F00BE6122 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DD3EBFC8B8F0C87B13BE4F62 /* Pods-CastVideos-swift.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -696,13 +860,13 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				DEVELOPMENT_TEAM = "";
 				CODE_SIGN_ENTITLEMENTS = "CastVideos-swift/CastVideos-swift.entitlements";
 				CODE_SIGN_STYLE = Manual;
-				INFOPLIST_FILE = "$(SRCROOT)/CastVideos-ios/Info.plist";
+				DEVELOPMENT_TEAM = EQHXZ8M8AV;
+				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.google.sample.ChromeCast.CastVideos-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.GoogleCast.CastVideos-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
@@ -718,14 +882,22 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -764,14 +936,22 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -799,42 +979,42 @@
 		};
 		6FBC43F71CA3138500AAB267 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D6E81D9BE23DEC10A8A38E51 /* Pods-CastVideos-objc.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
-				CODE_SIGN_ENTITLEMENTS = "CastVideos-ios/CastVideos-ios.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "CastVideos-objc/CastVideos-objc.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/CastVideos-ios/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.google.sample.ChromeCast.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "CastVideos-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.GoogleCast.CastVideos-ios";
+				PRODUCT_NAME = "CastVideos-objc";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		6FBC43F81CA3138500AAB267 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B57DA41DA050702FC44C584C /* Pods-CastVideos-objc.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
-				CODE_SIGN_ENTITLEMENTS = "CastVideos-ios/CastVideos-ios.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "CastVideos-objc/CastVideos-objc.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/CastVideos-ios/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.google.sample.ChromeCast.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "CastVideos-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.GoogleCast.CastVideos-ios";
+				PRODUCT_NAME = "CastVideos-objc";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -860,7 +1040,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6FBC43F61CA3138500AAB267 /* Build configuration list for PBXNativeTarget "CastVideos-ios" */ = {
+		6FBC43F61CA3138500AAB267 /* Build configuration list for PBXNativeTarget "CastVideos-objc" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6FBC43F71CA3138500AAB267 /* Debug */,

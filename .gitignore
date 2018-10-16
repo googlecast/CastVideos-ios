@@ -17,10 +17,8 @@ DerivedData
 *.hmap
 *.xccheckout
 
-#CocoaPods
+# CocoaPods
 Pods
-Podfile.lock
-*.xcworkspace
 
 #CastFramework
 GoogleCast.framework
