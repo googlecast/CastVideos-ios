@@ -20,6 +20,6 @@ DerivedData
 # CocoaPods
 Pods
 
-#CastFramework
+# CastFramework
 GoogleCast.framework
 CastFrameworkAssets.xcassets/*
