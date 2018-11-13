@@ -1,11 +1,14 @@
-platform :ios, '8.0'
-
 use_frameworks!
 
-target 'CastVideos-ios' do
-  pod 'google-cast-sdk', '>=3.2.0'
-end
-target 'CastVideos-swift' do
-  pod 'google-cast-sdk', '>=3.2.0'
+platform :ios, '9.0'
+
+def target_pods
+  pod 'google-cast-sdk', '< 5.0', '>=4.3.3' 
 end
 
+target 'CastVideos-objc' do
+  target_pods
+end
+target 'CastVideos-swift' do
+  target_pods
+end

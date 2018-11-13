@@ -1,13 +1,13 @@
 # CastVideos-ios (reference iOS sender app)
 
-CastVideos-ios application shows how to cast videos from an iOS device in a way that is fully compliant with the Cast Design Checklist.
+This Google Cast demo app shows how to cast videos from an iOS device in a way that is fully compliant with the Cast Design Checklist.
 
 **This is a reference sender app to be used as the starting point for your iOS sender app. The project contains targets for both Objective-C and Swift.**
 
 Here is the list of other reference apps:
 * [Android Sender: CastVideos-android](https://github.com/googlecast/CastVideos-android)
 * [Chrome Sender: CastVideos-chrome](https://github.com/googlecast/CastVideos-chrome)
-* [Receiver: Cast-Player-Sample](https://github.com/googlecast/Cast-Player-Sample)
+* [CAF Receiver: CastReceiver](https://github.com/googlecast/CastReceiver)
 
 ## Dependencies
 * iOS Sender API library : can be downloaded here at: [https://developers.google.com/cast/docs/ios_sender_setup](https://developers.google.com/cast/docs/ios_sender_setup "iOS Sender API library")
@@ -21,16 +21,19 @@ to have your own ID.
 * This sample includes a published app id in the user defaults so the project can be built and run without a need
    to register an app id. If you want to use your own receiver (which is required if you need to debug the receiver),
     update the user defaults or AppDelegate.m with your own app id.
-* XCode setup steps: https://developers.google.com/cast/docs/ios_sender_setup#xcode_setup
+* Xcode setup steps: https://developers.google.com/cast/docs/ios_sender_setup#xcode_setup
 
 ## Documentation
-Google Cast iOS Sender Overview:  [https://developers.google.com/cast/docs/ios_sender_integrate](https://developers.google.com/cast/docs/ios_sender_integrate "Google Cast iOS Sender Overview")
+* [Google Cast iOS Sender Overview](https://developers.google.com/cast/docs/ios_sender/)
+* [Developer Guides](https://developers.google.com/cast/docs/developers)
 
-## References and How to report bugs
-* Cast APIs: [https://developers.google.com/cast/](https://developers.google.com/cast/ "Google Cast Documentation")
-* Google Cast Design Checklist [http://developers.google.com/cast/docs/design_checklist](http://developers.google.com/cast/docs/design_checklist "Google Cast Design Checklist")
-* If you find any issues, please open a bug here on GitHub
-* Question are answered on [StackOverflow](http://stackoverflow.com/questions/tagged/google-cast)
+## References
+* [iOS Sender Reference](https://developers.google.com/cast/docs/reference/ios/)
+* [Design Checklist](http://developers.google.com/cast/docs/design_checklist)
+
+## How to report bugs
+* [Google Cast SDK Support](https://developers.google.com/cast/docs/support)
+* For sample apps issues, please open a bug here on GitHub
 
 ## How to make contributions?
 Please read and follow the steps in the [CONTRIBUTING.md](CONTRIBUTING.md)
@@ -42,4 +45,4 @@ See [LICENSE](LICENSE)
 Your use of this sample is subject to, and by using or downloading the sample files you agree to comply with, the [Google APIs Terms of Service](https://developers.google.com/terms/) and the [Google Cast SDK Additional Developer Terms of Service](https://developers.google.com/cast/docs/terms/).
 
 ## Google+
-Google Cast Developers Community on Google+ [http://goo.gl/TPLDxj](http://goo.gl/TPLDxj)
+[Google Cast Developers Community on Google+](http://goo.gl/TPLDxj)
