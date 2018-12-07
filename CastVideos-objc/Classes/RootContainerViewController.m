@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #import "RootContainerViewController.h"
 
 #import <GoogleCast/GoogleCast.h>
@@ -19,15 +20,13 @@
 
 static const NSTimeInterval kCastControlBarsAnimationDuration = 0.20;
 
-@interface RootContainerViewController ()<
-    GCKUIMiniMediaControlsViewControllerDelegate> {
+@interface RootContainerViewController () <GCKUIMiniMediaControlsViewControllerDelegate> {
   __weak IBOutlet UIView *_miniMediaControlsContainerView;
   __weak IBOutlet NSLayoutConstraint *_miniMediaControlsHeightConstraint;
   GCKUIMiniMediaControlsViewController *_miniMediaControlsViewController;
 }
 
-@property(nonatomic, weak, readwrite)
-    UINavigationController *navigationController;
+@property(nonatomic, weak, readwrite) UINavigationController *navigationController;
 
 @end
 
@@ -36,13 +35,18 @@ static const NSTimeInterval kCastControlBarsAnimationDuration = 0.20;
 - (void)viewDidLoad {
   [super viewDidLoad];
   GCKCastContext *castContext = [GCKCastContext sharedInstance];
-  _miniMediaControlsViewController =
-      [castContext createMiniMediaControlsViewController];
+  _miniMediaControlsViewController = [castContext createMiniMediaControlsViewController];
   _miniMediaControlsViewController.delegate = self;
 
   [self updateControlBarsVisibility];
   [self installViewController:_miniMediaControlsViewController
               inContainerView:_miniMediaControlsContainerView];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+  [super preferredStatusBarStyle];
+
+  return UIStatusBarStyleLightContent;
 }
 
 - (void)setMiniMediaControlsViewEnabled:(BOOL)miniMediaControlsViewEnabled {
@@ -55,10 +59,8 @@ static const NSTimeInterval kCastControlBarsAnimationDuration = 0.20;
 #pragma mark - Internal methods
 
 - (void)updateControlBarsVisibility {
-  if (self.miniMediaControlsViewEnabled &&
-      _miniMediaControlsViewController.active) {
-    _miniMediaControlsHeightConstraint.constant =
-        _miniMediaControlsViewController.minHeight;
+  if (self.miniMediaControlsViewEnabled && _miniMediaControlsViewController.active) {
+    _miniMediaControlsHeightConstraint.constant = _miniMediaControlsViewController.minHeight;
     [self.view bringSubviewToFront:_miniMediaControlsContainerView];
   } else {
     _miniMediaControlsHeightConstraint.constant = 0;
@@ -88,15 +90,14 @@ static const NSTimeInterval kCastControlBarsAnimationDuration = 0.20;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
   if ([segue.identifier isEqualToString:@"NavigationVCEmbedSegue"]) {
-    self.navigationController =
-        (UINavigationController *)segue.destinationViewController;
+    self.navigationController = (UINavigationController *)segue.destinationViewController;
   }
 }
 
 #pragma mark - GCKUIMiniMediaControlsViewControllerDelegate
 
-- (void)miniMediaControlsViewController:(GCKUIMiniMediaControlsViewController *)
-                                            miniMediaControlsViewController
+- (void)miniMediaControlsViewController:
+            (GCKUIMiniMediaControlsViewController *)miniMediaControlsViewController
                            shouldAppear:(BOOL)shouldAppear {
   [self updateControlBarsVisibility];
 }

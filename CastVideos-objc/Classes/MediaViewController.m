@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#import "ActionSheet.h"
 #import "MediaViewController.h"
+#import "ActionSheet.h"
 
 #import <GoogleCast/GoogleCast.h>
 
@@ -31,12 +31,12 @@ typedef NS_ENUM(NSInteger, PlaybackMode) {
   PlaybackModeRemote
 };
 
-static NSString *const kPrefShowStreamTimeRemaining =
-    @"show_stream_time_remaining";
+static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaining";
 
-@interface MediaViewController ()<GCKSessionManagerListener,
-                                  GCKRemoteMediaClientListener,
-                                  LocalPlayerViewDelegate, GCKRequestDelegate> {
+@interface MediaViewController () <GCKSessionManagerListener,
+                                   GCKRemoteMediaClientListener,
+                                   LocalPlayerViewDelegate,
+                                   GCKRequestDelegate> {
   IBOutlet UILabel *_titleLabel;
   IBOutlet UILabel *_subtitleLabel;
   IBOutlet UITextView *_descriptionTextView;
@@ -79,38 +79,35 @@ static NSString *const kPrefShowStreamTimeRemaining =
 
   _localPlayerView.delegate = self;
 
-  _castButton =
-      [[GCKUICastButton alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
+  _castButton = [[GCKUICastButton alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
+  // Overwrite the UIAppearance theme in the AppDelegate.
   _castButton.tintColor = [UIColor whiteColor];
-  self.navigationItem.rightBarButtonItem =
-      [[UIBarButtonItem alloc] initWithCustomView:_castButton];
+  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_castButton];
 
   _playbackMode = PlaybackModeNone;
 
-  _queueButton = [[UIBarButtonItem alloc]
-      initWithImage:[UIImage imageNamed:@"playlist_white.png"]
-              style:UIBarButtonItemStylePlain
-             target:self
-             action:@selector(didTapQueueButton:)];
+  _queueButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"playlist_white.png"]
+                                                  style:UIBarButtonItemStylePlain
+                                                 target:self
+                                                 action:@selector(didTapQueueButton:)];
 
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self
-        selector:@selector(castDeviceDidChange:)
-            name:kGCKCastStateDidChangeNotification
-          object:[GCKCastContext sharedInstance]];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(castDeviceDidChange:)
+                                               name:kGCKCastStateDidChangeNotification
+                                             object:[GCKCastContext sharedInstance]];
 }
 
 - (void)castDeviceDidChange:(NSNotification *)notification {
   if ([GCKCastContext sharedInstance].castState != GCKCastStateNoDevicesAvailable) {
     // You can present the instructions on how to use Google Cast on
     // the first time the user uses you app
-    [[GCKCastContext sharedInstance] presentCastInstructionsViewControllerOnceWithCastButton:_castButton];
+    [[GCKCastContext sharedInstance]
+        presentCastInstructionsViewControllerOnceWithCastButton:_castButton];
   }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-  NSLog(@"viewWillAppear; mediaInfo is %@, mode is %d", self.mediaInfo,
-        (int)_playbackMode);
+  NSLog(@"viewWillAppear; mediaInfo is %@, mode is %d", self.mediaInfo, (int)_playbackMode);
 
   appDelegate.castControlBarsEnabled = YES;
 
@@ -126,24 +123,22 @@ static NSString *const kPrefShowStreamTimeRemaining =
   if (hasConnectedSession && (_playbackMode != PlaybackModeRemote)) {
     [self populateMediaInfo:NO playPosition:0];
     [self switchToRemotePlayback];
-  } else if ((_sessionManager.currentSession == nil) &&
-             (_playbackMode != PlaybackModeLocal)) {
+  } else if ((_sessionManager.currentSession == nil) && (_playbackMode != PlaybackModeLocal)) {
     [self switchToLocalPlayback];
   }
 
   [_sessionManager addListener:self];
 
   _gradient = [CAGradientLayer layer];
-  _gradient.colors = @[(id)[UIColor clearColor].CGColor,
-                      (id)[UIColor colorWithRed:(50 / 255.0)
-                                           green:(50 / 255.0)
-                                            blue:(50 / 255.0)
-                                           alpha:(200 / 255.0)].CGColor];
+  _gradient.colors = @[
+    (id)[UIColor clearColor].CGColor,
+    (id)[UIColor colorWithRed:(50 / 255.0) green:(50 / 255.0) blue:(50 / 255.0) alpha:(200 / 255.0)]
+        .CGColor
+  ];
   _gradient.startPoint = CGPointMake(0, 1);
   _gradient.endPoint = CGPointZero;
 
-  UIInterfaceOrientation orientation =
-      [UIApplication sharedApplication].statusBarOrientation;
+  UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
 
   if (UIInterfaceOrientationIsLandscape(orientation)) {
     [self setNavigationBarStyle:LPVNavBarTransparent];
@@ -151,11 +146,10 @@ static NSString *const kPrefShowStreamTimeRemaining =
     [self setNavigationBarStyle:LPVNavBarDefault];
   }
 
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self
-         selector:@selector(deviceOrientationDidChange:)
-             name:UIDeviceOrientationDidChangeNotification
-           object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(deviceOrientationDidChange:)
+                                               name:UIDeviceOrientationDidChangeNotification
+                                             object:nil];
   [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
   [super viewWillAppear:animated];
@@ -163,14 +157,14 @@ static NSString *const kPrefShowStreamTimeRemaining =
 
 - (void)setQueueButtonVisible:(BOOL)visible {
   if (visible && !_queueAdded) {
-    NSMutableArray *barItems = [[NSMutableArray alloc]
-        initWithArray:self.navigationItem.rightBarButtonItems];
+    NSMutableArray *barItems =
+        [[NSMutableArray alloc] initWithArray:self.navigationItem.rightBarButtonItems];
     [barItems addObject:_queueButton];
     self.navigationItem.rightBarButtonItems = barItems;
     _queueAdded = YES;
   } else if (!visible && _queueAdded) {
-    NSMutableArray *barItems = [[NSMutableArray alloc]
-        initWithArray:self.navigationItem.rightBarButtonItems];
+    NSMutableArray *barItems =
+        [[NSMutableArray alloc] initWithArray:self.navigationItem.rightBarButtonItems];
     [barItems removeObject:_queueButton];
     self.navigationItem.rightBarButtonItems = barItems;
     _queueAdded = NO;
@@ -198,22 +192,19 @@ static NSString *const kPrefShowStreamTimeRemaining =
   [_sessionManager removeListener:self];
 
   [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-  [[NSNotificationCenter defaultCenter]
-      removeObserver:self
-                name:UIDeviceOrientationDidChangeNotification
-              object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                  name:UIDeviceOrientationDidChangeNotification
+                                                object:nil];
 
   [super viewWillDisappear:animated];
 }
 
 - (void)deviceOrientationDidChange:(NSNotification *)notification {
   NSLog(@"Orientation changed.");
-  UIInterfaceOrientation orientation =
-      [UIApplication sharedApplication].statusBarOrientation;
+  UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
   if (UIInterfaceOrientationIsLandscape(orientation)) {
     [self setNavigationBarStyle:LPVNavBarTransparent];
-  } else if (!UIInterfaceOrientationIsLandscape(orientation) ||
-             !_localPlayerView.playingLocally) {
+  } else if (!UIInterfaceOrientationIsLandscape(orientation) || !_localPlayerView.playingLocally) {
     [self setNavigationBarStyle:LPVNavBarDefault];
   }
 
@@ -221,7 +212,7 @@ static NSString *const kPrefShowStreamTimeRemaining =
 }
 
 - (void)setMediaInfo:(GCKMediaInformation *)mediaInfo {
-  NSLog(@"setMediaInfo");
+  NSLog(@"setMediaInfo: %@", mediaInfo);
   if (mediaInfo) {
     _mediaInfo = mediaInfo;
   }
@@ -248,12 +239,10 @@ static NSString *const kPrefShowStreamTimeRemaining =
   BOOL ended = NO;
   if (_playbackMode == PlaybackModeRemote) {
     playPosition = _castMediaController.lastKnownStreamPosition;
-    paused = (_castMediaController.lastKnownPlayerState ==
-              GCKMediaPlayerStatePaused);
-    ended =
-        (_castMediaController.lastKnownPlayerState == GCKMediaPlayerStateIdle);
-    NSLog(@"last player state: %ld, ended: %d",
-          (long)_castMediaController.lastKnownPlayerState, ended);
+    paused = (_castMediaController.lastKnownPlayerState == GCKMediaPlayerStatePaused);
+    ended = (_castMediaController.lastKnownPlayerState == GCKMediaPlayerStateIdle);
+    NSLog(@"last player state: %ld, ended: %d", (long)_castMediaController.lastKnownPlayerState,
+          ended);
   }
 
   [self populateMediaInfo:(!paused && !ended) playPosition:playPosition];
@@ -264,27 +253,20 @@ static NSString *const kPrefShowStreamTimeRemaining =
   _playbackMode = PlaybackModeLocal;
 }
 
-- (void)populateMediaInfo:(BOOL)autoPlay
-             playPosition:(NSTimeInterval)playPosition {
+- (void)populateMediaInfo:(BOOL)autoPlay playPosition:(NSTimeInterval)playPosition {
   NSLog(@"populateMediaInfo");
-  _titleLabel.text =
-      [self.mediaInfo.metadata stringForKey:kGCKMetadataKeyTitle];
+  _titleLabel.text = [self.mediaInfo.metadata stringForKey:kGCKMetadataKeyTitle];
 
-  NSString *subtitle =
-      [self.mediaInfo.metadata stringForKey:kGCKMetadataKeyArtist];
+  NSString *subtitle = [self.mediaInfo.metadata stringForKey:kGCKMetadataKeyArtist];
   if (!subtitle) {
     subtitle = [self.mediaInfo.metadata stringForKey:kGCKMetadataKeyStudio];
   }
   _subtitleLabel.text = subtitle;
 
-  NSString *description =
-      [self.mediaInfo.metadata stringForKey:kMediaKeyDescription];
-  _descriptionTextView.text =
-      [description stringByReplacingOccurrencesOfString:@"\\n"
-                                             withString:@"\n"];
-  [_localPlayerView loadMedia:self.mediaInfo
-                     autoPlay:autoPlay
-                 playPosition:playPosition];
+  NSString *description = [self.mediaInfo.metadata stringForKey:kMediaKeyDescription];
+  _descriptionTextView.text = [description stringByReplacingOccurrencesOfString:@"\\n"
+                                                                     withString:@"\n"];
+  [_localPlayerView loadMedia:self.mediaInfo autoPlay:autoPlay playPosition:playPosition];
 }
 
 - (void)switchToRemotePlayback {
@@ -300,23 +282,20 @@ static NSString *const kPrefShowStreamTimeRemaining =
 
   // If we were playing locally, load the local media on the remote player
   if ((_playbackMode == PlaybackModeLocal) &&
-      (_localPlayerView.playerState != LocalPlayerStateStopped) &&
-      self.mediaInfo) {
+      (_localPlayerView.playerState != LocalPlayerStateStopped) && self.mediaInfo) {
     NSLog(@"loading media: %@", self.mediaInfo);
-    NSTimeInterval playPosition = _localPlayerView.streamPosition;
+
     BOOL paused = (_localPlayerView.playerState == LocalPlayerStatePaused);
     GCKMediaQueueItemBuilder *builder = [[GCKMediaQueueItemBuilder alloc] init];
     builder.mediaInformation = self.mediaInfo;
     builder.autoplay = !paused;
-    builder.preloadTime =
-        [[NSUserDefaults standardUserDefaults] integerForKey:kPrefPreloadTime];
+    builder.preloadTime = [[NSUserDefaults standardUserDefaults] integerForKey:kPrefPreloadTime];
     GCKMediaQueueItem *item = [builder build];
+    GCKMediaQueueLoadOptions *options = [[GCKMediaQueueLoadOptions alloc] init];
+    options.repeatMode = GCKMediaRepeatModeOff;
+    options.playPosition = _localPlayerView.streamPosition;
 
-    [_castSession.remoteMediaClient queueLoadItems:@[ item ]
-                                        startIndex:0
-                                      playPosition:playPosition
-                                        repeatMode:GCKMediaRepeatModeOff
-                                        customData:nil];
+    [_castSession.remoteMediaClient queueLoadItems:@[ item ] withOptions:options];
   }
   [_localPlayerView stop];
   [_localPlayerView showSplashScreen];
@@ -329,15 +308,6 @@ static NSString *const kPrefShowStreamTimeRemaining =
   _titleLabel.text = @"";
   _subtitleLabel.text = @"";
   _descriptionTextView.text = @"";
-}
-
-- (void)showAlertWithTitle:(NSString *)title message:(NSString *)message {
-  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                  message:message
-                                                 delegate:nil
-                                        cancelButtonTitle:@"OK"
-                                        otherButtonTitles:nil];
-  [alert show];
 }
 
 #pragma mark - Local playback UI actions
@@ -356,15 +326,13 @@ static NSString *const kPrefShowStreamTimeRemaining =
 
 #pragma mark - GCKSessionManagerListener
 
-- (void)sessionManager:(GCKSessionManager *)sessionManager
-       didStartSession:(GCKSession *)session {
+- (void)sessionManager:(GCKSessionManager *)sessionManager didStartSession:(GCKSession *)session {
   NSLog(@"MediaViewController: sessionManager didStartSession %@", session);
   [self setQueueButtonVisible:YES];
   [self switchToRemotePlayback];
 }
 
-- (void)sessionManager:(GCKSessionManager *)sessionManager
-      didResumeSession:(GCKSession *)session {
+- (void)sessionManager:(GCKSessionManager *)sessionManager didResumeSession:(GCKSession *)session {
   NSLog(@"MediaViewController: sessionManager didResumeSession %@", session);
   [self setQueueButtonVisible:YES];
   [self switchToRemotePlayback];
@@ -375,8 +343,7 @@ static NSString *const kPrefShowStreamTimeRemaining =
              withError:(NSError *)error {
   NSLog(@"session ended with error: %@", error);
   NSString *message =
-      [NSString stringWithFormat:@"The Casting session has ended.\n%@",
-                                 error.description];
+      [NSString stringWithFormat:@"The Casting session has ended.\n%@", error.description];
 
   [Toast displayToastMessage:message
              forTimeInterval:3
@@ -387,14 +354,20 @@ static NSString *const kPrefShowStreamTimeRemaining =
 
 - (void)sessionManager:(GCKSessionManager *)sessionManager
     didFailToStartSessionWithError:(NSError *)error {
-  [self showAlertWithTitle:@"Failed to start a session"
-                   message:error.description];
+  UIAlertController *alert =
+      [UIAlertController alertControllerWithTitle:@"Failed to start a session"
+                                          message:error.description
+                                   preferredStyle:UIAlertControllerStyleAlert];
+  [alert addAction:[UIAlertAction actionWithTitle:@"Ok"
+                                            style:UIAlertActionStyleDefault
+                                          handler:nil]];
+  [self presentViewController:alert animated:YES completion:nil];
   [self setQueueButtonVisible:NO];
 }
 
 - (void)sessionManager:(GCKSessionManager *)sessionManager
-didFailToResumeSession:(GCKSession *)session
-             withError:(NSError *)error {
+    didFailToResumeSession:(GCKSession *)session
+                 withError:(NSError *)error {
   [Toast displayToastMessage:@"The Casting session could not be resumed."
              forTimeInterval:3
                       inView:[UIApplication sharedApplication].delegate.window];
@@ -425,13 +398,11 @@ didFailToResumeSession:(GCKSession *)session
     self.edgesForExtendedLayout = UIRectEdgeAll;
     [self hideNavigationBar:NO];
     [self.navigationController.navigationBar setTranslucent:NO];
-    [self.navigationController.navigationBar
-        setBackgroundImage:nil
-             forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setBackgroundImage:nil
+                                                  forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = nil;
-    [[UIApplication sharedApplication]
-        setStatusBarHidden:NO
-             withAnimation:UIStatusBarAnimationFade];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO
+                                            withAnimation:UIStatusBarAnimationFade];
     self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     _resetEdgesOnDisappear = NO;
   } else if (style == LPVNavBarTransparent) {
@@ -448,9 +419,8 @@ didFailToResumeSession:(GCKSession *)session
                                                   forBarMetrics:UIBarMetricsDefault];
 
     self.navigationController.navigationBar.shadowImage = [UIImage new];
-    [[UIApplication sharedApplication]
-        setStatusBarHidden:YES
-             withAnimation:UIStatusBarAnimationFade];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES
+                                            withAnimation:UIStatusBarAnimationFade];
     // Disable the swipe gesture if we're fullscreen.
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     _resetEdgesOnDisappear = YES;
@@ -501,8 +471,7 @@ didFailToResumeSession:(GCKSession *)session
   [self loadSelectedItemByAppending:YES];
   NSString *message =
       [NSString stringWithFormat:@"Added \"%@\" to queue.",
-                                 [self.mediaInfo.metadata
-                                     stringForKey:kGCKMetadataKeyTitle]];
+                                 [self.mediaInfo.metadata stringForKey:kGCKMetadataKeyTitle]];
   [Toast displayToastMessage:message
              forTimeInterval:3
                       inView:[UIApplication sharedApplication].delegate.window];
@@ -518,35 +487,31 @@ didFailToResumeSession:(GCKSession *)session
 - (void)loadSelectedItemByAppending:(BOOL)appending {
   NSLog(@"enqueue item %@", self.mediaInfo);
 
-  GCKSession *session =
-      [GCKCastContext sharedInstance].sessionManager.currentSession;
+  GCKSession *session = [GCKCastContext sharedInstance].sessionManager.currentSession;
   if ([session isKindOfClass:[GCKCastSession class]]) {
     GCKCastSession *castSession = (GCKCastSession *)session;
     if (castSession.remoteMediaClient) {
-      GCKMediaQueueItemBuilder *builder =
-          [[GCKMediaQueueItemBuilder alloc] init];
+      GCKMediaQueueItemBuilder *builder = [[GCKMediaQueueItemBuilder alloc] init];
       builder.mediaInformation = self.mediaInfo;
       builder.autoplay = YES;
-      builder.preloadTime = [[NSUserDefaults standardUserDefaults]
-          integerForKey:kPrefPreloadTime];
+      builder.preloadTime = [[NSUserDefaults standardUserDefaults] integerForKey:kPrefPreloadTime];
       GCKMediaQueueItem *item = [builder build];
       if (castSession.remoteMediaClient.mediaStatus && appending) {
-        GCKRequest *request = [castSession.remoteMediaClient
-             queueInsertItem:item
-            beforeItemWithID:kGCKMediaQueueInvalidItemID];
+        GCKRequest *request =
+            [castSession.remoteMediaClient queueInsertItem:item
+                                          beforeItemWithID:kGCKMediaQueueInvalidItemID];
         request.delegate = self;
       } else {
         GCKMediaRepeatMode repeatMode =
             castSession.remoteMediaClient.mediaStatus
                 ? castSession.remoteMediaClient.mediaStatus.queueRepeatMode
                 : GCKMediaRepeatModeOff;
+        GCKMediaQueueLoadOptions *options = [[GCKMediaQueueLoadOptions alloc] init];
+        options.repeatMode = repeatMode;
+        options.playPosition = 0;
 
-        GCKRequest *request =
-            [castSession.remoteMediaClient queueLoadItems:@[ item ]
-                                               startIndex:0
-                                             playPosition:0
-                                               repeatMode:repeatMode
-                                               customData:nil];
+        GCKRequest *request = [castSession.remoteMediaClient queueLoadItems:@[ item ]
+                                                                withOptions:options];
         request.delegate = self;
       }
     }

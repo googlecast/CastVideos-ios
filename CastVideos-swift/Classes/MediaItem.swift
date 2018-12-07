@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import GoogleCast
  * An object representing a media item (or a container group of media items).
  */
 class MediaItem: NSObject {
-
   fileprivate(set) var title: String?
   fileprivate(set) var imageURL: URL?
   var children: [Any]!
@@ -35,7 +34,7 @@ class MediaItem: NSObject {
    */
   init(title: String?, imageURL: URL?, parent: MediaItem?) {
     self.title = title
-    self.children = [Any]()
+    children = [Any]()
     self.imageURL = imageURL
     self.parent = parent
   }

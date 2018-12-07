@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,14 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 import UIKit
+
 // Coordinate to ensure two toasts are never active at once.
 var isToastActive: Bool = false
-
 var activeToast: Toast?
 
 class Toast: UIView {
-
   var messageLabel: UILabel!
   class func displayMessage(_ message: String, for timeInterval: TimeInterval, in view: UIView?) {
     guard let view = view else { return }
@@ -47,15 +47,15 @@ class Toast: UIView {
       view.insertSubview(toast, aboveSubview: view.subviews.last!)
       activeToast = toast
       UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-      NotificationCenter.default.addObserver(self, selector: #selector(self.orientationChanged),
-                                             name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+      NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged),
+                                             name: UIDevice.orientationDidChangeNotification, object: nil)
       // Set the toast's timeout
       DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() +
-          Double(Int64(timeInterval * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {() -> Void in
-        toast.removeFromSuperview()
-        NotificationCenter.default.removeObserver(self)
-        isToastActive = false
-        activeToast = nil
+        Double(Int64(timeInterval * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: { () -> Void in
+          toast.removeFromSuperview()
+          NotificationCenter.default.removeObserver(self)
+          isToastActive = false
+          activeToast = nil
       })
     }
   }
@@ -68,12 +68,12 @@ class Toast: UIView {
     super.init(coder: aDecoder)
   }
 
-  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-    self.removeFromSuperview()
+  override func touchesEnded(_: Set<UITouch>, with _: UIEvent?) {
+    removeFromSuperview()
     isToastActive = false
   }
 
-    @objc class func orientationChanged(_ notification: Notification) {
+  @objc class func orientationChanged(_: Notification) {
     if isToastActive {
       activeToast?.removeFromSuperview()
       isToastActive = false

@@ -9,9 +9,6 @@ Here is the list of other reference apps:
 * [Chrome Sender: CastVideos-chrome](https://github.com/googlecast/CastVideos-chrome)
 * [CAF Receiver: CastReceiver](https://github.com/googlecast/CastReceiver)
 
-## Dependencies
-* iOS Sender API library : can be downloaded here at: [https://developers.google.com/cast/docs/ios_sender_setup](https://developers.google.com/cast/docs/ios_sender_setup "iOS Sender API library")
-
 ## Setup Instructions
 * Get a Chromecast device and get it set up for development: https://developers.google.com/cast/docs/developers#Get_started
 * [Optional] Register an application on the Developers Console [http://cast.google.com/publish](http://cast.google.com/publish "Google Cast Developer Console"). The easiest would be to use the Styled Media Receiver option there. You will get an App ID when you finish registering your application. This project uses a published Application ID that

@@ -121,6 +121,8 @@
 		6FEF79B41CBC340B001211D3 /* play_circle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF79B21CBC340B001211D3 /* play_circle@2x.png */; };
 		6FEF79B51CBC340B001211D3 /* play_circle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF79B31CBC340B001211D3 /* play_circle@3x.png */; };
 		CDAAEE47DBD3383E2C4014EB /* Pods_CastVideos_swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ACF8F6F322F6EF276A428650 /* Pods_CastVideos_swift.framework */; };
+		D523CD4D21E4207600F0F8D3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D523CD4C21E4207500F0F8D3 /* LaunchScreen.storyboard */; };
+		D523CD4E21E4207600F0F8D3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D523CD4C21E4207500F0F8D3 /* LaunchScreen.storyboard */; };
 		D5EA03DE2175448300013FC8 /* MediaListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03C72175448300013FC8 /* MediaListModel.m */; };
 		D5EA03DF2175448300013FC8 /* MediaItem.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03CB2175448300013FC8 /* MediaItem.m */; };
 		D5EA03E02175448300013FC8 /* MediaTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D5EA03CD2175448300013FC8 /* MediaTableViewController.m */; };
@@ -208,6 +210,7 @@
 		6FEF79B31CBC340B001211D3 /* play_circle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play_circle@3x.png"; path = "Resources/play_circle@3x.png"; sourceTree = "<group>"; };
 		ACF8F6F322F6EF276A428650 /* Pods_CastVideos_swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CastVideos_swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57DA41DA050702FC44C584C /* Pods-CastVideos-objc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-objc.release.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc.release.xcconfig"; sourceTree = "<group>"; };
+		D523CD4C21E4207500F0F8D3 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Resources/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D5EA03C72175448300013FC8 /* MediaListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaListModel.m; sourceTree = "<group>"; };
 		D5EA03C82175448300013FC8 /* MediaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaViewController.h; sourceTree = "<group>"; };
 		D5EA03C92175448300013FC8 /* MediaQueueViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaQueueViewController.h; sourceTree = "<group>"; };
@@ -218,7 +221,6 @@
 		D5EA03CE2175448300013FC8 /* RootContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootContainerViewController.h; sourceTree = "<group>"; };
 		D5EA03CF2175448300013FC8 /* LocalPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalPlayerView.m; sourceTree = "<group>"; };
 		D5EA03D02175448300013FC8 /* Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Toast.m; sourceTree = "<group>"; };
-		D5EA03D12175448300013FC8 /* CastVideos-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CastVideos-Prefix.pch"; sourceTree = "<group>"; };
 		D5EA03D22175448300013FC8 /* MediaListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaListModel.h; sourceTree = "<group>"; };
 		D5EA03D32175448300013FC8 /* ActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheet.m; sourceTree = "<group>"; };
 		D5EA03D42175448300013FC8 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -324,6 +326,7 @@
 			isa = PBXGroup;
 			children = (
 				6F233F5A1CA46A0A00E484F1 /* Main.storyboard */,
+				D523CD4C21E4207500F0F8D3 /* LaunchScreen.storyboard */,
 				6FCE60BB1CC6CB24000129A3 /* play@3.png */,
 				6FCE60BC1CC6CB24000129A3 /* play@2.png */,
 				6FCE60BD1CC6CB24000129A3 /* play.png */,
@@ -396,7 +399,6 @@
 			children = (
 				D5EA03C62175448300013FC8 /* Classes */,
 				D5EA03DC2175448300013FC8 /* CastVideos-objc.entitlements */,
-				D5EA03DD2175448300013FC8 /* main.m */,
 			);
 			path = "CastVideos-objc";
 			sourceTree = "<group>";
@@ -404,27 +406,27 @@
 		D5EA03C62175448300013FC8 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				D5EA03C72175448300013FC8 /* MediaListModel.m */,
-				D5EA03C82175448300013FC8 /* MediaViewController.h */,
-				D5EA03C92175448300013FC8 /* MediaQueueViewController.h */,
+				D5EA03DD2175448300013FC8 /* main.m */,
 				D5EA03CA2175448300013FC8 /* AppDelegate.h */,
-				D5EA03CB2175448300013FC8 /* MediaItem.m */,
-				D5EA03CC2175448300013FC8 /* ActionSheet.h */,
-				D5EA03CD2175448300013FC8 /* MediaTableViewController.m */,
-				D5EA03CE2175448300013FC8 /* RootContainerViewController.h */,
-				D5EA03CF2175448300013FC8 /* LocalPlayerView.m */,
-				D5EA03D02175448300013FC8 /* Toast.m */,
-				D5EA03D12175448300013FC8 /* CastVideos-Prefix.pch */,
-				D5EA03D22175448300013FC8 /* MediaListModel.h */,
-				D5EA03D32175448300013FC8 /* ActionSheet.m */,
 				D5EA03D42175448300013FC8 /* AppDelegate.m */,
-				D5EA03D52175448300013FC8 /* MediaQueueViewController.m */,
-				D5EA03D62175448300013FC8 /* MediaItem.h */,
-				D5EA03D72175448300013FC8 /* MediaViewController.m */,
-				D5EA03D82175448300013FC8 /* LocalPlayerView.h */,
+				D5EA03CE2175448300013FC8 /* RootContainerViewController.h */,
 				D5EA03D92175448300013FC8 /* RootContainerViewController.m */,
 				D5EA03DA2175448300013FC8 /* MediaTableViewController.h */,
+				D5EA03CD2175448300013FC8 /* MediaTableViewController.m */,
+				D5EA03C82175448300013FC8 /* MediaViewController.h */,
+				D5EA03D72175448300013FC8 /* MediaViewController.m */,
+				D5EA03C92175448300013FC8 /* MediaQueueViewController.h */,
+				D5EA03D52175448300013FC8 /* MediaQueueViewController.m */,
+				D5EA03D82175448300013FC8 /* LocalPlayerView.h */,
+				D5EA03CF2175448300013FC8 /* LocalPlayerView.m */,
+				D5EA03CC2175448300013FC8 /* ActionSheet.h */,
+				D5EA03D32175448300013FC8 /* ActionSheet.m */,
+				D5EA03D62175448300013FC8 /* MediaItem.h */,
+				D5EA03CB2175448300013FC8 /* MediaItem.m */,
+				D5EA03D22175448300013FC8 /* MediaListModel.h */,
+				D5EA03C72175448300013FC8 /* MediaListModel.m */,
 				D5EA03DB2175448300013FC8 /* Toast.h */,
+				D5EA03D02175448300013FC8 /* Toast.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -441,14 +443,14 @@
 		D5EA0402217544B700013FC8 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				D5EA0403217544B700013FC8 /* MediaTableViewController.swift */,
-				D5EA0404217544B700013FC8 /* RootContainerViewController.swift */,
-				D5EA0405217544B700013FC8 /* MediaQueueViewController.swift */,
-				D5EA0406217544B700013FC8 /* MediaItem.swift */,
-				D5EA0407217544B700013FC8 /* ActionSheet.swift */,
-				D5EA0408217544B700013FC8 /* MediaViewController.swift */,
-				D5EA0409217544B700013FC8 /* LocalPlayerView.swift */,
 				D5EA040A217544B700013FC8 /* AppDelegate.swift */,
+				D5EA0404217544B700013FC8 /* RootContainerViewController.swift */,
+				D5EA0403217544B700013FC8 /* MediaTableViewController.swift */,
+				D5EA0408217544B700013FC8 /* MediaViewController.swift */,
+				D5EA0405217544B700013FC8 /* MediaQueueViewController.swift */,
+				D5EA0409217544B700013FC8 /* LocalPlayerView.swift */,
+				D5EA0407217544B700013FC8 /* ActionSheet.swift */,
+				D5EA0406217544B700013FC8 /* MediaItem.swift */,
 				D5EA040B217544B700013FC8 /* MediaListModel.swift */,
 				D5EA040C217544B700013FC8 /* Toast.swift */,
 			);
@@ -458,8 +460,8 @@
 		D5EA0417217545A700013FC8 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				D5EA0418217545A700013FC8 /* InfoPlist.strings */,
 				D5EA0419217545A700013FC8 /* Info.plist */,
+				D5EA0418217545A700013FC8 /* InfoPlist.strings */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -530,7 +532,7 @@
 				TargetAttributes = {
 					10FC9FF41E42A16F00BE6122 = {
 						CreatedOnToolsVersion = 8.2.1;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.AccessWiFi = {
@@ -583,6 +585,7 @@
 				10FCA0131E42A2A700BE6122 /* volume0.png in Resources */,
 				10FCA00B1E42A2A700BE6122 /* pause@2.png in Resources */,
 				D5EA041B217545A800013FC8 /* InfoPlist.strings in Resources */,
+				D523CD4E21E4207600F0F8D3 /* LaunchScreen.storyboard in Resources */,
 				10FCA0121E42A2A700BE6122 /* volume0@2x.png in Resources */,
 				10FCA02F1E42A2AC00BE6122 /* Images.xcassets in Resources */,
 				10FCA0161E42A2A700BE6122 /* volume3.png in Resources */,
@@ -633,6 +636,7 @@
 				6FE3DCEA1CC052EB0064C1E9 /* thumb@3x.png in Resources */,
 				6FCE60B91CC6C388000129A3 /* pause_circle@2x.png in Resources */,
 				6FEF798C1CB8222E001211D3 /* playlist_white@3x.png in Resources */,
+				D523CD4D21E4207600F0F8D3 /* LaunchScreen.storyboard in Resources */,
 				6FE3DD001CC056690064C1E9 /* media_next@2x.png in Resources */,
 				6FE3DCFA1CC056690064C1E9 /* volume3@3x.png in Resources */,
 				6FE3DD071CC150890064C1E9 /* volume0@2x.png in Resources */,
@@ -752,8 +756,8 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-resources.sh",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.3_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.3_static/GoogleCast.framework/GoogleCastUIResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.4_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.4_static/GoogleCast.framework/GoogleCastUIResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -772,8 +776,8 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-resources.sh",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.3_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.3_static/GoogleCast.framework/GoogleCastUIResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.4_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.3.4_static/GoogleCast.framework/GoogleCastUIResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -838,6 +842,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CODE_SIGN_ENTITLEMENTS = "CastVideos-swift/CastVideos-swift.entitlements";
 				CODE_SIGN_STYLE = Manual;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -845,8 +850,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -863,14 +868,15 @@
 				CODE_SIGN_ENTITLEMENTS = "CastVideos-swift/CastVideos-swift.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = EQHXZ8M8AV;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.GoogleCast.CastVideos-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -920,7 +926,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -968,7 +974,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -984,17 +990,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "CastVideos-objc/CastVideos-objc.entitlements";
 				CODE_SIGN_STYLE = Manual;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.GoogleCast.CastVideos-ios";
 				PRODUCT_NAME = "CastVideos-objc";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -1005,17 +1008,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "CastVideos-objc/CastVideos-objc.entitlements";
 				CODE_SIGN_STYLE = Manual;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.google.GoogleCast.CastVideos-ios";
 				PRODUCT_NAME = "CastVideos-objc";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

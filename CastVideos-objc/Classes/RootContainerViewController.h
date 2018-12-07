@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
 #import <UIKit/UIKit.h>
 
 @interface RootContainerViewController : UIViewController
-@property(nonatomic, assign, readwrite) BOOL miniMediaControlsViewEnabled;
-@property(nonatomic, weak, readonly)
-    UINavigationController *navigationController;
 
 @property(nonatomic, assign, readwrite) BOOL miniMediaControlsItemEnabled;
+@property(nonatomic, assign, readwrite) BOOL miniMediaControlsViewEnabled;
+@property(nonatomic, weak, readonly) UINavigationController *navigationController;
 
 @end

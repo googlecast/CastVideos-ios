@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,8 +25,9 @@
 
 static NSString *const kPrefMediaListURL = @"media_list_url";
 
-@interface MediaTableViewController ()<
-    GCKSessionManagerListener, MediaListModelDelegate, GCKRequestDelegate> {
+@interface MediaTableViewController () <GCKSessionManagerListener,
+                                        MediaListModelDelegate,
+                                        GCKRequestDelegate> {
   GCKSessionManager *_sessionManager;
   GCKCastSession *_castSession;
   UIImageView *_rootTitleView;
@@ -60,51 +61,46 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   [_sessionManager addListener:self];
 
   _titleView = self.navigationItem.titleView;
-  _rootTitleView = [[UIImageView alloc]
-      initWithImage:[UIImage imageNamed:@"logo_castvideos.png"]];
+  _rootTitleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo_castvideos.png"]];
 
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self
-         selector:@selector(loadMediaList)
-             name:NSUserDefaultsDidChangeNotification
-           object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(loadMediaList)
+                                               name:NSUserDefaultsDidChangeNotification
+                                             object:nil];
   if (!self.rootItem) {
     [self loadMediaList];
   }
 
-  _castButton =
-      [[GCKUICastButton alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
+  _castButton = [[GCKUICastButton alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
+  // Overwrite the UIAppearance theme in the AppDelegate.
   _castButton.tintColor = [UIColor whiteColor];
-  self.navigationItem.rightBarButtonItem =
-      [[UIBarButtonItem alloc] initWithCustomView:_castButton];
+  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_castButton];
 
-  _queueButton = [[UIBarButtonItem alloc]
-      initWithImage:[UIImage imageNamed:@"playlist_white.png"]
-              style:UIBarButtonItemStylePlain
-             target:self
-             action:@selector(didTapQueueButton:)];
+  _queueButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"playlist_white.png"]
+                                                  style:UIBarButtonItemStylePlain
+                                                 target:self
+                                                 action:@selector(didTapQueueButton:)];
 
   self.tableView.separatorColor = [UIColor clearColor];
 
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self
-         selector:@selector(deviceOrientationDidChange:)
-             name:UIDeviceOrientationDidChangeNotification
-           object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(deviceOrientationDidChange:)
+                                               name:UIDeviceOrientationDidChangeNotification
+                                             object:nil];
   [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self
-        selector:@selector(castDeviceDidChange:)
-            name:kGCKCastStateDidChangeNotification
-          object:[GCKCastContext sharedInstance]];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(castDeviceDidChange:)
+                                               name:kGCKCastStateDidChangeNotification
+                                             object:[GCKCastContext sharedInstance]];
 }
 
 - (void)castDeviceDidChange:(NSNotification *)notification {
   if ([GCKCastContext sharedInstance].castState != GCKCastStateNoDevicesAvailable) {
     // You can present the instructions on how to use Google Cast on
     // the first time the user uses you app
-    [[GCKCastContext sharedInstance] presentCastInstructionsViewControllerOnceWithCastButton:_castButton];
+    [[GCKCastContext sharedInstance]
+        presentCastInstructionsViewControllerOnceWithCastButton:_castButton];
   }
 }
 
@@ -114,14 +110,14 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 - (void)setQueueButtonVisible:(BOOL)visible {
   if (visible && !_queueAdded) {
-    NSMutableArray *barItems = [[NSMutableArray alloc]
-        initWithArray:self.navigationItem.rightBarButtonItems];
+    NSMutableArray *barItems =
+        [[NSMutableArray alloc] initWithArray:self.navigationItem.rightBarButtonItems];
     [barItems addObject:_queueButton];
     self.navigationItem.rightBarButtonItems = barItems;
     _queueAdded = YES;
   } else if (!visible && _queueAdded) {
-    NSMutableArray *barItems = [[NSMutableArray alloc]
-        initWithArray:self.navigationItem.rightBarButtonItems];
+    NSMutableArray *barItems =
+        [[NSMutableArray alloc] initWithArray:self.navigationItem.rightBarButtonItems];
     [barItems removeObject:_queueButton];
     self.navigationItem.rightBarButtonItems = barItems;
     _queueAdded = NO;
@@ -137,13 +133,10 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   NSLog(@"viewWillAppear - Table view");
 
   [self.navigationController.navigationBar setTranslucent:NO];
-  [self.navigationController.navigationBar
-      setBackgroundImage:nil
-           forBarMetrics:UIBarMetricsDefault];
+  [self.navigationController.navigationBar setBackgroundImage:nil
+                                                forBarMetrics:UIBarMetricsDefault];
   self.navigationController.navigationBar.shadowImage = nil;
-  [[UIApplication sharedApplication]
-      setStatusBarHidden:NO
-           withAnimation:UIStatusBarAnimationFade];
+  [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
   self.navigationController.interactivePopGestureRecognizer.enabled = YES;
 
   if (!self.rootItem.parent) {
@@ -168,18 +161,15 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView
- numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   return (self.rootItem.children).count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  UITableViewCell *cell =
-      [tableView dequeueReusableCellWithIdentifier:@"MediaCell"];
+  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MediaCell"];
 
-  MediaItem *item =
-      (MediaItem *)(self.rootItem.children)[indexPath.row];
+  MediaItem *item = (MediaItem *)(self.rootItem.children)[indexPath.row];
 
   NSString *detail = nil;
   GCKMediaInformation *mediaInfo = item.mediaInfo;
@@ -197,27 +187,22 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
     NSString *titleText = item.title;
     NSString *ownerText = detail;
 
-    NSString *text =
-        [NSString stringWithFormat:@"%@\n%@", titleText, ownerText];
+    NSString *text = [NSString stringWithFormat:@"%@\n%@", titleText, ownerText];
 
     NSDictionary *attribs = @{
       NSForegroundColorAttributeName : mediaTitle.textColor,
       NSFontAttributeName : mediaTitle.font
     };
     NSMutableAttributedString *attributedText =
-        [[NSMutableAttributedString alloc] initWithString:text
-                                               attributes:attribs];
+        [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
 
     UIColor *blackColor = [UIColor blackColor];
     NSRange titleTextRange = NSMakeRange(0, titleText.length);
-    [attributedText setAttributes:@{
-      NSForegroundColorAttributeName : blackColor
-    }
+    [attributedText setAttributes:@{NSForegroundColorAttributeName : blackColor}
                             range:titleTextRange];
 
     UIColor *lightGrayColor = [UIColor lightGrayColor];
-    NSRange ownerTextRange =
-        NSMakeRange(titleText.length + 1, ownerText.length);
+    NSRange ownerTextRange = NSMakeRange(titleText.length + 1, ownerText.length);
     [attributedText setAttributes:@{
       NSForegroundColorAttributeName : lightGrayColor,
       NSFontAttributeName : [UIFont systemFontOfSize:12]
@@ -238,12 +223,11 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   }
 
   UIImageView *imageView = (UIImageView *)[cell.contentView viewWithTag:3];
-  [[GCKCastContext sharedInstance]
-          .imageCache fetchImageForURL:item.imageURL
-                            completion:^(UIImage *image) {
-                              imageView.image = image;
-                              [cell setNeedsLayout];
-                            }];
+  [[GCKCastContext sharedInstance].imageCache fetchImageForURL:item.imageURL
+                                                    completion:^(UIImage *image) {
+                                                      imageView.image = image;
+                                                      [cell setNeedsLayout];
+                                                    }];
 
   UIButton *addButton = (UIButton *)[cell viewWithTag:4];
   BOOL hasConnectedCastSession =
@@ -261,12 +245,9 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 }
 
 - (IBAction)playButtonClicked:(id)sender {
-  UITableViewCell *tableViewCell =
-      (UITableViewCell *)[sender superview].superview;
-  NSIndexPath *indexPathForCell =
-      [self.tableView indexPathForCell:tableViewCell];
-  selectedItem =
-      (MediaItem *)(self.rootItem.children)[indexPathForCell.row];
+  UITableViewCell *tableViewCell = (UITableViewCell *)[sender superview].superview;
+  NSIndexPath *indexPathForCell = [self.tableView indexPathForCell:tableViewCell];
+  selectedItem = (MediaItem *)(self.rootItem.children)[indexPathForCell.row];
   BOOL hasConnectedCastSession =
       [GCKCastContext sharedInstance].sessionManager.hasConnectedCastSession;
   if (selectedItem.mediaInfo && hasConnectedCastSession) {
@@ -287,8 +268,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   }
 }
 
-- (void)tableView:(UITableView *)tableView
-    didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   MediaItem *item = (self.rootItem.children)[indexPath.row];
 
   if (item.mediaInfo) {
@@ -299,8 +279,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
   NSLog(@"prepareForSegue");
   if ([segue.identifier isEqualToString:@"mediaDetails"]) {
-    MediaViewController *viewController =
-        (MediaViewController *)segue.destinationViewController;
+    MediaViewController *viewController = (MediaViewController *)segue.destinationViewController;
     GCKMediaInformation *mediaInfo = [self getSelectedItem].mediaInfo;
     if (mediaInfo) {
       viewController.mediaInfo = mediaInfo;
@@ -316,10 +295,9 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 - (void)enqueueSelectedItemRemotely {
   [self loadSelectedItemByAppending:YES];
   // selectedItem = [self getSelectedItem];
-  NSString *message =
-      [NSString stringWithFormat:@"Added \"%@\" to queue.",
-                                 [selectedItem.mediaInfo.metadata
-                                     stringForKey:kGCKMetadataKeyTitle]];
+  NSString *message = [NSString
+      stringWithFormat:@"Added \"%@\" to queue.",
+                       [selectedItem.mediaInfo.metadata stringForKey:kGCKMetadataKeyTitle]];
   [Toast displayToastMessage:message
              forTimeInterval:3
                       inView:[UIApplication sharedApplication].delegate.window];
@@ -335,22 +313,19 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 - (void)loadSelectedItemByAppending:(BOOL)appending {
   NSLog(@"enqueue item %@", selectedItem.mediaInfo);
 
-  GCKSession *session =
-      [GCKCastContext sharedInstance].sessionManager.currentSession;
+  GCKSession *session = [GCKCastContext sharedInstance].sessionManager.currentSession;
   if ([session isKindOfClass:[GCKCastSession class]]) {
     GCKCastSession *castSession = (GCKCastSession *)session;
     if (castSession.remoteMediaClient) {
-      GCKMediaQueueItemBuilder *builder =
-          [[GCKMediaQueueItemBuilder alloc] init];
+      GCKMediaQueueItemBuilder *builder = [[GCKMediaQueueItemBuilder alloc] init];
       builder.mediaInformation = selectedItem.mediaInfo;
       builder.autoplay = YES;
-      builder.preloadTime = [[NSUserDefaults standardUserDefaults]
-          integerForKey:kPrefPreloadTime];
+      builder.preloadTime = [[NSUserDefaults standardUserDefaults] integerForKey:kPrefPreloadTime];
       GCKMediaQueueItem *item = [builder build];
       if (castSession.remoteMediaClient.mediaStatus && appending) {
-        GCKRequest *request = [castSession.remoteMediaClient
-             queueInsertItem:item
-            beforeItemWithID:kGCKMediaQueueInvalidItemID];
+        GCKRequest *request =
+            [castSession.remoteMediaClient queueInsertItem:item
+                                          beforeItemWithID:kGCKMediaQueueInvalidItemID];
         request.delegate = self;
       } else {
         GCKMediaRepeatMode repeatMode =
@@ -358,12 +333,12 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
                 ? castSession.remoteMediaClient.mediaStatus.queueRepeatMode
                 : GCKMediaRepeatModeOff;
 
-        GCKRequest *request =
-            [castSession.remoteMediaClient queueLoadItems:@[ item ]
-                                               startIndex:0
-                                             playPosition:0
-                                               repeatMode:repeatMode
-                                               customData:nil];
+        GCKMediaQueueLoadOptions *options = [[GCKMediaQueueLoadOptions alloc] init];
+        options.repeatMode = repeatMode;
+        options.playPosition = 0;
+
+        GCKRequest *request = [castSession.remoteMediaClient queueLoadItems:@[ item ]
+                                                                withOptions:options];
         request.delegate = self;
       }
     }
@@ -389,17 +364,14 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   [self.tableView reloadData];
 }
 
-- (void)mediaListModel:(MediaListModel *)list
-didFailToLoadWithError:(NSError *)error {
-  NSString *errorMessage =
-      [NSString stringWithFormat:@"Unable to load the media list from\n%@.",
-                                 _mediaListURL.absoluteString];
-  UIAlertView *alert =
-      [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cast Error", nil)
-                                 message:NSLocalizedString(errorMessage, nil)
-                                delegate:nil
-                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                       otherButtonTitles:nil];
+- (void)mediaListModel:(MediaListModel *)list didFailToLoadWithError:(NSError *)error {
+  NSString *errorMessage = [NSString
+      stringWithFormat:@"Unable to load the media list from\n%@.", _mediaListURL.absoluteString];
+  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cast Error", nil)
+                                                  message:NSLocalizedString(errorMessage, nil)
+                                                 delegate:nil
+                                        cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                        otherButtonTitles:nil];
   [alert show];
 }
 
@@ -419,8 +391,7 @@ didFailToLoadWithError:(NSError *)error {
   _mediaListURL = mediaListURL;
 
   // Asynchronously load the media json.
-  AppDelegate *delegate =
-      (AppDelegate *)[UIApplication sharedApplication].delegate;
+  AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
   delegate.mediaList = [[MediaListModel alloc] init];
   self.mediaList = delegate.mediaList;
   self.mediaList.delegate = self;
@@ -429,15 +400,13 @@ didFailToLoadWithError:(NSError *)error {
 
 #pragma mark - GCKSessionManagerListener
 
-- (void)sessionManager:(GCKSessionManager *)sessionManager
-       didStartSession:(GCKSession *)session {
+- (void)sessionManager:(GCKSessionManager *)sessionManager didStartSession:(GCKSession *)session {
   NSLog(@"MediaViewController: sessionManager didStartSession %@", session);
   [self setQueueButtonVisible:YES];
   [self.tableView reloadData];
 }
 
-- (void)sessionManager:(GCKSessionManager *)sessionManager
-      didResumeSession:(GCKSession *)session {
+- (void)sessionManager:(GCKSessionManager *)sessionManager didResumeSession:(GCKSession *)session {
   NSLog(@"MediaViewController: sessionManager didResumeSession %@", session);
   [self setQueueButtonVisible:YES];
   [self.tableView reloadData];
@@ -448,8 +417,7 @@ didFailToLoadWithError:(NSError *)error {
              withError:(NSError *)error {
   NSLog(@"session ended with error: %@", error);
   NSString *message =
-      [NSString stringWithFormat:@"The Casting session has ended.\n%@",
-                                 error.description];
+      [NSString stringWithFormat:@"The Casting session has ended.\n%@", error.description];
 
   [Toast displayToastMessage:message
              forTimeInterval:3
@@ -460,29 +428,26 @@ didFailToLoadWithError:(NSError *)error {
 
 - (void)sessionManager:(GCKSessionManager *)sessionManager
     didFailToStartSessionWithError:(NSError *)error {
-  [self showAlertWithTitle:@"Failed to start a session"
-                   message:error.description];
+  UIAlertController *alert =
+      [UIAlertController alertControllerWithTitle:@"Failed to start a session"
+                                          message:error.description
+                                   preferredStyle:UIAlertControllerStyleAlert];
+  [alert addAction:[UIAlertAction actionWithTitle:@"Ok"
+                                            style:UIAlertActionStyleDefault
+                                          handler:nil]];
+  [self presentViewController:alert animated:YES completion:nil];
   [self setQueueButtonVisible:NO];
   [self.tableView reloadData];
 }
 
 - (void)sessionManager:(GCKSessionManager *)sessionManager
-didFailToResumeSession:(GCKSession *)session
-             withError:(NSError *)error {
+    didFailToResumeSession:(GCKSession *)session
+                 withError:(NSError *)error {
   [Toast displayToastMessage:@"The Casting session could not be resumed."
              forTimeInterval:3
                       inView:[UIApplication sharedApplication].delegate.window];
   [self setQueueButtonVisible:NO];
   [self.tableView reloadData];
-}
-
-- (void)showAlertWithTitle:(NSString *)title message:(NSString *)message {
-  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                  message:message
-                                                 delegate:nil
-                                        cancelButtonTitle:@"OK"
-                                        otherButtonTitles:nil];
-  [alert show];
 }
 
 #pragma mark - GCKRequestDelegate

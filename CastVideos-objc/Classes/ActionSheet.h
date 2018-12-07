@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,11 +21,8 @@
                       message:(NSString *)message
              cancelButtonText:(NSString *)cancelButtonText NS_DESIGNATED_INITIALIZER;
 
-- (void)addActionWithTitle:(NSString *)title
-                    target:(id)target
-                  selector:(SEL)selector;
+- (void)addActionWithTitle:(NSString *)title target:(id)target selector:(SEL)selector;
 
-- (void)presentInController:(UIViewController *)controller
-                 sourceView:(UIView *)sourceView;
+- (void)presentInController:(UIViewController *)controller sourceView:(UIView *)sourceView;
 
 @end

@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,8 +48,7 @@ static Toast *activeToast;
     CGFloat toastHeight = 48;
     CGFloat toastWidth = hostWidth;
     CGFloat verticalOffset = hostHeight - toastHeight;
-    CGRect toastRect =
-        CGRectMake(horizontalOffset, verticalOffset, toastWidth, toastHeight);
+    CGRect toastRect = CGRectMake(horizontalOffset, verticalOffset, toastWidth, toastHeight);
 
     // Init and stylize the toast and message.
     Toast *toast = [[Toast alloc] initWithFrame:toastRect];
@@ -57,8 +56,7 @@ static Toast *activeToast;
                                             green:(50 / 255.0)
                                              blue:(50 / 255.0)
                                             alpha:1];
-    toast.messageLabel = [[UILabel alloc]
-        initWithFrame:CGRectMake(0, 0, toastWidth, toastHeight)];
+    toast.messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, toastWidth, toastHeight)];
     toast.messageLabel.text = message;
     toast.messageLabel.textColor = [UIColor whiteColor];
     toast.messageLabel.textAlignment = NSTextAlignmentCenter;
@@ -71,15 +69,13 @@ static Toast *activeToast;
     activeToast = toast;
 
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-    [[NSNotificationCenter defaultCenter]
-        addObserver:self
-           selector:@selector(orientationChanged:)
-               name:UIDeviceOrientationDidChangeNotification
-             object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(orientationChanged:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
 
     // Set the toast's timeout
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
-                                 (int64_t)(timeInterval * NSEC_PER_SEC)),
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeInterval * NSEC_PER_SEC)),
                    dispatch_get_main_queue(), ^{
                      [toast removeFromSuperview];
                      [[NSNotificationCenter defaultCenter] removeObserver:self];

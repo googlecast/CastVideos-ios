@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,7 @@
 @class GCKMediaInformation;
 
 /* Navigation Bar styles/ */
-typedef NS_ENUM(NSUInteger, LPVNavBarStyle) {
-  LPVNavBarTransparent,
-  LPVNavBarDefault
-};
+typedef NS_ENUM(NSUInteger, LPVNavBarStyle) { LPVNavBarTransparent, LPVNavBarDefault };
 
 @protocol LocalPlayerViewDelegate;
 
@@ -52,19 +49,13 @@ typedef NS_ENUM(NSInteger, LocalPlayerState) {
 
 /* Signal an orientation change has occurred. */
 - (void)orientationChanged;
-
 - (void)loadMedia:(GCKMediaInformation *)media
          autoPlay:(BOOL)autoPlay
      playPosition:(NSTimeInterval)playPosition;
-
 - (void)pause;
-
 - (void)play;
-
 - (void)stop;
-
 - (void)togglePause;
-
 - (void)seekToTime:(NSTimeInterval)time;
 
 /* Reset the state of the player to show the splash screen. */
@@ -73,7 +64,7 @@ typedef NS_ENUM(NSInteger, LocalPlayerState) {
 @end
 
 /* Protocol for callbacks from the LocalPlayerView. */
-@protocol LocalPlayerViewDelegate<NSObject>
+@protocol LocalPlayerViewDelegate <NSObject>
 
 /* Signal the requested style for the view. */
 - (void)setNavigationBarStyle:(LPVNavBarStyle)style;
@@ -85,6 +76,6 @@ typedef NS_ENUM(NSInteger, LocalPlayerState) {
 /* Play has beeen pressed in the LocalPlayerView.
  * Return NO to halt default actions, YES to continue as normal.
  */
-@property (NS_NONATOMIC_IOSONLY, readonly) BOOL continueAfterPlayButtonClicked;
+@property(NS_NONATOMIC_IOSONLY, readonly) BOOL continueAfterPlayButtonClicked;
 
 @end

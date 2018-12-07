@@ -1,13 +1,13 @@
 PODS:
-  - google-cast-sdk (4.3.3):
-    - google-cast-sdk/Core (= 4.3.3)
+  - google-cast-sdk (4.3.4):
+    - google-cast-sdk/Core (= 4.3.4)
     - Protobuf (~> 3.0)
-  - google-cast-sdk/Core (4.3.3):
+  - google-cast-sdk/Core (4.3.4):
     - Protobuf (~> 3.0)
   - Protobuf (3.6.1)
 
 DEPENDENCIES:
-  - google-cast-sdk (< 5.0, >= 4.3.3)
+  - google-cast-sdk (< 5.0, >= 4.3.4)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -15,9 +15,9 @@ SPEC REPOS:
     - Protobuf
 
 SPEC CHECKSUMS:
-  google-cast-sdk: 792980f4fa5afd4f9b91f41d582cc75251648f3a
+  google-cast-sdk: 84c88641be5a09fb0424bb44975a53b1dbd2ee6a
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
 
-PODFILE CHECKSUM: 67a9ce9b9b7541b3c5053a14d55db43f6eb2676a
+PODFILE CHECKSUM: a2dea3cf5e9c35e03475d68888e4d9e3cb6b8aed
 
 COCOAPODS: 1.5.3

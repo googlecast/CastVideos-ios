@@ -127,31 +127,6 @@
 			<string>Receiver App</string>
 		</dict>
 		<dict>
-			<key>Type</key>
-			<string>PSMultiValueSpecifier</string>
-			<key>Title</key>
-			<string>Receiver App ID</string>
-			<key>Key</key>
-			<string>receiver_app_id</string>
-			<key>DefaultValue</key>
-			<string>4F8B3483</string>
-			<key>Titles</key>
-			<array>
-				<string>Prod (4F8B3483)</string>
-				<string>ReferencePlayer (4F8B3483)</string>
-				<string>Staging (4F8B3483)</string>
-				<string>Custom</string>
-			</array>
-			<key>Values</key>
-			<array>
-				<string>4F8B3483</string>
-				<string>4F8B3483</string>
-				<string>4F8B3483</string>
-				<string>4F8B3483</string>
-				<string>use_custom_receiver_app_id</string>
-			</array>
-		</dict>
-		<dict>
 			<key>DefaultValue</key>
 			<string>4F8B3483</string>
 			<key>Type</key>

@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,8 +30,6 @@ static NSInteger kToolbarHeight = 44;
   BOOL _observingMediaPlayer;
   // If there is a pending request to seek to a new position.
   NSTimeInterval _pendingPlayPosition;
-  // If there is a pending request to start playback.
-  BOOL _pendingPlay;
   // If a seek is currently in progress.
   BOOL _seeking;
 }
@@ -40,6 +38,8 @@ static NSInteger kToolbarHeight = 44;
 @property(nonatomic, assign, readwrite) NSTimeInterval streamDuration;
 @property(nonatomic, strong, readwrite) GCKMediaInformation *media;
 @property(nonatomic, assign, readwrite) LocalPlayerState playerState;
+// If there is a pending request to start playback.
+@property(nonatomic, assign, readwrite) BOOL pendingPlay;
 
 /* The aspect ratio constraint for the view. */
 @property(nonatomic, weak) IBOutlet NSLayoutConstraint *viewAspectRatio;
@@ -85,10 +85,8 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - Layout Managment
 
 - (void)layoutSubviews {
-  CGRect frame =
-      self.fullscreen ? [UIScreen mainScreen].bounds : [self fullFrame];
-  if ((NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1) &&
-      self.fullscreen) {
+  CGRect frame = self.fullscreen ? [UIScreen mainScreen].bounds : [self fullFrame];
+  if ((NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1) && self.fullscreen) {
     // Below iOS 8 the bounds don't change with orientation changes.
     frame.size = CGSizeMake(frame.size.height, frame.size.width);
   }
@@ -102,8 +100,8 @@ static NSInteger kToolbarHeight = 44;
 
 /* Update the frame for the toolbar. */
 - (void)layoutToolbar:(CGRect)frame {
-  (self.toolbarView).frame = CGRectMake(0, frame.size.height - kToolbarHeight,
-                                        frame.size.width, kToolbarHeight);
+  (self.toolbarView).frame =
+      CGRectMake(0, frame.size.height - kToolbarHeight, frame.size.width, kToolbarHeight);
 }
 
 /* Return the full frame with no offsets. */
@@ -147,9 +145,8 @@ static NSInteger kToolbarHeight = 44;
 
   // Single-tap control view to bring controls back to the front.
   _controlView = [[UIView alloc] init];
-  self.singleFingerTap = [[UITapGestureRecognizer alloc]
-      initWithTarget:self
-              action:@selector(didTouchControl:)];
+  self.singleFingerTap =
+      [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTouchControl:)];
   [_controlView addGestureRecognizer:self.singleFingerTap];
   [self addSubview:_controlView];
 
@@ -158,8 +155,7 @@ static NSInteger kToolbarHeight = 44;
   self.splashPlayButton = [UIButton buttonWithType:UIButtonTypeSystem];
   self.splashPlayButton.frame = [self fullFrame];
   self.splashPlayButton.contentMode = UIViewContentModeCenter;
-  [self.splashPlayButton setImage:giantPlayButton
-                         forState:UIControlStateNormal];
+  [self.splashPlayButton setImage:giantPlayButton forState:UIControlStateNormal];
   self.splashPlayButton.autoresizingMask =
       UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   [self.splashPlayButton addTarget:self
@@ -180,8 +176,7 @@ static NSInteger kToolbarHeight = 44;
 /* YES if we the local media is playing or paused, NO if casting or on the
  * splash screen. */
 - (BOOL)playingLocally {
-  return self.playerState == LocalPlayerStatePlaying ||
-         self.playerState == LocalPlayerStatePaused;
+  return self.playerState == LocalPlayerStatePlaying || self.playerState == LocalPlayerStatePaused;
 }
 
 - (void)togglePause {
@@ -246,9 +241,9 @@ static NSInteger kToolbarHeight = 44;
 
 /* Returns YES if we should be in fullscreen. */
 - (BOOL)fullscreen {
-  BOOL full = (self.playerState != LocalPlayerStateStopped) &&
-              UIInterfaceOrientationIsLandscape(
-                  [UIApplication sharedApplication].statusBarOrientation);
+  BOOL full =
+      (self.playerState != LocalPlayerStateStopped) &&
+      UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
   NSLog(@"fullscreen=%d", full);
   return full;
 }
@@ -283,11 +278,14 @@ static NSInteger kToolbarHeight = 44;
   NSArray *images = self.media.metadata.images;
   if (images && images.count > 0) {
     GCKImage *image = images[0];
-    [[GCKCastContext sharedInstance]
-            .imageCache fetchImageForURL:image.URL
-                              completion:^(UIImage *image) {
-                                _splashImage.image = image;
-                              }];
+    __weak LocalPlayerView *weakSelf = self;
+    [[GCKCastContext sharedInstance].imageCache fetchImageForURL:image.URL
+                                                      completion:^(UIImage *image) {
+                                                        LocalPlayerView *strongSelf = weakSelf;
+                                                        if (strongSelf) {
+                                                          strongSelf.splashImage.image = image;
+                                                        }
+                                                      }];
   }
 }
 
@@ -360,7 +358,7 @@ static NSInteger kToolbarHeight = 44;
            LocalPlayerView *strongSelf = weakSelf;
            if (strongSelf) {
              if (strongSelf.playerState == LocalPlayerStateStarting) {
-               _pendingPlay = YES;
+               strongSelf.pendingPlay = YES;
              }
              [strongSelf handleSeekFinished];
            }
@@ -396,8 +394,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)notifyStreamPositionChanged:(CMTime)time {
-  if ((_mediaPlayer.currentItem.status != AVPlayerItemStatusReadyToPlay) ||
-      _seeking) {
+  if ((_mediaPlayer.currentItem.status != AVPlayerItemStatusReadyToPlay) || _seeking) {
     return;
   }
 
@@ -405,9 +402,7 @@ static NSInteger kToolbarHeight = 44;
   self.slider.value = self.streamPosition;
 
   NSTimeInterval remainingTime =
-      (self.streamDuration > self.streamPosition)
-          ? (self.streamDuration - self.streamPosition)
-          : 0;
+      (self.streamDuration > self.streamPosition) ? (self.streamDuration - self.streamPosition) : 0;
   if (remainingTime > 0) {
     remainingTime = -remainingTime;
   }
@@ -450,8 +445,7 @@ static NSInteger kToolbarHeight = 44;
     [self loadMediaPlayer];
     self.slider.enabled = NO;
     [self.activityIndicator startAnimating];
-    if (_mediaPlayer.currentItem &&
-        !CMTIME_IS_INDEFINITE(_mediaPlayer.currentItem.duration)) {
+    if (_mediaPlayer.currentItem && !CMTIME_IS_INDEFINITE(_mediaPlayer.currentItem.duration)) {
       [self handleMediaPlayerReady];
     } else {
       self.playerState = LocalPlayerStateStarting;
@@ -503,9 +497,7 @@ static NSInteger kToolbarHeight = 44;
              self.playerState == LocalPlayerStatePaused ||
              self.playerState == LocalPlayerStateStarting) {
     // Play or Pause button based on state.
-    UIImage *image = self.playerState == LocalPlayerStatePaused
-                         ? self.playImage
-                         : self.pauseImage;
+    UIImage *image = self.playerState == LocalPlayerStatePaused ? self.playImage : self.pauseImage;
     [self.playButton setImage:image forState:UIControlStateNormal];
     self.playButton.hidden = NO;
     self.splashPlayButton.hidden = YES;
@@ -545,11 +537,11 @@ static NSInteger kToolbarHeight = 44;
   // Background gradient
   CAGradientLayer *gradient = [CAGradientLayer layer];
   gradient.frame = self.toolbarView.bounds;
-  gradient.colors = @[(id)[UIColor clearColor].CGColor,
-                       (id)[UIColor colorWithRed:(50 / 255.0)
-                                            green:(50 / 255.0)
-                                             blue:(50 / 255.0)
-                                            alpha:(200 / 255.0)].CGColor];
+  gradient.colors = @[
+    (id)[UIColor clearColor].CGColor,
+    (id)[UIColor colorWithRed:(50 / 255.0) green:(50 / 255.0) blue:(50 / 255.0) alpha:(200 / 255.0)]
+        .CGColor
+  ];
   gradient.startPoint = CGPointZero;
   gradient.endPoint = CGPointMake(0, 1);
 
@@ -610,31 +602,24 @@ static NSInteger kToolbarHeight = 44;
   self.activityIndicator = [[UIActivityIndicatorView alloc]
       initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
   self.activityIndicator.hidesWhenStopped = YES;
-  [self.controlView insertSubview:self.activityIndicator
-                     aboveSubview:self.toolbarView];
+  [self.controlView insertSubview:self.activityIndicator aboveSubview:self.toolbarView];
 
   // Layout.
   NSString *hlayout = @"|-[playButton(==40)]-5-[slider(>=120)]"
                       @"-[totalTime(>=40)]-|";
   NSString *vlayout = @"V:|[playButton(==40)]";
-  self.viewsDictionary = @{
-    @"slider" : self.slider,
-    @"totalTime" : self.totalTime,
-    @"playButton" : self.playButton
-  };
+  self.viewsDictionary =
+      @{@"slider" : self.slider, @"totalTime" : self.totalTime, @"playButton" : self.playButton};
   [self.toolbarView
-      addConstraints:
-          [NSLayoutConstraint
-              constraintsWithVisualFormat:hlayout
-                                  options:NSLayoutFormatAlignAllCenterY
-                                  metrics:nil
-                                    views:self.viewsDictionary]];
+      addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:hlayout
+                                                             options:NSLayoutFormatAlignAllCenterY
+                                                             metrics:nil
+                                                               views:self.viewsDictionary]];
   [self.toolbarView
-      addConstraints:[NSLayoutConstraint
-                         constraintsWithVisualFormat:vlayout
-                                             options:0
-                                             metrics:nil
-                                               views:self.viewsDictionary]];
+      addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:vlayout
+                                                             options:0
+                                                             metrics:nil
+                                                               views:self.viewsDictionary]];
 }
 
 /* Hide the tool bar, and the navigation controller if in the appropriate state.
@@ -647,9 +632,7 @@ static NSInteger kToolbarHeight = 44;
   }
   if (self.recentInteraction) {
     self.recentInteraction = NO;
-    [self performSelector:@selector(hideToolBar)
-               withObject:self
-               afterDelay:kToolbarDelay];
+    [self performSelector:@selector(hideToolBar) withObject:self afterDelay:kToolbarDelay];
   } else {
     [UIView animateWithDuration:0.5
         animations:^{
@@ -671,11 +654,8 @@ static NSInteger kToolbarHeight = 44;
   NSLog(@"hideNavigationBar: did touch control");
   [_delegate hideNavigationBar:NO];
   self.recentInteraction = YES;
-  if (self.playerState == LocalPlayerStatePlaying ||
-      self.playerState == LocalPlayerStateStarting) {
-    [self performSelector:@selector(hideToolBar)
-               withObject:self
-               afterDelay:kToolbarDelay];
+  if (self.playerState == LocalPlayerStatePlaying || self.playerState == LocalPlayerStateStarting) {
+    [self performSelector:@selector(hideToolBar) withObject:self afterDelay:kToolbarDelay];
   }
 }
 
@@ -687,21 +667,20 @@ static NSInteger kToolbarHeight = 44;
   NSLog(@"addMediaPlayerObservers");
   // We take a weak reference to self to avoid retain cycles in the block.
   __weak LocalPlayerView *weakSelf = self;
-  _mediaTimeObserver = [_mediaPlayer
-      addPeriodicTimeObserverForInterval:CMTimeMake(1, 1)
-                                   queue:NULL
-                              usingBlock:^(CMTime time) {
-                                LocalPlayerView *strongSelf = weakSelf;
-                                if (strongSelf) {
-                                  [strongSelf notifyStreamPositionChanged:time];
-                                }
-                              }];
+  _mediaTimeObserver =
+      [_mediaPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1)
+                                                 queue:NULL
+                                            usingBlock:^(CMTime time) {
+                                              LocalPlayerView *strongSelf = weakSelf;
+                                              if (strongSelf) {
+                                                [strongSelf notifyStreamPositionChanged:time];
+                                              }
+                                            }];
 
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self
-         selector:@selector(handleMediaPlaybackEnded)
-             name:AVPlayerItemDidPlayToEndTimeNotification
-           object:_mediaPlayer.currentItem];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(handleMediaPlaybackEnded)
+                                               name:AVPlayerItemDidPlayToEndTimeNotification
+                                             object:_mediaPlayer.currentItem];
 
   [_mediaPlayer.currentItem addObserver:self
                              forKeyPath:@"playbackBufferEmpty"
@@ -727,16 +706,13 @@ static NSInteger kToolbarHeight = 44;
     }
 
     if (_mediaPlayer.currentItem) {
-      [[NSNotificationCenter defaultCenter]
-          removeObserver:self
-                    name:AVPlayerItemDidPlayToEndTimeNotification
-                  object:_mediaPlayer.currentItem];
+      [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                      name:AVPlayerItemDidPlayToEndTimeNotification
+                                                    object:_mediaPlayer.currentItem];
     }
 
-    [_mediaPlayer.currentItem removeObserver:self
-                                  forKeyPath:@"playbackBufferEmpty"];
-    [_mediaPlayer.currentItem removeObserver:self
-                                  forKeyPath:@"playbackLikelyToKeepUp"];
+    [_mediaPlayer.currentItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
+    [_mediaPlayer.currentItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
     [_mediaPlayer.currentItem removeObserver:self forKeyPath:@"status"];
     _observingMediaPlayer = NO;
   }

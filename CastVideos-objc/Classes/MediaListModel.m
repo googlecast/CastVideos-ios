@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -63,8 +63,7 @@ static const NSInteger kThumbnailHeight = 720;
 static const NSInteger kPosterWidth = 780;
 static const NSInteger kPosterHeight = 1200;
 
-@interface MediaListModel ()<NSURLConnectionDelegate,
-                             NSURLConnectionDataDelegate> {
+@interface MediaListModel () <NSURLConnectionDelegate, NSURLConnectionDataDelegate> {
   NSURLRequest *_request;
   NSURLConnection *_connection;
   NSMutableData *_responseData;
@@ -114,8 +113,7 @@ static const NSInteger kPosterHeight = 1200;
 
 #pragma mark - NSURLConnectionDelegate
 
-- (void)connection:(NSURLConnection *)connection
-  didFailWithError:(NSError *)error {
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
   _request = nil;
   _responseData = nil;
   _connection = nil;
@@ -125,8 +123,7 @@ static const NSInteger kPosterHeight = 1200;
 
 #pragma mark - NSURLConnectionDataDelegate
 
-- (void)connection:(NSURLConnection *)connection
-didReceiveResponse:(NSURLResponse *)response {
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
   if ([response respondsToSelector:@selector(statusCode)]) {
     _responseStatus = ((NSHTTPURLResponse *)response).statusCode;
   }
@@ -143,17 +140,14 @@ didReceiveResponse:(NSURLResponse *)response {
   GCKLog(@"httpRequest completed with %ld", (long)_responseStatus);
   if (_responseStatus == 200) {
     NSError *error;
-    NSDictionary *jsonData =
-        [NSJSONSerialization JSONObjectWithData:_responseData
-                                        options:kNilOptions
-                                          error:&error];
+    NSDictionary *jsonData = [NSJSONSerialization JSONObjectWithData:_responseData
+                                                             options:kNilOptions
+                                                               error:&error];
     _rootItem = [self decodeMediaTreeFromJSON:jsonData];
     self.loaded = YES;
     [self.delegate mediaListModelDidLoad:self];
   } else {
-    NSError *error = [[NSError alloc] initWithDomain:@"HTTP"
-                                                code:_responseStatus
-                                            userInfo:nil];
+    NSError *error = [[NSError alloc] initWithDomain:@"HTTP" code:_responseStatus userInfo:nil];
     [self.delegate mediaListModel:self didFailToLoadWithError:error];
   }
 }
@@ -161,8 +155,7 @@ didReceiveResponse:(NSURLResponse *)response {
 #pragma mark - JSON decoding
 
 - (MediaItem *)decodeMediaTreeFromJSON:(NSDictionary *)json {
-  MediaItem *rootItem =
-      [[MediaItem alloc] initWithTitle:nil imageURL:nil parent:nil];
+  MediaItem *rootItem = [[MediaItem alloc] initWithTitle:nil imageURL:nil parent:nil];
 
   NSArray *categories = [json gck_arrayForKey:kKeyCategories];
   for (NSDictionary *categoryElement in categories) {
@@ -174,14 +167,11 @@ didReceiveResponse:(NSURLResponse *)response {
     if (mediaList && [mediaList isKindOfClass:[NSArray class]]) {
       self.title = [category gck_stringForKey:kKeyName];
       // Pick the MP4 files only
-      NSString *videosBaseURLString =
-          [category gck_stringForKey:kKeyMP4BaseURL];
+      NSString *videosBaseURLString = [category gck_stringForKey:kKeyMP4BaseURL];
       NSURL *videosBaseURL = [NSURL URLWithString:videosBaseURLString];
-      NSString *imagesBaseURLString =
-          [category gck_stringForKey:kKeyImagesBaseURL];
+      NSString *imagesBaseURLString = [category gck_stringForKey:kKeyImagesBaseURL];
       NSURL *imagesBaseURL = [NSURL URLWithString:imagesBaseURLString];
-      NSString *tracksBaseURLString =
-          [category gck_stringForKey:kKeyTracksBaseURL];
+      NSString *tracksBaseURLString = [category gck_stringForKey:kKeyTracksBaseURL];
       NSURL *tracksBaseURL = [NSURL URLWithString:tracksBaseURLString];
       [self decodeItemListFromArray:mediaList
                            intoItem:rootItem
@@ -219,8 +209,8 @@ didReceiveResponse:(NSURLResponse *)response {
 
     NSString *title = [dict gck_stringForKey:kKeyTitle];
 
-    GCKMediaMetadata *metadata = [[GCKMediaMetadata alloc]
-        initWithMetadataType:GCKMediaMetadataTypeMovie];
+    GCKMediaMetadata *metadata =
+        [[GCKMediaMetadata alloc] initWithMetadataType:GCKMediaMetadataTypeMovie];
     [metadata setString:title forKey:kGCKMetadataKeyTitle];
 
     NSString *mimeType = nil;
@@ -241,8 +231,7 @@ didReceiveResponse:(NSURLResponse *)response {
     }
 
     NSString *imageURLString = [dict gck_stringForKey:kKeyImageURL];
-    NSURL *imageURL =
-        [self buildURLWithString:imageURLString baseURL:imagesBaseURL];
+    NSURL *imageURL = [self buildURLWithString:imageURLString baseURL:imagesBaseURL];
     if (imageURL) {
       [metadata addImage:[[GCKImage alloc] initWithURL:imageURL
                                                  width:kThumbnailWidth
@@ -250,8 +239,7 @@ didReceiveResponse:(NSURLResponse *)response {
     }
 
     NSString *posterURLText = [dict gck_stringForKey:kKeyPosterURL];
-    NSURL *posterURL =
-        [self buildURLWithString:posterURLText baseURL:imagesBaseURL];
+    NSURL *posterURL = [self buildURLWithString:posterURLText baseURL:imagesBaseURL];
     if (posterURL) {
       [metadata setString:posterURL.absoluteString forKey:kMediaKeyPosterURL];
       [metadata addImage:[[GCKImage alloc] initWithURL:posterURL
@@ -288,33 +276,35 @@ didReceiveResponse:(NSURLResponse *)response {
 
       NSURL *url = [self buildURLWithString:contentID baseURL:tracksBaseURL];
 
-      GCKMediaTrack *mediaTrack = [[GCKMediaTrack alloc]
-          initWithIdentifier:identifier
-           contentIdentifier:url.absoluteString
-                 contentType:kDefaultTrackMimeType
-                        type:[self trackTypeFrom:typeString]
-                 textSubtype:[self textTrackSubtypeFrom:subtypeString]
-                        name:name
-                languageCode:language
-                  customData:nil];
+      GCKMediaTrack *mediaTrack =
+          [[GCKMediaTrack alloc] initWithIdentifier:identifier
+                                  contentIdentifier:url.absoluteString
+                                        contentType:kDefaultTrackMimeType
+                                               type:[self trackTypeFrom:typeString]
+                                        textSubtype:[self textTrackSubtypeFrom:subtypeString]
+                                               name:name
+                                       languageCode:language
+                                         customData:nil];
       [mediaTracks addObject:mediaTrack];
     }
     if (mediaTracks.count == 0) {
       mediaTracks = nil;
     }
 
-    GCKMediaInformation *mediaInfo = [[GCKMediaInformation alloc]
-        initWithContentID:url.absoluteString
-               streamType:GCKMediaStreamTypeBuffered
-              contentType:mimeType
-                 metadata:metadata
-           streamDuration:duration
-              mediaTracks:mediaTracks
-           textTrackStyle:_trackStyle
-               customData:nil];
+    // Define information about the media item.
+    GCKMediaInformationBuilder *mediaInfoBuilder =
+        [[GCKMediaInformationBuilder alloc] initWithContentURL:url];
+    // TODO: Remove contentID when sample receiver supports using contentURL
+    mediaInfoBuilder.contentID = url.absoluteString;
+    mediaInfoBuilder.streamDuration = duration;
+    mediaInfoBuilder.streamType = GCKMediaStreamTypeBuffered;
+    mediaInfoBuilder.contentType = mimeType;
+    mediaInfoBuilder.metadata = metadata;
+    mediaInfoBuilder.mediaTracks = mediaTracks;
+    mediaInfoBuilder.textTrackStyle = _trackStyle;
+    GCKMediaInformation *mediaInfo = [mediaInfoBuilder build];
 
-    MediaItem *childItem =
-        [[MediaItem alloc] initWithMediaInformation:mediaInfo parent:item];
+    MediaItem *childItem = [[MediaItem alloc] initWithMediaInformation:mediaInfo parent:item];
     [item.children addObject:childItem];
   }
 }

@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,9 @@
 @class MediaListModel;
 
 extern NSString *const kApplicationID;
-
 extern NSString *const kPrefPreloadTime;
 
-@interface AppDelegate : UIResponder<UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property(nonatomic, strong, readwrite) UIWindow *window;
 @property(nonatomic, strong, readwrite) MediaListModel *mediaList;

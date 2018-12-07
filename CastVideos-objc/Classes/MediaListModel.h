@@ -1,4 +1,6 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+
+
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,7 +57,7 @@ extern NSString *const kMediaKeyDescription;
 /**
  * The delegate protocol for receiving notifications from the model.
  */
-@protocol MediaListModelDelegate<NSObject>
+@protocol MediaListModelDelegate <NSObject>
 
 /**
  * Called when the media list has loaded.
@@ -70,7 +72,6 @@ extern NSString *const kMediaKeyDescription;
  * @param list The media list.
  * @param error The error.
  */
-- (void)mediaListModel:(MediaListModel *)list
-didFailToLoadWithError:(NSError *)error;
+- (void)mediaListModel:(MediaListModel *)list didFailToLoadWithError:(NSError *)error;
 
 @end

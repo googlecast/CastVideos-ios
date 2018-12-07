@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,9 +33,7 @@
   SEL _selector;
 }
 
-- (instancetype)initWithTitle:(NSString *)title
-                       target:(id)target
-                     selector:(SEL)selector {
+- (instancetype)initWithTitle:(NSString *)title target:(id)target selector:(SEL)selector {
   if (self = [super init]) {
     _title = title;
     _target = target;
@@ -55,7 +53,7 @@
 
 @end
 
-@interface ActionSheet ()<UIAlertViewDelegate>
+@interface ActionSheet () <UIAlertViewDelegate>
 
 @end
 
@@ -79,43 +77,37 @@
   return self;
 }
 
-- (void)addActionWithTitle:(NSString *)title
-                    target:(id)target
-                  selector:(SEL)selector {
-  ActionSheetAction *action =
-      [[ActionSheetAction alloc] initWithTitle:title
-                                        target:target
-                                      selector:selector];
+- (void)addActionWithTitle:(NSString *)title target:(id)target selector:(SEL)selector {
+  ActionSheetAction *action = [[ActionSheetAction alloc] initWithTitle:title
+                                                                target:target
+                                                              selector:selector];
   [_actions addObject:action];
 }
 
-- (void)presentInController:(UIViewController *)parent
-                 sourceView:(UIView *)sourceView {
+- (void)presentInController:(UIViewController *)parent sourceView:(UIView *)sourceView {
   if ([UIAlertController class]) {
     // iOS 8+ approach.
-    UIAlertController *controller = [UIAlertController
-        alertControllerWithTitle:_title
-                         message:_message
-                  preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertController *controller =
+        [UIAlertController alertControllerWithTitle:_title
+                                            message:_message
+                                     preferredStyle:UIAlertControllerStyleActionSheet];
 
     for (ActionSheetAction *action in _actions) {
-      UIAlertAction *alertAction =
-          [UIAlertAction actionWithTitle:action.title
-                                   style:UIAlertActionStyleDefault
-                                 handler:^(UIAlertAction *unused) {
-                                   [action trigger];
-                                 }];
+      UIAlertAction *alertAction = [UIAlertAction actionWithTitle:action.title
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction *unused) {
+                                                            [action trigger];
+                                                          }];
       [controller addAction:alertAction];
     }
 
     if (_cancelButtonText) {
-      UIAlertAction *cancelAction = [UIAlertAction
-          actionWithTitle:_cancelButtonText
-                    style:UIAlertActionStyleCancel
-                  handler:^(UIAlertAction *action) {
-                    [controller dismissViewControllerAnimated:YES
-                                                   completion:nil];
-                  }];
+      UIAlertAction *cancelAction =
+          [UIAlertAction actionWithTitle:_cancelButtonText
+                                   style:UIAlertActionStyleCancel
+                                 handler:^(UIAlertAction *action) {
+                                   [controller dismissViewControllerAnimated:YES completion:nil];
+                                 }];
       [controller addAction:cancelAction];
     }
 
@@ -131,15 +123,13 @@
     [parent presentViewController:controller animated:YES completion:nil];
   } else {
     // iOS 7 and below.
-    UIAlertView *alertView =
-        [[UIAlertView alloc] initWithTitle:_title
-                                   message:_message
-                                  delegate:self
-                         cancelButtonTitle:_cancelButtonText
-                         otherButtonTitles:nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:_title
+                                                        message:_message
+                                                       delegate:self
+                                              cancelButtonTitle:_cancelButtonText
+                                              otherButtonTitles:nil];
 
-    _indexedActions =
-        [NSMutableDictionary dictionaryWithCapacity:_actions.count];
+    _indexedActions = [NSMutableDictionary dictionaryWithCapacity:_actions.count];
     for (ActionSheetAction *action in _actions) {
       NSInteger position = [alertView addButtonWithTitle:action.title];
       _indexedActions[@(position)] = action;
@@ -151,15 +141,13 @@
     // is not released (as UIAlertView usually only holds a weak reference to
     // us).
     static char kActionSheetKey;
-    objc_setAssociatedObject(alertView, &kActionSheetKey, self,
-                             OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(alertView, &kActionSheetKey, self, OBJC_ASSOCIATION_RETAIN);
   }
 }
 
 #pragma mark - UIAlertViewDelegate
 
-- (void)alertView:(UIAlertView *)alertView
-    clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
   ActionSheetAction *action = _indexedActions[@(buttonIndex)];
   if (action) {
     [action trigger];

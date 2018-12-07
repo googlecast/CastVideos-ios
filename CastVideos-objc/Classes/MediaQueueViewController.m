@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,9 +19,11 @@
 #import "AppDelegate.h"
 #import "MediaItem.h"
 
-@interface MediaQueueViewController ()<
-    UITableViewDataSource, UITableViewDelegate, GCKSessionManagerListener,
-    GCKRemoteMediaClientListener, GCKRequestDelegate> {
+@interface MediaQueueViewController () <UITableViewDataSource,
+                                        UITableViewDelegate,
+                                        GCKSessionManagerListener,
+                                        GCKRemoteMediaClientListener,
+                                        GCKRequestDelegate> {
   NSTimer *_timer;
 
   // Queue
@@ -47,17 +49,14 @@
 
   _editing = NO;
 
-  GCKSessionManager *sessionManager =
-      [GCKCastContext sharedInstance].sessionManager;
+  GCKSessionManager *sessionManager = [GCKCastContext sharedInstance].sessionManager;
   [sessionManager addListener:self];
   if (sessionManager.hasConnectedCastSession) {
     [self attachToCastSession:sessionManager.currentCastSession];
   }
 
   UILongPressGestureRecognizer *recognizer =
-      [[UILongPressGestureRecognizer alloc]
-          initWithTarget:self
-                  action:@selector(handleLongPress:)];
+      [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
   recognizer.minimumPressDuration = 2.0;  // 2 seconds
   [_tableView addGestureRecognizer:recognizer];
   _tableView.separatorColor = [UIColor clearColor];
@@ -107,12 +106,11 @@
 }
 
 - (void)showErrorMessage:(NSString *)message {
-  UIAlertView *alert =
-      [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil)
-                                 message:message
-                                delegate:nil
-                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                       otherButtonTitles:nil];
+  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil)
+                                                  message:message
+                                                 delegate:nil
+                                        cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                        otherButtonTitles:nil];
   [alert show];
 }
 
@@ -120,8 +118,7 @@
   CGPoint point = [gestureRecognizer locationInView:_tableView];
   NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:point];
   if (indexPath) {
-    GCKMediaQueueItem *item =
-        [_mediaClient.mediaStatus queueItemAtIndex:indexPath.row];
+    GCKMediaQueueItem *item = [_mediaClient.mediaStatus queueItemAtIndex:indexPath.row];
     if (item) {
       [self startRequest:[_mediaClient queueJumpToItemWithID:item.itemID]];
     }
@@ -134,8 +131,7 @@
   return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView
- numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   if (!_mediaClient || !_mediaClient.mediaStatus) {
     return 0;
   }
@@ -145,24 +141,18 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  UITableViewCell *cell =
-      [tableView dequeueReusableCellWithIdentifier:@"MediaCell"];
+  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MediaCell"];
 
-  GCKMediaQueueItem *item =
-      [_mediaClient.mediaStatus queueItemAtIndex:indexPath.row];
+  GCKMediaQueueItem *item = [_mediaClient.mediaStatus queueItemAtIndex:indexPath.row];
 
-  NSString *title =
-      [item.mediaInformation.metadata stringForKey:kGCKMetadataKeyTitle];
-  NSString *artist =
-      [item.mediaInformation.metadata stringForKey:kGCKMetadataKeyArtist];
+  NSString *title = [item.mediaInformation.metadata stringForKey:kGCKMetadataKeyTitle];
+  NSString *artist = [item.mediaInformation.metadata stringForKey:kGCKMetadataKeyArtist];
   if (!artist) {
-    artist =
-        [item.mediaInformation.metadata stringForKey:kGCKMetadataKeyStudio];
+    artist = [item.mediaInformation.metadata stringForKey:kGCKMetadataKeyStudio];
   }
   NSString *detail = [NSString
       stringWithFormat:@"(%@) %@",
-                       [GCKUIUtils timeIntervalAsString:item.mediaInformation
-                                                            .streamDuration],
+                       [GCKUIUtils timeIntervalAsString:item.mediaInformation.streamDuration],
                        artist];
   UILabel *mediaTitle = (UILabel *)[cell viewWithTag:1];
   mediaTitle.text = title;
@@ -185,12 +175,11 @@
   if (images && images.count > 0) {
     GCKImage *image = images[0];
 
-    [[GCKCastContext sharedInstance]
-            .imageCache fetchImageForURL:image.URL
-                              completion:^(UIImage *image) {
-                                imageView.image = image;
-                                [cell setNeedsLayout];
-                              }];
+    [[GCKCastContext sharedInstance].imageCache fetchImageForURL:image.URL
+                                                      completion:^(UIImage *image) {
+                                                        imageView.image = image;
+                                                        [cell setNeedsLayout];
+                                                      }];
   }
 
   return cell;
@@ -198,8 +187,7 @@
 
 #pragma mark - UITableViewDelegate
 
-- (BOOL)tableView:(UITableView *)tableView
-    canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
   return YES;
 }
 
@@ -209,12 +197,10 @@
   if (sourceIndexPath.row == destinationIndexPath.row) {
     return;
   }
-  GCKMediaQueueItem *sourceItem =
-      [_mediaClient.mediaStatus queueItemAtIndex:sourceIndexPath.row];
+  GCKMediaQueueItem *sourceItem = [_mediaClient.mediaStatus queueItemAtIndex:sourceIndexPath.row];
   NSUInteger insertBeforeID = kGCKMediaQueueInvalidItemID;
 
-  if (destinationIndexPath.row <
-      (NSInteger)[_mediaClient.mediaStatus queueItemCount] - 1) {
+  if (destinationIndexPath.row < (NSInteger)[_mediaClient.mediaStatus queueItemCount] - 1) {
     GCKMediaQueueItem *beforeItem =
         [_mediaClient.mediaStatus queueItemAtIndex:destinationIndexPath.row];
     insertBeforeID = beforeItem.itemID;
@@ -234,16 +220,14 @@
      forRowAtIndexPath:(NSIndexPath *)indexPath {
   if (editingStyle == UITableViewCellEditingStyleDelete) {
     // Delete row.
-    GCKMediaQueueItem *item =
-        [_mediaClient.mediaStatus queueItemAtIndex:indexPath.row];
+    GCKMediaQueueItem *item = [_mediaClient.mediaStatus queueItemAtIndex:indexPath.row];
     if (item) {
       [self startRequest:[_mediaClient queueRemoveItemWithID:item.itemID]];
     }
   }
 }
 
-- (void)tableView:(UITableView *)tableView
-    didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath {
   // No-op.
 }
 
@@ -264,18 +248,18 @@
 #pragma mark - GCKSessionManagerListener
 
 - (void)sessionManager:(GCKSessionManager *)sessionManager
-   didStartCastSession:(GCKCastSession *)session {
+    didStartCastSession:(GCKCastSession *)session {
   [self attachToCastSession:session];
 }
 
 - (void)sessionManager:(GCKSessionManager *)sessionManager
- didSuspendCastSession:(GCKCastSession *)session
-            withReason:(GCKConnectionSuspendReason)reason {
+    didSuspendCastSession:(GCKCastSession *)session
+               withReason:(GCKConnectionSuspendReason)reason {
   [self detachFromCastSession];
 }
 
 - (void)sessionManager:(GCKSessionManager *)sessionManager
-  didResumeCastSession:(GCKCastSession *)session {
+    didResumeCastSession:(GCKCastSession *)session {
   [self attachToCastSession:session];
 }
 
@@ -317,8 +301,7 @@
     _queueRequest = nil;
     _tableView.userInteractionEnabled = YES;
     [self showErrorMessage:[NSString
-                               stringWithFormat:@"Queue request failed:\n%@",
-                                                error.description]];
+                               stringWithFormat:@"Queue request failed:\n%@", error.description]];
   }
 }
 

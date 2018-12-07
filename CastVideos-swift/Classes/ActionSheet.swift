@@ -1,4 +1,4 @@
-// Copyright 2018 Google Inc. All Rights Reserved.
+// Copyright 2018 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ class ActionSheetAction: NSObject {
   }
 
   func trigger() {
-    if let target=target, let selector = selector, target.responds(to: selector) {
+    if let target = target, let selector = selector, target.responds(to: selector) {
       _ = target.perform(selector)
     }
   }
@@ -47,7 +47,7 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
     self.title = title
     self.message = message
     self.cancelButtonText = cancelButtonText
-    self.actions = [ActionSheetAction]()
+    actions = [ActionSheetAction]()
   }
 
   func addAction(withTitle title: String, target: AnyObject, selector: Selector) {
@@ -61,15 +61,15 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
       let controller = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
       for action: ActionSheetAction in actions {
         let alertAction = UIAlertAction(title: action.title,
-                                        style: .default, handler: {(_ unused: UIAlertAction) -> Void in
-          action.trigger()
+                                        style: .default, handler: { (_: UIAlertAction) -> Void in
+                                          action.trigger()
         })
         controller.addAction(alertAction)
       }
       if let cancelButtonText = cancelButtonText {
         let cancelAction = UIAlertAction(title: cancelButtonText, style: .cancel,
-                                         handler: {(_ action: UIAlertAction) -> Void in
-          controller.dismiss(animated: true)
+                                         handler: { (_: UIAlertAction) -> Void in
+                                           controller.dismiss(animated: true)
         })
         controller.addAction(cancelAction)
       }
@@ -84,30 +84,32 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
       parent.present(controller, animated: true)
     } else {
       // iOS 7 and below.
-      let alertView = UIAlertView(title: title ?? "", message: message ?? "",
-                                  delegate: self, cancelButtonTitle: cancelButtonText, otherButtonTitles: "")
-      indexedActions = [AnyHashable: Any](minimumCapacity: actions.count) as? [Int : ActionSheetAction]
+      let alertView = UIAlertView(title: title ?? "",
+                                  message: message ?? "",
+                                  delegate: self,
+                                  cancelButtonTitle: cancelButtonText,
+                                  otherButtonTitles: "")
+      indexedActions = [AnyHashable: Any](minimumCapacity: actions.count) as? [Int: ActionSheetAction]
       for action: ActionSheetAction in actions {
         let position = alertView.addButton(withTitle: action.title)
         indexedActions?[position] = action
       }
       alertView.show()
       // Hold onto this ActionSheet until the UIAlertView is dismissed. This
-      // ensures that the delegate
-      // is not released (as UIAlertView usually only holds a weak reference to
-      // us).
+      // ensures that the delegate is not released (as UIAlertView usually only
+      // holds a weak reference to us).
       objc_setAssociatedObject(alertView, "", self, .OBJC_ASSOCIATION_RETAIN)
     }
   }
 
   // MARK: - UIAlertViewDelegate
 
-  func alertView(_ alertView: UIAlertView, clickedButtonAt buttonIndex: Int) {
+  func alertView(_: UIAlertView, clickedButtonAt buttonIndex: Int) {
     let action: ActionSheetAction? = indexedActions?[buttonIndex]
     action?.trigger()
   }
 
-  func alertViewCancel(_ alertView: UIAlertView) {
+  func alertViewCancel(_: UIAlertView) {
     indexedActions = nil
   }
 }
