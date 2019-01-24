@@ -21,10 +21,8 @@
 #import "RootContainerViewController.h"
 #import "Toast.h"
 
-// You can add your own app id here that you get by registering with the Google
-// Cast SDK
-// Developer Console https://cast.google.com/publish or use
-// kGCKDefaultMediaReceiverApplicationID
+// You can add your own app id here that you get by registering with the Google Cast SDK
+// Developer Console https://cast.google.com/publish or use kGCKDefaultMediaReceiverApplicationID
 #define kReceiverAppID @"4F8B3483"
 
 NSString *const kPrefPreloadTime = @"preload_time_sec";
