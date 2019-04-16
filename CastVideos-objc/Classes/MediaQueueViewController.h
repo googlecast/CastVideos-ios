@@ -14,8 +14,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import <GoogleCast/GoogleCast.h>
-
 @interface MediaQueueViewController : UIViewController
 
 @end
