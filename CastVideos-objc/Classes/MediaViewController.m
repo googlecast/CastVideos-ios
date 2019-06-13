@@ -42,7 +42,6 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
   IBOutlet UITextView *_descriptionTextView;
   IBOutlet LocalPlayerView *_localPlayerView;
   GCKSessionManager *_sessionManager;
-  GCKCastSession *_castSession;
   GCKUIMediaController *_castMediaController;
   GCKUIDeviceVolumeController *_volumeController;
   BOOL _streamPositionSliderMoving;
@@ -190,6 +189,9 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
   }
 
   [_sessionManager removeListener:self];
+  if (_sessionManager.currentCastSession) {
+    [_sessionManager.currentCastSession.remoteMediaClient removeListener:self];
+  }
 
   [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
   [[NSNotificationCenter defaultCenter] removeObserver:self
@@ -247,8 +249,9 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
 
   [self populateMediaInfo:(!paused && !ended) playPosition:playPosition];
 
-  [_castSession.remoteMediaClient removeListener:self];
-  _castSession = nil;
+  if (_sessionManager.currentCastSession) {
+    [_sessionManager.currentCastSession.remoteMediaClient removeListener:self];
+  }
 
   _playbackMode = PlaybackModeLocal;
 }
@@ -276,10 +279,6 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
     return;
   }
 
-  if ([_sessionManager.currentSession isKindOfClass:[GCKCastSession class]]) {
-    _castSession = (GCKCastSession *)_sessionManager.currentSession;
-  }
-
   // If we were playing locally, load the local media on the remote player
   if ((_playbackMode == PlaybackModeLocal) &&
       (_localPlayerView.playerState != LocalPlayerStateStopped) && self.mediaInfo) {
@@ -290,17 +289,23 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
     builder.mediaInformation = self.mediaInfo;
     builder.autoplay = !paused;
     builder.preloadTime = [[NSUserDefaults standardUserDefaults] integerForKey:kPrefPreloadTime];
+    builder.startTime = _localPlayerView.streamPosition;
     GCKMediaQueueItem *item = [builder build];
-    GCKMediaQueueLoadOptions *options = [[GCKMediaQueueLoadOptions alloc] init];
-    options.repeatMode = GCKMediaRepeatModeOff;
-    options.playPosition = _localPlayerView.streamPosition;
 
-    [_castSession.remoteMediaClient queueLoadItems:@[ item ] withOptions:options];
+    GCKMediaQueueDataBuilder *mediaQueueDataBuilder = [[GCKMediaQueueDataBuilder alloc] initWithQueueType:GCKMediaQueueTypeGeneric];
+    mediaQueueDataBuilder.items = @[item];
+    mediaQueueDataBuilder.repeatMode = GCKMediaRepeatModeOff;
+
+    GCKMediaLoadRequestDataBuilder *loadRequestDataBuilder = [[GCKMediaLoadRequestDataBuilder alloc] init];
+    loadRequestDataBuilder.queueData = [mediaQueueDataBuilder build];
+
+    GCKRequest *request = [_sessionManager.currentCastSession.remoteMediaClient loadMediaWithLoadRequestData:[loadRequestDataBuilder build]];
+    request.delegate = self;
   }
   [_localPlayerView stop];
   [_localPlayerView showSplashScreen];
   [self setQueueButtonVisible:YES];
-  [_castSession.remoteMediaClient addListener:self];
+  [_sessionManager.currentCastSession.remoteMediaClient addListener:self];
   _playbackMode = PlaybackModeRemote;
 }
 
@@ -378,9 +383,7 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
 #pragma mark - GCKRemoteMediaClientListener
 
 - (void)remoteMediaClient:(GCKRemoteMediaClient *)player
-     didUpdateMediaStatus:(GCKMediaStatus *)mediaStatus {
-  self.mediaInfo = mediaStatus.mediaInformation;
-}
+     didUpdateMediaStatus:(GCKMediaStatus *)mediaStatus {}
 
 #pragma mark - LocalPlayerViewDelegate
 
@@ -439,8 +442,7 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
 
 /* Play has been pressed in the LocalPlayerView. */
 - (BOOL)continueAfterPlayButtonClicked {
-  BOOL hasConnectedCastSession =
-      [GCKCastContext sharedInstance].sessionManager.hasConnectedCastSession;
+  BOOL hasConnectedCastSession = _sessionManager.hasConnectedCastSession;
   if (self.mediaInfo && hasConnectedCastSession) {
     // Display an alert box to allow the user to add to queue or play
     // immediately.
@@ -464,6 +466,7 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
 
 - (void)playSelectedItemRemotely {
   [self loadSelectedItemByAppending:NO];
+  appDelegate.castControlBarsEnabled = NO;
   [[GCKCastContext sharedInstance] presentDefaultExpandedMediaControls];
 }
 
@@ -487,34 +490,31 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
 - (void)loadSelectedItemByAppending:(BOOL)appending {
   NSLog(@"enqueue item %@", self.mediaInfo);
 
-  GCKSession *session = [GCKCastContext sharedInstance].sessionManager.currentSession;
-  if ([session isKindOfClass:[GCKCastSession class]]) {
-    GCKCastSession *castSession = (GCKCastSession *)session;
-    if (castSession.remoteMediaClient) {
-      GCKMediaQueueItemBuilder *builder = [[GCKMediaQueueItemBuilder alloc] init];
-      builder.mediaInformation = self.mediaInfo;
-      builder.autoplay = YES;
-      builder.preloadTime = [[NSUserDefaults standardUserDefaults] integerForKey:kPrefPreloadTime];
-      GCKMediaQueueItem *item = [builder build];
-      if (castSession.remoteMediaClient.mediaStatus && appending) {
-        GCKRequest *request =
-            [castSession.remoteMediaClient queueInsertItem:item
-                                          beforeItemWithID:kGCKMediaQueueInvalidItemID];
-        request.delegate = self;
-      } else {
-        GCKMediaRepeatMode repeatMode =
-            castSession.remoteMediaClient.mediaStatus
-                ? castSession.remoteMediaClient.mediaStatus.queueRepeatMode
-                : GCKMediaRepeatModeOff;
-        GCKMediaQueueLoadOptions *options = [[GCKMediaQueueLoadOptions alloc] init];
-        options.repeatMode = repeatMode;
-        options.playPosition = 0;
+  GCKCastSession *castSession = _sessionManager.currentCastSession;
+  if (!castSession) return;
+  GCKRemoteMediaClient *remoteMediaClient = castSession.remoteMediaClient;
+  if (!remoteMediaClient) return;
 
-        GCKRequest *request = [castSession.remoteMediaClient queueLoadItems:@[ item ]
-                                                                withOptions:options];
-        request.delegate = self;
-      }
-    }
+  GCKMediaQueueItemBuilder *builder = [[GCKMediaQueueItemBuilder alloc] init];
+  builder.mediaInformation = self.mediaInfo;
+  builder.autoplay = YES;
+  builder.preloadTime = [[NSUserDefaults standardUserDefaults] integerForKey:kPrefPreloadTime];
+  GCKMediaQueueItem *item = [builder build];
+  if (appending) {
+    GCKRequest *request = [remoteMediaClient queueInsertItem:item
+                                            beforeItemWithID:kGCKMediaQueueInvalidItemID];
+    request.delegate = self;
+  } else {
+    GCKMediaRepeatMode repeatMode = remoteMediaClient.mediaStatus ? remoteMediaClient.mediaStatus.queueRepeatMode : GCKMediaRepeatModeOff;
+    GCKMediaQueueDataBuilder *mediaQueueDataBuilder = [[GCKMediaQueueDataBuilder alloc] initWithQueueType:GCKMediaQueueTypeGeneric];
+    mediaQueueDataBuilder.items = @[item];
+    mediaQueueDataBuilder.repeatMode = repeatMode;
+
+    GCKMediaLoadRequestDataBuilder *loadRequestDataBuilder = [[GCKMediaLoadRequestDataBuilder alloc] init];
+    loadRequestDataBuilder.queueData = [mediaQueueDataBuilder build];
+
+    GCKRequest *request = [remoteMediaClient loadMediaWithLoadRequestData:[loadRequestDataBuilder build]];
+    request.delegate = self;
   }
 }
 

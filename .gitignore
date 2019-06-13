@@ -1,6 +1,8 @@
-# Xcode
-.DS_Store
-*/build/*
+## Build generated
+build/
+DerivedData/
+
+## Various settings
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -9,17 +11,18 @@
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata
-profile
+xcuserdata/
+
+## Other
 *.moved-aside
-DerivedData
-.idea/
-*.hmap
 *.xccheckout
+*.xcscmblueprint
+
+## Obj-C/Swift specific
+*.hmap
+*.ipa
+*.dSYM.zip
 
 # CocoaPods
 Pods
-
-# CastFramework
-GoogleCast.framework
-CastFrameworkAssets.xcassets/*
+Podfile.lock

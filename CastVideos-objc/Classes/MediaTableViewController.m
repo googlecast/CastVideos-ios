@@ -29,7 +29,6 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
                                         MediaListModelDelegate,
                                         GCKRequestDelegate> {
   GCKSessionManager *_sessionManager;
-  GCKCastSession *_castSession;
   UIImageView *_rootTitleView;
   UIView *_titleView;
   NSURL *_mediaListURL;
@@ -47,6 +46,14 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 @implementation MediaTableViewController
 
+- (instancetype)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:(NSCoder *)coder];
+  if (self) {
+    _sessionManager = [GCKCastContext sharedInstance].sessionManager;
+  }
+  return self;
+}
+
 - (void)setRootItem:(MediaItem *)rootItem {
   _rootItem = rootItem;
   self.title = rootItem.title;
@@ -57,7 +64,6 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   NSLog(@"MediaTableViewController - viewDidLoad");
   [super viewDidLoad];
 
-  _sessionManager = [GCKCastContext sharedInstance].sessionManager;
   [_sessionManager addListener:self];
 
   _titleView = self.navigationItem.titleView;
@@ -230,8 +236,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
                                                     }];
 
   UIButton *addButton = (UIButton *)[cell viewWithTag:4];
-  BOOL hasConnectedCastSession =
-      [GCKCastContext sharedInstance].sessionManager.hasConnectedCastSession;
+  BOOL hasConnectedCastSession = _sessionManager.hasConnectedCastSession;
   if (hasConnectedCastSession) {
     [addButton setHidden:NO];
     [addButton addTarget:self
@@ -248,8 +253,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   UITableViewCell *tableViewCell = (UITableViewCell *)[sender superview].superview;
   NSIndexPath *indexPathForCell = [self.tableView indexPathForCell:tableViewCell];
   selectedItem = (MediaItem *)(self.rootItem.children)[indexPathForCell.row];
-  BOOL hasConnectedCastSession =
-      [GCKCastContext sharedInstance].sessionManager.hasConnectedCastSession;
+  BOOL hasConnectedCastSession = _sessionManager.hasConnectedCastSession;
   if (selectedItem.mediaInfo && hasConnectedCastSession) {
     // Display an popover to allow the user to add to queue or play
     // immediately.
@@ -289,6 +293,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 
 - (void)playSelectedItemRemotely {
   [self loadSelectedItemByAppending:NO];
+  appDelegate.castControlBarsEnabled = NO;
   [[GCKCastContext sharedInstance] presentDefaultExpandedMediaControls];
 }
 
@@ -313,35 +318,32 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
 - (void)loadSelectedItemByAppending:(BOOL)appending {
   NSLog(@"enqueue item %@", selectedItem.mediaInfo);
 
-  GCKSession *session = [GCKCastContext sharedInstance].sessionManager.currentSession;
-  if ([session isKindOfClass:[GCKCastSession class]]) {
-    GCKCastSession *castSession = (GCKCastSession *)session;
-    if (castSession.remoteMediaClient) {
-      GCKMediaQueueItemBuilder *builder = [[GCKMediaQueueItemBuilder alloc] init];
-      builder.mediaInformation = selectedItem.mediaInfo;
-      builder.autoplay = YES;
-      builder.preloadTime = [[NSUserDefaults standardUserDefaults] integerForKey:kPrefPreloadTime];
-      GCKMediaQueueItem *item = [builder build];
-      if (castSession.remoteMediaClient.mediaStatus && appending) {
-        GCKRequest *request =
-            [castSession.remoteMediaClient queueInsertItem:item
-                                          beforeItemWithID:kGCKMediaQueueInvalidItemID];
-        request.delegate = self;
-      } else {
-        GCKMediaRepeatMode repeatMode =
-            castSession.remoteMediaClient.mediaStatus
-                ? castSession.remoteMediaClient.mediaStatus.queueRepeatMode
-                : GCKMediaRepeatModeOff;
+  GCKCastSession *castSession = _sessionManager.currentCastSession;
+  if (!castSession) return;
+  GCKRemoteMediaClient *remoteMediaClient = castSession.remoteMediaClient;
+  if (!remoteMediaClient) return;
 
-        GCKMediaQueueLoadOptions *options = [[GCKMediaQueueLoadOptions alloc] init];
-        options.repeatMode = repeatMode;
-        options.playPosition = 0;
+  GCKMediaQueueItemBuilder *builder = [[GCKMediaQueueItemBuilder alloc] init];
+  builder.mediaInformation = selectedItem.mediaInfo;
+  builder.autoplay = YES;
+  builder.preloadTime = [[NSUserDefaults standardUserDefaults] integerForKey:kPrefPreloadTime];
+  GCKMediaQueueItem *item = [builder build];
+  if (appending) {
+    GCKRequest *request = [remoteMediaClient queueInsertItem:item
+                                            beforeItemWithID:kGCKMediaQueueInvalidItemID];
+    request.delegate = self;
+  } else {
+    GCKMediaRepeatMode repeatMode = remoteMediaClient.mediaStatus ? remoteMediaClient.mediaStatus.queueRepeatMode : GCKMediaRepeatModeOff;
 
-        GCKRequest *request = [castSession.remoteMediaClient queueLoadItems:@[ item ]
-                                                                withOptions:options];
-        request.delegate = self;
-      }
-    }
+    GCKMediaQueueDataBuilder *mediaQueueDataBuilder = [[GCKMediaQueueDataBuilder alloc] initWithQueueType:GCKMediaQueueTypeGeneric];
+    mediaQueueDataBuilder.items = @[item];
+    mediaQueueDataBuilder.repeatMode = repeatMode;
+
+    GCKMediaLoadRequestDataBuilder *loadRequestDataBuilder = [[GCKMediaLoadRequestDataBuilder alloc] init];
+    loadRequestDataBuilder.queueData = [mediaQueueDataBuilder build];
+
+    GCKRequest *request = [remoteMediaClient loadMediaWithLoadRequestData:[loadRequestDataBuilder build]];
+    request.delegate = self;
   }
 }
 
@@ -391,9 +393,8 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   _mediaListURL = mediaListURL;
 
   // Asynchronously load the media json.
-  AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-  delegate.mediaList = [[MediaListModel alloc] init];
-  self.mediaList = delegate.mediaList;
+  appDelegate.mediaList = [[MediaListModel alloc] init];
+  self.mediaList = appDelegate.mediaList;
   self.mediaList.delegate = self;
   [self.mediaList loadFromURL:_mediaListURL];
 }

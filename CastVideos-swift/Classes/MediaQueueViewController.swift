@@ -17,7 +17,7 @@ import UIKit
 
 @objc(MediaQueueViewController)
 class MediaQueueViewController: UIViewController, UITableViewDataSource, UITableViewDelegate,
-  GCKSessionManagerListener, GCKRemoteMediaClientListener, GCKRequestDelegate {
+  GCKSessionManagerListener, GCKRemoteMediaClientListener, GCKRequestDelegate, GCKMediaQueueDelegate {
   private var timer: Timer!
   // Queue
   @IBOutlet private var _tableView: UITableView!
@@ -55,7 +55,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     super.viewDidAppear(animated)
     queueRequest = nil
     _tableView.isUserInteractionEnabled = true
-    if mediaClient.mediaStatus?.queueItemCount == 0 {
+    if mediaClient.mediaQueue.itemCount == 0 {
       _editButton.isEnabled = false
     } else {
       _editButton.isEnabled = true
@@ -74,7 +74,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
       _editButton.title = "Edit"
       _tableView.setEditing(false, animated: true)
       _editing = false
-      if mediaClient.mediaStatus?.queueItemCount == 0 {
+      if mediaClient.mediaQueue.itemCount == 0 {
         _editButton.isEnabled = false
       }
     } else {
@@ -96,7 +96,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     let point: CGPoint = gestureRecognizer.location(in: _tableView)
     if let indexPath = _tableView.indexPathForRow(at: point) {
-      let item: GCKMediaQueueItem? = mediaClient.mediaStatus?.queueItem(at: UInt(indexPath.row))
+      let item: GCKMediaQueueItem? = mediaClient.mediaQueue.item(at: UInt(indexPath.row))
       if item != nil {
         start(mediaClient.queueJumpToItem(withID: (item?.itemID)!))
       }
@@ -113,38 +113,47 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     if (mediaClient == nil) || (mediaClient.mediaStatus == nil) {
       return 0
     }
-    return Int(mediaClient.mediaStatus!.queueItemCount)
+    return Int(mediaClient.mediaQueue.itemCount)
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "MediaCell")
-    let item: GCKMediaQueueItem? = mediaClient.mediaStatus?.queueItem(at: UInt(indexPath.row))
+    let cell = tableView.dequeueReusableCell(withIdentifier: "MediaCell", for: indexPath)
+    let mediaTitleLabel: UILabel? = (cell.viewWithTag(1) as? UILabel)
+    let mediaOwnerLabel: UILabel? = (cell.viewWithTag(2) as? UILabel)
+
+    let item: GCKMediaQueueItem? = mediaClient.mediaQueue.item(at: UInt(indexPath.row))
+    if item == nil {
+      mediaTitleLabel?.text = "Loading..."
+      mediaOwnerLabel?.text = "Loading..."
+      return cell
+    }
+
     let title: String? = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyTitle)
+    mediaTitleLabel?.text = title
     var artist: String? = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyArtist)
     if artist == nil {
       artist = item?.mediaInformation.metadata?.string(forKey: kGCKMetadataKeyStudio)
     }
-    let detail: String? = "(\(GCKUIUtils.timeInterval(asString: (item?.mediaInformation.streamDuration)!))) \(artist ?? "")"
-    let mediaTitle: UILabel? = (cell?.viewWithTag(1) as? UILabel)
-    mediaTitle?.text = title
-    let mediaOwner: UILabel? = (cell?.viewWithTag(2) as? UILabel)
-    mediaOwner?.text = detail
+    let duration = (item?.mediaInformation.streamDuration == Double.infinity) ? "" :
+      GCKUIUtils.timeInterval(asString: (item?.mediaInformation.streamDuration)!)
+    let detail: String? = "(\(duration)) \(artist ?? "")"
+    mediaOwnerLabel?.text = detail
     if mediaClient.mediaStatus?.currentItemID == item?.itemID {
-      cell?.backgroundColor = UIColor(red: CGFloat(15.0 / 255), green: CGFloat(153.0 / 255),
+      cell.backgroundColor = UIColor(red: CGFloat(15.0 / 255), green: CGFloat(153.0 / 255),
                                       blue: CGFloat(242.0 / 255), alpha: CGFloat(0.1))
     } else {
-      cell?.backgroundColor = nil
+      cell.backgroundColor = nil
     }
-    let imageView = (cell?.contentView.viewWithTag(3) as? UIImageView)
+    let imageView = (cell.contentView.viewWithTag(3) as? UIImageView)
     if let images = item?.mediaInformation.metadata?.images(), images.count > 0 {
       let image = images[0] as? GCKImage
       GCKCastContext.sharedInstance().imageCache?.fetchImage(for: (image?.url)!,
                                                              completion: { (_ image: UIImage?) -> Void in
                                                                imageView?.image = image
-                                                               cell?.setNeedsLayout()
+                                                               cell.setNeedsLayout()
       })
     }
-    return cell!
+    return cell
   }
 
   // MARK: - UITableViewDelegate
@@ -157,10 +166,10 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     if sourceIndexPath.row == destinationIndexPath.row {
       return
     }
-    let sourceItem = mediaClient.mediaStatus?.queueItem(at: UInt(sourceIndexPath.row))
+    let sourceItem = mediaClient.mediaQueue.item(at: UInt(sourceIndexPath.row))
     var insertBeforeID = kGCKMediaQueueInvalidItemID
-    if destinationIndexPath.row < Int((mediaClient.mediaStatus?.queueItemCount)!) - 1 {
-      let beforeItem: GCKMediaQueueItem? = mediaClient.mediaStatus?.queueItem(at: UInt(destinationIndexPath.row))
+    if destinationIndexPath.row < Int(mediaClient.mediaQueue.itemCount) - 1 {
+      let beforeItem: GCKMediaQueueItem? = mediaClient.mediaQueue.item(at: UInt(destinationIndexPath.row))
       insertBeforeID = (beforeItem?.itemID)!
     }
     start(mediaClient.queueMoveItem(withID: (sourceItem?.itemID)!, beforeItemWithID: insertBeforeID))
@@ -174,7 +183,7 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
                  forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
       // Delete row.
-      let item: GCKMediaQueueItem? = mediaClient.mediaStatus?.queueItem(at: UInt(indexPath.row))
+      let item: GCKMediaQueueItem? = mediaClient.mediaQueue.item(at: UInt(indexPath.row))
       if item != nil {
         start(mediaClient.queueRemoveItem(withID: (item?.itemID)!))
       }
@@ -256,5 +265,11 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
       queueRequest = nil
       _tableView.isUserInteractionEnabled = true
     }
+  }
+
+  // MARK: - GCKMediaQueueDelegate
+
+  func mediaQueueDidChange(_ queue: GCKMediaQueue) {
+    _tableView.reloadData();
   }
 }

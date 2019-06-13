@@ -148,11 +148,14 @@
   NSString *title = [item.mediaInformation.metadata stringForKey:kGCKMetadataKeyTitle];
   NSString *artist = [item.mediaInformation.metadata stringForKey:kGCKMetadataKeyArtist];
   if (!artist) {
-    artist = [item.mediaInformation.metadata stringForKey:kGCKMetadataKeyStudio];
+    NSString *value = [item.mediaInformation.metadata stringForKey:kGCKMetadataKeyStudio];
+    artist = value ? value : @"";
   }
+
+  NSString *duration = (item.mediaInformation.streamDuration == INFINITY) ? @"" : [GCKUIUtils timeIntervalAsString:item.mediaInformation.streamDuration];
   NSString *detail = [NSString
       stringWithFormat:@"(%@) %@",
-                       [GCKUIUtils timeIntervalAsString:item.mediaInformation.streamDuration],
+                       duration,
                        artist];
   UILabel *mediaTitle = (UILabel *)[cell viewWithTag:1];
   mediaTitle.text = title;
