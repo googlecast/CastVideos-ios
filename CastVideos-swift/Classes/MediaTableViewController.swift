@@ -257,6 +257,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       } else {
         let options = GCKMediaQueueLoadOptions()
         options.repeatMode = remoteMediaClient.mediaStatus?.queueRepeatMode ?? .off
+        castSession = sessionManager.currentSession as? GCKCastSession
         let request = castSession.remoteMediaClient?.queueLoad([item()], with: options)
         request?.delegate = self
       }
