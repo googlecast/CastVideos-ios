@@ -28,7 +28,7 @@ let appDelegate = (UIApplication.shared.delegate as? AppDelegate)
 class AppDelegate: UIResponder, UIApplicationDelegate {
   // You can add your own app id here that you get by registering with the Google Cast SDK
   // Developer Console https://cast.google.com/publish or use kGCKDefaultMediaReceiverApplicationID
-  let kReceiverAppID = "C0868879"
+  let kReceiverAppID = kGCKDefaultMediaReceiverApplicationID
   fileprivate var enableSDKLogging = false
   fileprivate var mediaNotificationsEnabled = false
   fileprivate var firstUserDefaultsSync = false
