@@ -28,7 +28,7 @@ let appDelegate = (UIApplication.shared.delegate as? AppDelegate)
 class AppDelegate: UIResponder, UIApplicationDelegate {
   // You can add your own app id here that you get by registering with the Google Cast SDK
   // Developer Console https://cast.google.com/publish or use kGCKDefaultMediaReceiverApplicationID
-  let kReceiverAppID = kGCKDefaultMediaReceiverApplicationID
+  let kReceiverAppID = "C0868879"
   fileprivate var enableSDKLogging = false
   fileprivate var mediaNotificationsEnabled = false
   fileprivate var firstUserDefaultsSync = false
@@ -69,8 +69,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Set your receiver application ID.
     let options = GCKCastOptions(discoveryCriteria: GCKDiscoveryCriteria(applicationID: kReceiverAppID))
     options.physicalVolumeButtonsWillControlDeviceVolume = true
+    
+    /** Following code enables CastConnect */
+     let launchOptions = GCKLaunchOptions()
+     launchOptions.androidReceiverCompatible = true
+     options.launchOptions = launchOptions
+    
     GCKCastContext.setSharedInstanceWith(options)
-
     GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
 
     // Theme the cast button using UIAppearance.

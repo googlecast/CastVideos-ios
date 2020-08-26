@@ -228,6 +228,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       queueDataBuilder.repeatMode = .off
 
       let mediaLoadRequestDataBuilder = GCKMediaLoadRequestDataBuilder()
+      mediaLoadRequestDataBuilder.mediaInformation = mediaInfo
       mediaLoadRequestDataBuilder.queueData = queueDataBuilder.build()
 
       let request = sessionManager.currentCastSession?.remoteMediaClient?.loadMedia(with: mediaLoadRequestDataBuilder.build())
@@ -424,6 +425,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
         queueDataBuilder.repeatMode = remoteMediaClient.mediaStatus?.queueRepeatMode ?? .off
 
         let mediaLoadRequestDataBuilder = GCKMediaLoadRequestDataBuilder()
+        mediaLoadRequestDataBuilder.mediaInformation = mediaInfo
         mediaLoadRequestDataBuilder.queueData = queueDataBuilder.build()
 
         let request = remoteMediaClient.loadMedia(with: mediaLoadRequestDataBuilder.build())

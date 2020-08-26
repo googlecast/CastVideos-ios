@@ -28,7 +28,8 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   private var selectedItem: MediaItem!
   private var queueAdded: Bool = false
   private var castButton: GCKUICastButton!
-
+  private var credentials: String? = nil
+    
   /** The media to be displayed. */
   var mediaList: MediaListModel?
   var rootItem: MediaItem? {
@@ -61,6 +62,8 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     navigationItem.rightBarButtonItem = UIBarButtonItem(customView: castButton)
     queueButton = UIBarButtonItem(image: UIImage(named: "playlist_white.png"),
                                   style: .plain, target: self, action: #selector(didTapQueueButton))
+    navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Creds", style: .plain,
+                                                       target: self, action: #selector(toggleLaunchCreds))
     tableView.separatorColor = UIColor.clear
     NotificationCenter.default.addObserver(self, selector: #selector(deviceOrientationDidChange),
                                            name: UIDevice.orientationDidChangeNotification, object: nil)
@@ -68,6 +71,18 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     NotificationCenter.default.addObserver(self, selector: #selector(castDeviceDidChange),
                                            name: NSNotification.Name.gckCastStateDidChange,
                                            object: GCKCastContext.sharedInstance())
+    setLaunchCreds()
+  }
+
+  @objc func toggleLaunchCreds(_: Any){
+    if (credentials == nil) {
+        credentials = "{\"userId\":\"id123\"}"
+    } else {
+        credentials = nil
+    }
+    Toast.displayMessage("Launch Credentials: "+(credentials ?? "Null"), for: 3, in: appDelegate?.window)
+    print("Credentials set: "+(credentials ?? "Null"))
+    setLaunchCreds()
   }
 
   @objc func castDeviceDidChange(_: Notification) {
@@ -265,6 +280,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
         let mediaLoadRequestDataBuilder = GCKMediaLoadRequestDataBuilder()
         mediaLoadRequestDataBuilder.queueData = queueDataBuilder.build()
+        mediaLoadRequestDataBuilder.credentials = credentials
 
         let request = remoteMediaClient.loadMedia(with: mediaLoadRequestDataBuilder.build())
         request.delegate = self
@@ -306,6 +322,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       return
     }
     mediaListURL = _mediaListURL
+    print("Media list URL: \(mediaListURL)")
     // Asynchronously load the media json.
     appDelegate?.mediaList = MediaListModel()
     mediaList = appDelegate?.mediaList
@@ -368,5 +385,10 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func request(_ request: GCKRequest, didFailWithError error: GCKError) {
     print("request \(Int(request.requestID)) failed with error \(error)")
+  }
+  
+  func setLaunchCreds() {
+    GCKCastContext.sharedInstance()
+        .setLaunch(GCKCredentialsData(credentials: credentials))
   }
 }
