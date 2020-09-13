@@ -127,7 +127,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       queueAdded = true
     } else if !visible, queueAdded {
       var barItems = navigationItem.rightBarButtonItems
-      let index = barItems?.index(of: queueButton) ?? -1
+      let index = barItems?.firstIndex(of: queueButton) ?? -1
       barItems?.remove(at: index)
       navigationItem.rightBarButtonItems = barItems
       queueAdded = false

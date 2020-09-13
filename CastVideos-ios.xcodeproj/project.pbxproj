@@ -489,7 +489,7 @@
 				10FC9FF21E42A16F00BE6122 /* Frameworks */,
 				10FC9FF31E42A16F00BE6122 /* Resources */,
 				2F0E09231C002D361A5962CF /* [CP] Embed Pods Frameworks */,
-				EDCF677278456D53CB09A1A6 /* [CP] Copy Pods Resources */,
+				E3E6949F276230DBC70E252A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -509,7 +509,7 @@
 				6FBC43DC1CA3138500AAB267 /* Frameworks */,
 				6FBC43DD1CA3138500AAB267 /* Resources */,
 				CE81906B30D4EAE698E29E43 /* [CP] Embed Pods Frameworks */,
-				D4F0C6A4A4627F077BC22B88 /* [CP] Copy Pods Resources */,
+				740515A2040CE122D107A74E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -532,7 +532,7 @@
 				TargetAttributes = {
 					10FC9FF41E42A16F00BE6122 = {
 						CreatedOnToolsVersion = 8.2.1;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1200;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.AccessWiFi = {
@@ -554,11 +554,10 @@
 			};
 			buildConfigurationList = 6FBC43DA1CA3138500AAB267 /* Build configuration list for PBXProject "CastVideos-ios" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
 			);
 			mainGroup = 6FBC43D61CA3138500AAB267;
 			productRefGroup = 6FBC43E01CA3138500AAB267 /* Products */;
@@ -701,16 +700,18 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		67FFA091359A54C9DEC8711E /* [CP] Check Pods Manifest.lock */ = {
@@ -731,33 +732,55 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		740515A2040CE122D107A74E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-resources.sh",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.5.0_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.5.0_static/GoogleCast.framework/GoogleCastUIResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastCoreResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastUIResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		CE81906B30D4EAE698E29E43 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D4F0C6A4A4627F077BC22B88 /* [CP] Copy Pods Resources */ = {
+		E3E6949F276230DBC70E252A /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-resources.sh",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.4.3_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.4.3_static/GoogleCast.framework/GoogleCastUIResources.bundle",
+				"${PODS_ROOT}/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-resources.sh",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.5.0_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.5.0_static/GoogleCast.framework/GoogleCastUIResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -766,27 +789,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EDCF677278456D53CB09A1A6 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-resources.sh",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.4.3_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.4.3_static/GoogleCast.framework/GoogleCastUIResources.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastCoreResources.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastUIResources.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -847,11 +850,12 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.google.GoogleCast.CastVideos-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.GoogleCast.CastVideos.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Google Cast Cast Videos Dev";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -874,10 +878,11 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.google.GoogleCast.CastVideos-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.GoogleCast.CastVideos.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Google Cast Cast Videos Dev";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -998,8 +1003,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.google.GoogleCast.CastVideos-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.GoogleCast.CastVideos.dev;
 				PRODUCT_NAME = "CastVideos-objc";
+				PROVISIONING_PROFILE_SPECIFIER = "Google Cast Cast Videos Dev";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1017,8 +1023,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.google.GoogleCast.CastVideos-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.GoogleCast.CastVideos.dev;
 				PRODUCT_NAME = "CastVideos-objc";
+				PROVISIONING_PROFILE_SPECIFIER = "Google Cast Cast Videos Dev";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
