@@ -21,12 +21,11 @@
 #import "RootContainerViewController.h"
 #import "Toast.h"
 
-// You can add your own app id here that you get by registering with the Google Cast SDK
-// Developer Console https://cast.google.com/publish or use kGCKDefaultMediaReceiverApplicationID
-#define kReceiverAppID kGCKDefaultMediaReceiverApplicationID
-
 NSString *const kPrefPreloadTime = @"preload_time_sec";
 
+// You can add your own app id here that you get by registering with the Google Cast SDK
+// Developer Console https://cast.google.com/publish or use kGCKDefaultMediaReceiverApplicationID
+static NSString *const kReceiverAppID = @"C0868879";
 static NSString *const kPrefEnableAnalyticsLogging = @"enable_analytics_logging";
 static NSString *const kPrefAppVersion = @"app_version";
 static NSString *const kPrefSDKVersion = @"sdk_version";
@@ -47,20 +46,22 @@ static NSString *const kPrefEnableMediaNotifications = @"enable_media_notificati
   _enableSDKLogging = NO;
 
   [self populateRegistrationDomain];
-
-  // Set your receiver application ID or use
-  // kGCKDefaultMediaReceiverApplicationID.
-  NSString *applicationID = kReceiverAppID;
-
+  
   // We are forcing a custom container view controller, but the Cast Container
   // is also available.
   _useCastContainerViewController = NO;
 
   // Set your receiver application ID.
   GCKDiscoveryCriteria *discoveryCriteria =
-      [[GCKDiscoveryCriteria alloc] initWithApplicationID:applicationID];
+      [[GCKDiscoveryCriteria alloc] initWithApplicationID:kReceiverAppID];
   GCKCastOptions *options = [[GCKCastOptions alloc] initWithDiscoveryCriteria:discoveryCriteria];
   options.physicalVolumeButtonsWillControlDeviceVolume = YES;
+
+  // Following code enables Cast Connect
+  GCKLaunchOptions *gckLaunchOptions = [[GCKLaunchOptions alloc] init];
+  gckLaunchOptions.androidReceiverCompatible = YES;
+  options.launchOptions = gckLaunchOptions;
+
   [GCKCastContext setSharedInstanceWithOptions:options];
 
   [GCKCastContext sharedInstance].useDefaultExpandedMediaControls = YES;

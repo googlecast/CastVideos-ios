@@ -20,7 +20,7 @@ let kMediaKeyPosterURL = "posterUrl"
 /** A key for the media item's extended description. */
 let kMediaKeyDescription = "description"
 let kKeyCategories = "categories"
-let kKeyMP4BaseURL = "hls"
+let kKeyHlsBaseURL = "hls"
 let kKeyImagesBaseURL = "images"
 let kKeyTracksBaseURL = "tracks"
 let kKeySources = "sources"
@@ -183,13 +183,13 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
       if mediaList != nil {
         title = (category?.gck_string(forKey: kKeyName))!
         // Pick the MP4 files only
-        let videosBaseURLString: String? = category?.gck_string(forKey: kKeyMP4BaseURL)
+        let videosBaseURLString: String? = category?.gck_string(forKey: kKeyHlsBaseURL)
         let videosBaseURL = URL(string: videosBaseURLString!)
         let imagesBaseURLString: String? = category?.gck_string(forKey: kKeyImagesBaseURL)
         let imagesBaseURL = URL(string: imagesBaseURLString!)
         let tracksBaseURLString: String? = category?.gck_string(forKey: kKeyTracksBaseURL)
         let tracksBaseURL = URL(string: tracksBaseURLString!)
-        decodeItemList(fromArray: mediaList!, into: rootItem, videoFormat: kKeyMP4BaseURL,
+        decodeItemList(fromArray: mediaList!, into: rootItem, videoFormat: kKeyHlsBaseURL,
                        videosBaseURL: videosBaseURL!, imagesBaseURL: imagesBaseURL!, tracksBaseURL: tracksBaseURL!)
         break
       }

@@ -22,7 +22,7 @@ NSString *const kMediaKeyPosterURL = @"posterUrl";
 NSString *const kMediaKeyDescription = @"description";
 
 static NSString *const kKeyCategories = @"categories";
-static NSString *const kKeyMP4BaseURL = @"mp4";
+static NSString *const kKeyHlsBaseURL = @"hls";
 static NSString *const kKeyImagesBaseURL = @"images";
 static NSString *const kKeyTracksBaseURL = @"tracks";
 static NSString *const kKeySources = @"sources";
@@ -48,7 +48,7 @@ static NSString *const kKeyType = @"type";
 static NSString *const kKeyURL = @"url";
 static NSString *const kKeyDuration = @"duration";
 
-static NSString *const kDefaultVideoMimeType = @"video/mp4";
+static NSString *const kDefaultVideoMimeType = @"application/x-mpegurl";
 static NSString *const kDefaultTrackMimeType = @"text/vtt";
 
 static NSString *const kTypeAudio = @"audio";
@@ -167,7 +167,7 @@ static const NSInteger kPosterHeight = 1200;
     if (mediaList && [mediaList isKindOfClass:[NSArray class]]) {
       self.title = [category gck_stringForKey:kKeyName];
       // Pick the MP4 files only
-      NSString *videosBaseURLString = [category gck_stringForKey:kKeyMP4BaseURL];
+      NSString *videosBaseURLString = [category gck_stringForKey:kKeyHlsBaseURL];
       NSURL *videosBaseURL = [NSURL URLWithString:videosBaseURLString];
       NSString *imagesBaseURLString = [category gck_stringForKey:kKeyImagesBaseURL];
       NSURL *imagesBaseURL = [NSURL URLWithString:imagesBaseURLString];
@@ -175,7 +175,7 @@ static const NSInteger kPosterHeight = 1200;
       NSURL *tracksBaseURL = [NSURL URLWithString:tracksBaseURLString];
       [self decodeItemListFromArray:mediaList
                            intoItem:rootItem
-                        videoFormat:kKeyMP4BaseURL
+                        videoFormat:kKeyHlsBaseURL
                       videosBaseURL:videosBaseURL
                       imagesBaseURL:imagesBaseURL
                       tracksBaseURL:tracksBaseURL];

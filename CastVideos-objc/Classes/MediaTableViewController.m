@@ -24,6 +24,7 @@
 #import "Toast.h"
 
 static NSString *const kPrefMediaListURL = @"media_list_url";
+static NSString *const NULL_CREDENTIALS = @"N/A";
 
 @interface MediaTableViewController () <GCKSessionManagerListener,
                                         MediaListModelDelegate,
@@ -37,6 +38,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   MediaItem *selectedItem;
   BOOL _queueAdded;
   GCKUICastButton *_castButton;
+  NSString *credentials;
 }
 
 /** The media to be displayed. */
@@ -86,6 +88,11 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
                                                   style:UIBarButtonItemStylePlain
                                                  target:self
                                                  action:@selector(didTapQueueButton:)];
+  
+  self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Creds"
+                                                                           style:UIBarButtonItemStylePlain
+                                                                          target:self
+                                                                          action:@selector(toggleLaunchCreds:)];
 
   self.tableView.separatorColor = [UIColor clearColor];
 
@@ -99,6 +106,27 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
                                            selector:@selector(castDeviceDidChange:)
                                                name:kGCKCastStateDidChangeNotification
                                              object:[GCKCastContext sharedInstance]];
+  credentials = NULL_CREDENTIALS;
+  [self setLaunchCredentials];
+}
+
+- (void)toggleLaunchCreds:(id)sender {
+  if (credentials == NULL_CREDENTIALS) {
+    credentials = @"{\"userId\":\"id123\"}";
+  } else {
+    credentials = NULL_CREDENTIALS;
+  }
+
+  NSString *msg = [NSString stringWithFormat:@"Launch Credentials: %@", credentials];
+  [Toast displayToastMessage:msg
+             forTimeInterval:3
+                      inView:[UIApplication sharedApplication].delegate.window];
+  [self setLaunchCredentials];
+}
+
+- (void)setLaunchCredentials {
+  GCKCredentialsData *credsData= [[GCKCredentialsData alloc] initWithCredentials:credentials];
+  [[GCKCastContext sharedInstance] setLaunchCredentialsData:credsData];
 }
 
 - (void)castDeviceDidChange:(NSNotification *)notification {
@@ -322,7 +350,7 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
   if (!castSession) return;
   GCKRemoteMediaClient *remoteMediaClient = castSession.remoteMediaClient;
   if (!remoteMediaClient) return;
-
+  
   GCKMediaQueueItemBuilder *builder = [[GCKMediaQueueItemBuilder alloc] init];
   builder.mediaInformation = selectedItem.mediaInfo;
   builder.autoplay = YES;
@@ -338,9 +366,11 @@ static NSString *const kPrefMediaListURL = @"media_list_url";
     GCKMediaQueueDataBuilder *mediaQueueDataBuilder = [[GCKMediaQueueDataBuilder alloc] initWithQueueType:GCKMediaQueueTypeGeneric];
     mediaQueueDataBuilder.items = @[item];
     mediaQueueDataBuilder.repeatMode = repeatMode;
-
+    
     GCKMediaLoadRequestDataBuilder *loadRequestDataBuilder = [[GCKMediaLoadRequestDataBuilder alloc] init];
+    loadRequestDataBuilder.mediaInformation = selectedItem.mediaInfo;
     loadRequestDataBuilder.queueData = [mediaQueueDataBuilder build];
+    loadRequestDataBuilder.credentials = credentials;
 
     GCKRequest *request = [remoteMediaClient loadMediaWithLoadRequestData:[loadRequestDataBuilder build]];
     request.delegate = self;

@@ -297,6 +297,7 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
     mediaQueueDataBuilder.repeatMode = GCKMediaRepeatModeOff;
 
     GCKMediaLoadRequestDataBuilder *loadRequestDataBuilder = [[GCKMediaLoadRequestDataBuilder alloc] init];
+    loadRequestDataBuilder.mediaInformation = self.mediaInfo;
     loadRequestDataBuilder.queueData = [mediaQueueDataBuilder build];
 
     GCKRequest *request = [_sessionManager.currentCastSession.remoteMediaClient loadMediaWithLoadRequestData:[loadRequestDataBuilder build]];
@@ -511,6 +512,7 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
     mediaQueueDataBuilder.repeatMode = repeatMode;
 
     GCKMediaLoadRequestDataBuilder *loadRequestDataBuilder = [[GCKMediaLoadRequestDataBuilder alloc] init];
+    loadRequestDataBuilder.mediaInformation = self.mediaInfo;
     loadRequestDataBuilder.queueData = [mediaQueueDataBuilder build];
 
     GCKRequest *request = [remoteMediaClient loadMediaWithLoadRequestData:[loadRequestDataBuilder build]];
