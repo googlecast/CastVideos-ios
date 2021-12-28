@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   fileprivate var useCastContainerViewController = false
 
   var window: UIWindow?
-  var mediaList: MediaListModel!
   var isCastControlBarsEnabled: Bool {
     get {
       if useCastContainerViewController {
@@ -71,9 +70,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     options.physicalVolumeButtonsWillControlDeviceVolume = true
     
     /** Following code enables CastConnect */
-     let launchOptions = GCKLaunchOptions()
-     launchOptions.androidReceiverCompatible = true
-     options.launchOptions = launchOptions
+    let launchOptions = GCKLaunchOptions()
+    launchOptions.androidReceiverCompatible = true
+    options.launchOptions = launchOptions
     
     GCKCastContext.setSharedInstanceWith(options)
     GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
@@ -87,9 +86,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     if useCastContainerViewController {
       let appStoryboard = UIStoryboard(name: "Main", bundle: nil)
       guard let navigationController = appStoryboard.instantiateViewController(withIdentifier: "MainNavigation")
-        as? UINavigationController else { return false }
+              as? UINavigationController else { return false }
       let castContainerVC = GCKCastContext.sharedInstance().createCastContainerController(for: navigationController)
-        as GCKUICastContainerViewController
+              as GCKUICastContainerViewController
       castContainerVC.miniMediaControlsItemEnabled = true
       window = UIWindow(frame: UIScreen.main.bounds)
       window?.rootViewController = castContainerVC
@@ -104,7 +103,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                            object: nil)
     firstUserDefaultsSync = true
     syncWithUserDefaults()
-    UIApplication.shared.statusBarStyle = .lightContent
     GCKCastContext.sharedInstance().sessionManager.add(self)
     GCKCastContext.sharedInstance().imagePicker = self
     return true
@@ -118,8 +116,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   func setupCastLogging() {
     let logFilter = GCKLoggerFilter()
-    let classesToLog = ["GCKDeviceScanner", "GCKDeviceProvider", "GCKDiscoveryManager", "GCKCastChannel",
-                        "GCKMediaControlChannel", "GCKUICastButton", "GCKUIMediaController", "NSMutableDictionary"]
+    let classesToLog = ["GCKDeviceScanner", "GCKDeviceProvider", "GCKDiscoveryManager",
+                        "GCKCastChannel", "GCKMediaControlChannel", "GCKUICastButton",
+                        "GCKUIMediaController", "NSMutableDictionary"]
     logFilter.setLoggingLevel(.verbose, forClasses: classesToLog)
     GCKLogger.sharedInstance().filter = logFilter
     GCKLogger.sharedInstance().delegate = self
@@ -217,7 +216,7 @@ extension AppDelegate: GCKSessionManagerListener {
 
   func showAlert(withTitle title: String, message: String) {
     let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-    alert.addAction(UIAlertAction(title: "Ok", style: .default))
+    alert.addAction(UIAlertAction(title: "OK", style: .default))
     window?.rootViewController?.present(alert, animated: true, completion: nil)
   }
 }

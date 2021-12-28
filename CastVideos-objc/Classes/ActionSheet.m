@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
 
 @property(nonatomic, copy, readonly) NSString *title;
 
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
 - (instancetype)initWithTitle:(NSString *)title
                        target:(id)target
                      selector:(SEL)selector NS_DESIGNATED_INITIALIZER;
@@ -32,6 +34,8 @@
   __weak id _target;
   SEL _selector;
 }
+
+- (instancetype)init { @throw nil; }
 
 - (instancetype)initWithTitle:(NSString *)title target:(id)target selector:(SEL)selector {
   if (self = [super init]) {
@@ -55,6 +59,8 @@
 
 @interface ActionSheet () <UIAlertViewDelegate>
 
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
 @end
 
 @implementation ActionSheet {
@@ -62,7 +68,6 @@
   NSString *_message;
   NSString *_cancelButtonText;
   NSMutableArray<ActionSheetAction *> *_actions;
-  NSMutableDictionary<NSNumber *, ActionSheetAction *> *_indexedActions;
 }
 
 - (instancetype)initWithTitle:(NSString *)title
@@ -85,77 +90,40 @@
 }
 
 - (void)presentInController:(UIViewController *)parent sourceView:(UIView *)sourceView {
-  if ([UIAlertController class]) {
-    // iOS 8+ approach.
-    UIAlertController *controller =
-        [UIAlertController alertControllerWithTitle:_title
-                                            message:_message
-                                     preferredStyle:UIAlertControllerStyleActionSheet];
+  UIAlertController *controller =
+      [UIAlertController alertControllerWithTitle:_title
+                                          message:_message
+                                   preferredStyle:UIAlertControllerStyleActionSheet];
 
-    for (ActionSheetAction *action in _actions) {
-      UIAlertAction *alertAction = [UIAlertAction actionWithTitle:action.title
-                                                            style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction *unused) {
-                                                            [action trigger];
-                                                          }];
-      [controller addAction:alertAction];
-    }
-
-    if (_cancelButtonText) {
-      UIAlertAction *cancelAction =
-          [UIAlertAction actionWithTitle:_cancelButtonText
-                                   style:UIAlertActionStyleCancel
-                                 handler:^(UIAlertAction *action) {
-                                   [controller dismissViewControllerAnimated:YES completion:nil];
-                                 }];
-      [controller addAction:cancelAction];
-    }
-
-    // Present the controller in the right location, on iPad. On iPhone, it
-    // always displays at the
-    // bottom of the screen.
-    UIPopoverPresentationController *presentationController =
-        controller.popoverPresentationController;
-    presentationController.sourceView = sourceView;
-    presentationController.sourceRect = sourceView.bounds;
-    presentationController.permittedArrowDirections = 0;
-
-    [parent presentViewController:controller animated:YES completion:nil];
-  } else {
-    // iOS 7 and below.
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:_title
-                                                        message:_message
-                                                       delegate:self
-                                              cancelButtonTitle:_cancelButtonText
-                                              otherButtonTitles:nil];
-
-    _indexedActions = [NSMutableDictionary dictionaryWithCapacity:_actions.count];
-    for (ActionSheetAction *action in _actions) {
-      NSInteger position = [alertView addButtonWithTitle:action.title];
-      _indexedActions[@(position)] = action;
-    }
-    [alertView show];
-
-    // Hold onto this ActionSheet until the UIAlertView is dismissed. This
-    // ensures that the delegate
-    // is not released (as UIAlertView usually only holds a weak reference to
-    // us).
-    static char kActionSheetKey;
-    objc_setAssociatedObject(alertView, &kActionSheetKey, self, OBJC_ASSOCIATION_RETAIN);
+  for (ActionSheetAction *action in _actions) {
+    UIAlertAction *alertAction = [UIAlertAction actionWithTitle:action.title
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction *unused) {
+                                                          [action trigger];
+                                                        }];
+    [controller addAction:alertAction];
   }
-}
 
-#pragma mark - UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-  ActionSheetAction *action = _indexedActions[@(buttonIndex)];
-  if (action) {
-    [action trigger];
+  if (_cancelButtonText) {
+    UIAlertAction *cancelAction =
+        [UIAlertAction actionWithTitle:_cancelButtonText
+                                 style:UIAlertActionStyleCancel
+                               handler:^(UIAlertAction *action) {
+                                 [controller dismissViewControllerAnimated:YES completion:nil];
+                               }];
+    [controller addAction:cancelAction];
   }
-}
 
-- (void)alertViewCancel:(UIAlertView *)alertView {
-  _indexedActions = nil;
+  // Present the controller in the right location, on iPad. On iPhone, it
+  // always displays at the
+  // bottom of the screen.
+  UIPopoverPresentationController *presentationController =
+      controller.popoverPresentationController;
+  presentationController.sourceView = sourceView;
+  presentationController.sourceRect = sourceView.bounds;
+  presentationController.permittedArrowDirections = 0;
+
+  [parent presentViewController:controller animated:YES completion:nil];
 }
 
 @end

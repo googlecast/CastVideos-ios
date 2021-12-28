@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
 // limitations under the License.
 
 #import "MediaViewController.h"
-#import "ActionSheet.h"
 
 #import <GoogleCast/GoogleCast.h>
 
 #import "MediaItem.h"
 #import "MediaListModel.h"
 
+#import "ActionSheet.h"
 #import "AppDelegate.h"
 #import "LocalPlayerView.h"
 #import "Toast.h"
@@ -115,9 +115,8 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
     _localPlaybackImplicitlyPaused = NO;
   }
 
-  // Do we need to switch modes? If we're in remote playback mode but no longer
-  // have a session, then switch to local playback mode. If we're in local mode
-  // but now have a session, then switch to remote playback mode.
+  // If in remote playback mode but no longer have a session, switch to local playback mode.
+  // If we're in local mode but now have a session, then switch to remote playback mode.
   BOOL hasConnectedSession = (_sessionManager.hasConnectedSession);
   if (hasConnectedSession && (_playbackMode != PlaybackModeRemote)) {
     [self populateMediaInfo:NO playPosition:0];
@@ -364,7 +363,7 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
       [UIAlertController alertControllerWithTitle:@"Failed to start a session"
                                           message:error.description
                                    preferredStyle:UIAlertControllerStyleAlert];
-  [alert addAction:[UIAlertAction actionWithTitle:@"Ok"
+  [alert addAction:[UIAlertAction actionWithTitle:@"OK"
                                             style:UIAlertActionStyleDefault
                                           handler:nil]];
   [self presentViewController:alert animated:YES completion:nil];
@@ -405,8 +404,6 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
     [self.navigationController.navigationBar setBackgroundImage:nil
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = nil;
-    [[UIApplication sharedApplication] setStatusBarHidden:NO
-                                            withAnimation:UIStatusBarAnimationFade];
     self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     _resetEdgesOnDisappear = NO;
   } else if (style == LPVNavBarTransparent) {
@@ -423,8 +420,6 @@ static NSString *const kPrefShowStreamTimeRemaining = @"show_stream_time_remaini
                                                   forBarMetrics:UIBarMetricsDefault];
 
     self.navigationController.navigationBar.shadowImage = [UIImage new];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES
-                                            withAnimation:UIStatusBarAnimationFade];
     // Disable the swipe gesture if we're fullscreen.
     self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     _resetEdgesOnDisappear = YES;

@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -170,12 +170,18 @@ static NSString *const NULL_CREDENTIALS = @"N/A";
   [self.navigationController.navigationBar setBackgroundImage:nil
                                                 forBarMetrics:UIBarMetricsDefault];
   self.navigationController.navigationBar.shadowImage = nil;
-  [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
   self.navigationController.interactivePopGestureRecognizer.enabled = YES;
 
+  // Fix navigationBar color for iOS 15+
+  if (@available(iOS 15.0, *)) {
+    UINavigationBarAppearance *navigationBarAppearance = [[UINavigationBarAppearance alloc] init];
+    navigationBarAppearance.backgroundColor = self.navigationController.navigationBar.barTintColor;
+    self.navigationController.navigationBar.standardAppearance = navigationBarAppearance;
+    self.navigationController.navigationBar.scrollEdgeAppearance = navigationBarAppearance;
+  }
+
   if (!self.rootItem.parent) {
-    // If this is the root group, show stylized application title in the title
-    // view.
+    // If this is the root group, show stylized application title in the title view.
     self.navigationItem.titleView = _rootTitleView;
   } else {
     // Otherwise show the title of the group in the title view.
@@ -183,10 +189,6 @@ static NSString *const NULL_CREDENTIALS = @"N/A";
     self.title = self.rootItem.title;
   }
   appDelegate.castControlBarsEnabled = YES;
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-  [super viewDidAppear:animated];
 }
 
 #pragma mark - Table View
@@ -230,15 +232,23 @@ static NSString *const NULL_CREDENTIALS = @"N/A";
     NSMutableAttributedString *attributedText =
         [[NSMutableAttributedString alloc] initWithString:text attributes:attribs];
 
-    UIColor *blackColor = [UIColor blackColor];
-    NSRange titleTextRange = NSMakeRange(0, titleText.length);
-    [attributedText setAttributes:@{NSForegroundColorAttributeName : blackColor}
-                            range:titleTextRange];
+    UIColor *titleColor;
+    UIColor *subtitleColor;
 
-    UIColor *lightGrayColor = [UIColor lightGrayColor];
+    if (@available(iOS 13.0, *)) {
+      titleColor = UIColor.labelColor;
+      subtitleColor = UIColor.secondaryLabelColor;
+    } else {
+      titleColor = UIColor.blackColor;
+      subtitleColor = UIColor.lightGrayColor;
+    }
+
+    NSRange titleTextRange = NSMakeRange(0, titleText.length);
+    [attributedText setAttributes:@{NSForegroundColorAttributeName : titleColor}
+                            range:titleTextRange];
     NSRange ownerTextRange = NSMakeRange(titleText.length + 1, ownerText.length);
     [attributedText setAttributes:@{
-      NSForegroundColorAttributeName : lightGrayColor,
+      NSForegroundColorAttributeName : subtitleColor,
       NSFontAttributeName : [UIFont systemFontOfSize:12]
     }
                             range:ownerTextRange];
@@ -399,12 +409,14 @@ static NSString *const NULL_CREDENTIALS = @"N/A";
 - (void)mediaListModel:(MediaListModel *)list didFailToLoadWithError:(NSError *)error {
   NSString *errorMessage = [NSString
       stringWithFormat:@"Unable to load the media list from\n%@.", _mediaListURL.absoluteString];
-  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Cast Error", nil)
-                                                  message:NSLocalizedString(errorMessage, nil)
-                                                 delegate:nil
-                                        cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                        otherButtonTitles:nil];
-  [alert show];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Cast Error"
+                                                                 message:errorMessage
+                                                          preferredStyle:UIAlertControllerStyleAlert];
+  UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK"
+                                                   style:UIAlertActionStyleDefault
+                                                 handler:nil];
+  [alert addAction:action];
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)loadMediaList {
@@ -423,8 +435,7 @@ static NSString *const NULL_CREDENTIALS = @"N/A";
   _mediaListURL = mediaListURL;
 
   // Asynchronously load the media json.
-  appDelegate.mediaList = [[MediaListModel alloc] init];
-  self.mediaList = appDelegate.mediaList;
+  self.mediaList = [[MediaListModel alloc] init];
   self.mediaList.delegate = self;
   [self.mediaList loadFromURL:_mediaListURL];
 }
@@ -463,7 +474,7 @@ static NSString *const NULL_CREDENTIALS = @"N/A";
       [UIAlertController alertControllerWithTitle:@"Failed to start a session"
                                           message:error.description
                                    preferredStyle:UIAlertControllerStyleAlert];
-  [alert addAction:[UIAlertAction actionWithTitle:@"Ok"
+  [alert addAction:[UIAlertAction actionWithTitle:@"OK"
                                             style:UIAlertActionStyleDefault
                                           handler:nil]];
   [self presentViewController:alert animated:YES completion:nil];

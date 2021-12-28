@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -63,11 +63,9 @@ static const NSInteger kThumbnailHeight = 720;
 static const NSInteger kPosterWidth = 780;
 static const NSInteger kPosterHeight = 1200;
 
-@interface MediaListModel () <NSURLConnectionDelegate, NSURLConnectionDataDelegate> {
-  NSURLRequest *_request;
-  NSURLConnection *_connection;
-  NSMutableData *_responseData;
-  NSInteger _responseStatus;
+@interface MediaListModel () {
+  NSURLSession *_session;
+  NSURLSessionDataTask *_dataTask;
   GCKMediaTextTrackStyle *_trackStyle;
   MediaItem *_rootItem;
 }
@@ -85,71 +83,59 @@ static const NSInteger kPosterHeight = 1200;
 - (instancetype)init {
   if (self = [super init]) {
     _trackStyle = [GCKMediaTextTrackStyle createDefault];
+    _session = [NSURLSession sessionWithConfiguration: [NSURLSessionConfiguration defaultSessionConfiguration]];
+
   }
   return self;
 }
 
 - (void)loadFromURL:(NSURL *)url {
   _rootItem = nil;
-  _request = [NSURLRequest requestWithURL:url];
-  _connection = [NSURLConnection connectionWithRequest:_request delegate:self];
-  _responseData = nil;
-  [_connection start];
-  GCKLog(@"loading media list from URL %@", url);
-}
 
-- (void)cancelLoad {
-  if (_request) {
-    [_connection cancel];
-    _request = nil;
-    _connection = nil;
-    _responseData = nil;
+  GCKLog(@"loading media list from URL %@", url);
+
+  if (_dataTask != nil) {
+    [_dataTask cancel];
+  }
+
+  __weak MediaListModel *weakSelf = self;
+  _dataTask = [_session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    if (error != nil) {
+      GCKLog(@"httpRequest failed with %@", error);
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [weakSelf.delegate mediaListModel:weakSelf didFailToLoadWithError:error];
+      });
+      return;
+    }
+
+    long responseStatus = ((NSHTTPURLResponse *)response).statusCode;
+
+    GCKLog(@"httpRequest completed with %ld", responseStatus);
+    if (responseStatus == 200) {
+      NSError *error;
+      NSDictionary *jsonData = [NSJSONSerialization JSONObjectWithData:data
+                                                               options:kNilOptions
+                                                                 error:&error];
+      self->_rootItem = [weakSelf decodeMediaTreeFromJSON:jsonData];
+      weakSelf.loaded = YES;
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [weakSelf.delegate mediaListModelDidLoad:weakSelf];
+      });
+    } else {
+      NSError *error = [[NSError alloc] initWithDomain:@"HTTP" code:responseStatus userInfo:nil];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [weakSelf.delegate mediaListModel:weakSelf didFailToLoadWithError:error];
+      });
+    }
+  }];
+
+  if (_dataTask != nil) {
+    [_dataTask resume];
   }
 }
 
 - (MediaItem *)rootItem {
   return _rootItem;
-}
-
-#pragma mark - NSURLConnectionDelegate
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-  _request = nil;
-  _responseData = nil;
-  _connection = nil;
-  GCKLog(@"httpRequest failed with %@", error);
-  [self.delegate mediaListModel:self didFailToLoadWithError:error];
-}
-
-#pragma mark - NSURLConnectionDataDelegate
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-  if ([response respondsToSelector:@selector(statusCode)]) {
-    _responseStatus = ((NSHTTPURLResponse *)response).statusCode;
-  }
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-  if (!_responseData) {
-    _responseData = [[NSMutableData alloc] init];
-  }
-  [_responseData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-  GCKLog(@"httpRequest completed with %ld", (long)_responseStatus);
-  if (_responseStatus == 200) {
-    NSError *error;
-    NSDictionary *jsonData = [NSJSONSerialization JSONObjectWithData:_responseData
-                                                             options:kNilOptions
-                                                               error:&error];
-    _rootItem = [self decodeMediaTreeFromJSON:jsonData];
-    self.loaded = YES;
-    [self.delegate mediaListModelDidLoad:self];
-  } else {
-    NSError *error = [[NSError alloc] initWithDomain:@"HTTP" code:_responseStatus userInfo:nil];
-    [self.delegate mediaListModel:self didFailToLoadWithError:error];
-  }
 }
 
 #pragma mark - JSON decoding
@@ -294,8 +280,6 @@ static const NSInteger kPosterHeight = 1200;
     // Define information about the media item.
     GCKMediaInformationBuilder *mediaInfoBuilder =
         [[GCKMediaInformationBuilder alloc] initWithContentURL:url];
-    // TODO: Remove contentID when sample receiver supports using contentURL
-    mediaInfoBuilder.contentID = url.absoluteString;
     mediaInfoBuilder.streamDuration = duration;
     mediaInfoBuilder.streamType = GCKMediaStreamTypeBuffered;
     mediaInfoBuilder.contentType = mimeType;

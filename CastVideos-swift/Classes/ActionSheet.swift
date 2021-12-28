@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,12 +35,11 @@ class ActionSheetAction: NSObject {
   }
 }
 
-class ActionSheet: NSObject, UIAlertViewDelegate {
+class ActionSheet: NSObject {
   var title: String?
   var message: String?
   var cancelButtonText: String?
   var actions: [ActionSheetAction]!
-  var indexedActions: [Int: ActionSheetAction]?
 
   init(title: String, message: String, cancelButtonText: String) {
     super.init()
@@ -56,60 +55,29 @@ class ActionSheet: NSObject, UIAlertViewDelegate {
   }
 
   func present(in parent: UIViewController, sourceView: UIView) {
-    if objc_getClass("UIAlertController") != nil {
-      // iOS 8+ approach.
-      let controller = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
-      for action: ActionSheetAction in actions {
-        let alertAction = UIAlertAction(title: action.title,
-                                        style: .default, handler: { (_: UIAlertAction) -> Void in
-                                          action.trigger()
-        })
-        controller.addAction(alertAction)
-      }
-      if let cancelButtonText = cancelButtonText {
-        let cancelAction = UIAlertAction(title: cancelButtonText, style: .cancel,
-                                         handler: { (_: UIAlertAction) -> Void in
-                                           controller.dismiss(animated: true)
-        })
-        controller.addAction(cancelAction)
-      }
-      // Present the controller in the right location, on iPad. On iPhone, it
-      // always displays at the
-      // bottom of the screen.
-      if let presentationController = controller.popoverPresentationController {
-        presentationController.sourceView = sourceView
-        presentationController.sourceRect = sourceView.bounds
-        presentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
-      }
-      parent.present(controller, animated: true)
-    } else {
-      // iOS 7 and below.
-      let alertView = UIAlertView(title: title ?? "",
-                                  message: message ?? "",
-                                  delegate: self,
-                                  cancelButtonTitle: cancelButtonText,
-                                  otherButtonTitles: "")
-      indexedActions = [AnyHashable: Any](minimumCapacity: actions.count) as? [Int: ActionSheetAction]
-      for action: ActionSheetAction in actions {
-        let position = alertView.addButton(withTitle: action.title)
-        indexedActions?[position] = action
-      }
-      alertView.show()
-      // Hold onto this ActionSheet until the UIAlertView is dismissed. This
-      // ensures that the delegate is not released (as UIAlertView usually only
-      // holds a weak reference to us).
-      objc_setAssociatedObject(alertView, "", self, .OBJC_ASSOCIATION_RETAIN)
+    let controller = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+    for action: ActionSheetAction in actions {
+      let alertAction = UIAlertAction(title: action.title,
+                                      style: .default, handler: { (_: UIAlertAction) -> Void in
+                                        action.trigger()
+      })
+      controller.addAction(alertAction)
     }
-  }
-
-  // MARK: - UIAlertViewDelegate
-
-  func alertView(_: UIAlertView, clickedButtonAt buttonIndex: Int) {
-    let action: ActionSheetAction? = indexedActions?[buttonIndex]
-    action?.trigger()
-  }
-
-  func alertViewCancel(_: UIAlertView) {
-    indexedActions = nil
+    if let cancelButtonText = cancelButtonText {
+      let cancelAction = UIAlertAction(title: cancelButtonText, style: .cancel,
+                                       handler: { (_: UIAlertAction) -> Void in
+                                         controller.dismiss(animated: true)
+      })
+      controller.addAction(cancelAction)
+    }
+    // Present the controller in the right location, on iPad. On iPhone, it
+    // always displays at the
+    // bottom of the screen.
+    if let presentationController = controller.popoverPresentationController {
+      presentationController.sourceView = sourceView
+      presentationController.sourceRect = sourceView.bounds
+      presentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+    }
+    parent.present(controller, animated: true)
   }
 }

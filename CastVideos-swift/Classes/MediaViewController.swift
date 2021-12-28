@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -248,12 +248,13 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   }
 
   func showAlert(withTitle title: String, message: String) {
-    let alert = UIAlertView(title: title,
-                            message: message,
-                            delegate: nil,
-                            cancelButtonTitle: "OK",
-                            otherButtonTitles: "")
-    alert.show()
+    let alertController = UIAlertController(title: title,
+                                            message: message,
+                                            preferredStyle: UIAlertController.Style.alert)
+    let action = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil)
+    alertController.addAction(action)
+
+    present(alertController, animated: true, completion: nil)
   }
 
   // MARK: - Local playback UI actions
@@ -333,7 +334,6 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       navigationController?.navigationBar.isTranslucent = false
       navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
       navigationController?.navigationBar.shadowImage = nil
-      UIApplication.shared.setStatusBarHidden(false, with: .fade)
       navigationController?.interactivePopGestureRecognizer?.isEnabled = true
       isResetEdgesOnDisappear = false
     } else if style == .lpvNavBarTransparent {
@@ -351,7 +351,6 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       UIGraphicsEndImageContext()
       navigationController?.navigationBar.setBackgroundImage(gradientImage, for: .default)
       navigationController?.navigationBar.shadowImage = UIImage()
-      UIApplication.shared.setStatusBarHidden(true, with: .fade)
       // Disable the swipe gesture if we're fullscreen.
       navigationController?.interactivePopGestureRecognizer?.isEnabled = false
       isResetEdgesOnDisappear = true
@@ -372,8 +371,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
   func continueAfterPlayButtonClicked() -> Bool {
     let hasConnectedCastSession = sessionManager.hasConnectedCastSession
     if mediaInfo != nil, hasConnectedCastSession() {
-      // Display an alert box to allow the user to add to queue or play
-      // immediately.
+      // Display an alert box to allow the user to add to queue or play immediately.
       if actionSheet == nil {
         actionSheet = ActionSheet(title: "Play Item", message: "Select an action", cancelButtonText: "Cancel")
         actionSheet?.addAction(withTitle: "Play Now", target: self,
@@ -404,8 +402,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
 
   /**
    * Loads the currently selected item in the current cast media session.
-   * @param appending If YES, the item is appended to the current queue if there
-   * is one. If NO, or if
+   * @param appending If YES, the item is appended to the current queue if there is one. If NO, or if
    * there is no queue, a new queue containing only the selected item is created.
    */
   func loadSelectedItem(byAppending appending: Bool) {

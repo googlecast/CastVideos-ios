@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,13 +55,13 @@ class LocalPlayerView: UIView {
   @IBOutlet var viewAspectRatio: NSLayoutConstraint?
   var splashImage: UIImageView!
   /* The UIView used for receiving control input. */
-  var controlView: UIView!
+  var controlView: UIView
   var singleFingerTap: UIGestureRecognizer!
   var isRecentInteraction: Bool = false
   var playButton: UIButton!
-  var splashPlayButton: UIButton!
-  var slider: UISlider!
-  var totalTime: UILabel!
+  var splashPlayButton: UIButton
+  var slider: UISlider
+  var totalTime: UILabel
   var toolbarView: UIView!
   var gradientLayer: CAGradientLayer?
   var playImage: UIImage!
@@ -85,6 +85,15 @@ class LocalPlayerView: UIView {
   private(set) var media: GCKMediaInformation?
   private(set) var playerState = LocalPlayerState.stopped
 
+  required init?(coder aDecoder: NSCoder) {
+    controlView = UIView()
+    slider = UISlider()
+    splashPlayButton = UIButton(type: .system)
+    totalTime = UILabel()
+
+    super.init(coder: aDecoder)
+  }
+
   func orientationChanged() {
     if isFullscreen {
       setFullscreen()
@@ -94,8 +103,8 @@ class LocalPlayerView: UIView {
 
   func loadMedia(_ media: GCKMediaInformation?, autoPlay: Bool, playPosition: TimeInterval) {
     print("loadMedia \(autoPlay)")
-    if self.media?.contentID == media?.contentID {
-      // Don't reinit if we already have the media.
+    if self.media?.contentURL != nil && (self.media?.contentURL == media?.contentURL) {
+      print("Don't reinit if media already set")
       return
     }
     self.media = media
@@ -110,13 +119,11 @@ class LocalPlayerView: UIView {
     splashImage.clipsToBounds = true
     addSubview(splashImage)
     // Single-tap control view to bring controls back to the front.
-    controlView = UIView()
     singleFingerTap = UITapGestureRecognizer(target: self, action: #selector(didTouchControl))
     controlView.addGestureRecognizer(singleFingerTap)
     addSubview(controlView)
     // Play overlay that users can tap to get started.
     let giantPlayButton = UIImage(named: "play_circle")
-    splashPlayButton = UIButton(type: .system)
     splashPlayButton.frame = fullFrame()
     splashPlayButton.contentMode = .center
     splashPlayButton.setImage(giantPlayButton, for: .normal)
@@ -194,11 +201,7 @@ class LocalPlayerView: UIView {
   // MARK: - Layout Managment
 
   override func layoutSubviews() {
-    var frame: CGRect = isFullscreen ? UIScreen.main.bounds : fullFrame()
-    if NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1, isFullscreen {
-      // Below iOS 8 the bounds don't change with orientation changes.
-      frame.size = CGSize(width: frame.size.height, height: frame.size.width)
-    }
+    let frame: CGRect = isFullscreen ? UIScreen.main.bounds : fullFrame()
     splashImage.frame = frame
     mediaPlayerLayer?.frame = frame
     controlView.frame = frame
@@ -219,8 +222,8 @@ class LocalPlayerView: UIView {
   }
 
   override func updateConstraints() {
-    super.updateConstraints()
     viewAspectRatio?.isActive = !isFullscreen
+    super.updateConstraints()
   }
 
   // MARK: - Public interface
@@ -257,17 +260,15 @@ class LocalPlayerView: UIView {
 
   func loadMediaPlayer() {
     if mediaPlayer == nil {
-      if let contentID = media?.contentID {
-        if let mediaURL = URL(string: contentID) {
-          mediaPlayer = AVPlayer(url: mediaURL)
-          mediaPlayerLayer = AVPlayerLayer(player: mediaPlayer)
-          if let mediaPlayerLayer = mediaPlayerLayer {
-            mediaPlayerLayer.frame = fullFrame()
-            mediaPlayerLayer.backgroundColor = UIColor.black.cgColor
-            layer.insertSublayer(mediaPlayerLayer, above: splashImage.layer)
-          }
-          addMediaPlayerObservers()
+      if let contentURL = media?.contentURL {
+        mediaPlayer = AVPlayer(url: contentURL)
+        mediaPlayerLayer = AVPlayerLayer(player: mediaPlayer)
+        if let mediaPlayerLayer = mediaPlayerLayer {
+          mediaPlayerLayer.frame = fullFrame()
+          mediaPlayerLayer.backgroundColor = UIColor.black.cgColor
+          layer.insertSublayer(mediaPlayerLayer, above: splashImage.layer)
         }
+        addMediaPlayerObservers()
       }
     }
   }
@@ -499,7 +500,6 @@ class LocalPlayerView: UIView {
     playButton.tintColor = UIColor.white
     playButton.translatesAutoresizingMaskIntoConstraints = false
     // Total time.
-    totalTime = UILabel()
     totalTime.clearsContextBeforeDrawing = true
     totalTime.text = "00:00"
     totalTime.font = UIFont(name: "Helvetica", size: 14.0)
@@ -507,9 +507,7 @@ class LocalPlayerView: UIView {
     totalTime.tintColor = .white
     totalTime.translatesAutoresizingMaskIntoConstraints = false
     // Slider.
-    slider = UISlider()
     let thumb = UIImage(named: "thumb")
-    // TODO: new image
     slider.setThumbImage(thumb, for: .normal)
     slider.setThumbImage(thumb, for: .highlighted)
     slider.addTarget(self, action: #selector(onSliderValueChanged), for: .valueChanged)
@@ -531,11 +529,11 @@ class LocalPlayerView: UIView {
     activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
     activityIndicator.hidesWhenStopped = true
     controlView.insertSubview(activityIndicator, aboveSubview: toolbarView)
-    // Layout.
+    // Layout
     let hlayout: String = "|-[playButton(==40)]-5-[slider(>=120)]" +
       "-[totalTime(>=40)]-|"
     let vlayout: String = "V:|[playButton(==40)]"
-    let viewsDictionary: [String: Any] = ["slider": slider, "totalTime": totalTime, "playButton": playButton]
+    let viewsDictionary: [String: Any] = ["slider": slider, "totalTime": totalTime as Any, "playButton": playButton as Any]
     toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: hlayout, options: .alignAllCenterY,
                                                               metrics: nil, views: viewsDictionary))
     toolbarView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: vlayout,
@@ -563,8 +561,7 @@ class LocalPlayerView: UIView {
   }
 
   /* Called when used touches the controlView. Display the controls, and if the
-   * user is playing
-   * set a timeout to hide them again. */
+   * user is playing set a timeout to hide them again. */
   @objc func didTouchControl(_: Any?) {
     print("didTouchControl \(playerState)")
     showControls()

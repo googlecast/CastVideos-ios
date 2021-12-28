@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -44,6 +44,14 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
     _tableView.addGestureRecognizer(recognizer)
     _tableView.separatorColor = UIColor.clear
     super.viewDidLoad()
+
+    // Ensure both dark mode and light mode have a white title color.
+    if #available(iOS 13.0, *) {
+      let appearance = navigationController?.navigationBar.standardAppearance
+      appearance!.titleTextAttributes = [.foregroundColor: UIColor.white]
+      navigationController?.navigationBar.standardAppearance = appearance!;
+      navigationController?.navigationBar.scrollEdgeAppearance = appearance!;
+    }
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -85,12 +93,13 @@ class MediaQueueViewController: UIViewController, UITableViewDataSource, UITable
   }
 
   func showErrorMessage(_ message: String) {
-    let alert = UIAlertView(title: NSLocalizedString("Error", comment: ""),
-                            message: message,
-                            delegate: nil,
-                            cancelButtonTitle: NSLocalizedString("OK", comment: ""),
-                            otherButtonTitles: "")
-    alert.show()
+    let alertController = UIAlertController(title: "Error",
+                                            message: message,
+                                            preferredStyle: UIAlertController.Style.alert)
+    let action = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil)
+    alertController.addAction(action)
+
+    present(alertController, animated: true, completion: nil)
   }
 
   @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {

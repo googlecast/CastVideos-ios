@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -122,12 +122,18 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
     navigationController?.navigationBar.isTranslucent = false
     navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
     navigationController?.navigationBar.shadowImage = nil
-    UIApplication.shared.setStatusBarHidden(false, with: .fade)
     navigationController?.interactivePopGestureRecognizer?.isEnabled = true
 
+    // Fix navigationBar color for iOS 15+
+    if #available(iOS 15.0, *) {
+      let navigationBarAppearance = UINavigationBarAppearance()
+      navigationBarAppearance.backgroundColor = navigationController?.navigationBar.barTintColor
+      navigationController?.navigationBar.standardAppearance = navigationBarAppearance
+      navigationController?.navigationBar.scrollEdgeAppearance = navigationBarAppearance
+    }
+
     if rootItem?.parent == nil {
-      // If this is the root group, show stylized application title in the title
-      // view.
+      // If this is the root group, show stylized application title in the title view.
       navigationItem.titleView = rootTitleView
     } else {
       // Otherwise show the title of the group in the title view.
@@ -169,16 +175,25 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       let ownerText = detail
       let text = "\(titleText ?? "")\n\(ownerText ?? "")"
 
-      let attribs = [NSAttributedString.Key.foregroundColor: mediaTitle.textColor,
-                     NSAttributedString.Key.font: mediaTitle.font] as [NSAttributedString.Key: Any]
+      let attribs = [NSAttributedString.Key.foregroundColor: mediaTitle.textColor as Any,
+                     NSAttributedString.Key.font: mediaTitle.font as Any] as [NSAttributedString.Key: Any]
       let attributedText = NSMutableAttributedString(string: text, attributes: attribs)
-      let blackColor = UIColor.black
+      let titleColor: UIColor!
+      let subtitleColor: UIColor!
+
+      if #available(iOS 13.0, *) {
+        titleColor = UIColor.label
+        subtitleColor = UIColor.secondaryLabel
+      } else {
+        titleColor = UIColor.black
+        subtitleColor = UIColor.lightGray
+      }
+
       let titleTextRange = NSRange(location: 0, length: (titleText?.count ?? 0))
-      attributedText.setAttributes([NSAttributedString.Key.foregroundColor: blackColor], range: titleTextRange)
-      let lightGrayColor = UIColor.lightGray
+      attributedText.setAttributes([NSAttributedString.Key.foregroundColor: titleColor as Any], range: titleTextRange)
       let ownerTextRange = NSRange(location: (titleText?.count ?? 0) + 1,
                                    length: (ownerText?.count ?? 0))
-      attributedText.setAttributes([NSAttributedString.Key.foregroundColor: lightGrayColor,
+      attributedText.setAttributes([NSAttributedString.Key.foregroundColor: subtitleColor as Any,
                                     NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(12))], range: ownerTextRange)
       mediaTitle.attributedText = attributedText
     }
@@ -304,11 +319,13 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
 
   func mediaListModel(_: MediaListModel, didFailToLoadWithError _: Error?) {
     let errorMessage: String = "Unable to load the media list from\n\(mediaListURL.absoluteString)."
-    let alert = UIAlertView(title: NSLocalizedString("Cast Error", comment: ""),
-                            message: NSLocalizedString(errorMessage, comment: ""),
-                            delegate: nil, cancelButtonTitle: NSLocalizedString("OK", comment: ""),
-                            otherButtonTitles: "")
-    alert.show()
+    let alertController = UIAlertController(title: "Cast Error",
+                                            message: errorMessage,
+                                            preferredStyle: UIAlertController.Style.alert)
+    let action = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil)
+    alertController.addAction(action)
+
+    present(alertController, animated: true, completion: nil)
   }
 
   @objc func loadMediaList() {
@@ -322,10 +339,9 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       return
     }
     mediaListURL = _mediaListURL
-    print("Media list URL: \(mediaListURL)")
+    print("Media list URL: \(String(describing: mediaListURL))")
     // Asynchronously load the media json.
-    appDelegate?.mediaList = MediaListModel()
-    mediaList = appDelegate?.mediaList
+    mediaList = MediaListModel()
     mediaList?.delegate = self
     mediaList?.load(from: mediaListURL)
   }
@@ -372,9 +388,13 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
   }
 
   func showAlert(withTitle title: String, message: String) {
-    let alert = UIAlertView(title: title, message: message,
-                            delegate: nil, cancelButtonTitle: "OK", otherButtonTitles: "")
-    alert.show()
+    let alertController = UIAlertController(title: title,
+                                            message: message,
+                                            preferredStyle: UIAlertController.Style.alert)
+    let action = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil)
+    alertController.addAction(action)
+
+    present(alertController, animated: true, completion: nil)
   }
 
   // MARK: - GCKRequestDelegate

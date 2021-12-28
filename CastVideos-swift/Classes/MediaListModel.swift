@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -79,12 +79,10 @@ protocol MediaListModelDelegate: NSObjectProtocol {
 /**
  * An object representing a hierarchy of media items.
  */
-class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDelegate {
-  private var request: URLRequest!
-  private var connection: NSURLConnection!
-  private var responseData: Data!
-  private var responseStatus: Int = 0
-  private var trackStyle: GCKMediaTextTrackStyle!
+class MediaListModel: NSObject {
+  private var session: URLSession
+  private var dataTask: URLSessionDataTask?
+  private var trackStyle: GCKMediaTextTrackStyle
   /* The root item (top-level group). */
   fileprivate(set) var rootItem: MediaItem!
 
@@ -98,75 +96,70 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
   /** Storage for the list of Media objects. */
   var medias = [Any]()
 
+  override init() {
+    trackStyle = GCKMediaTextTrackStyle.createDefault()
+    session = URLSession(configuration: .default)
+
+    super.init()
+  }
+
   /**
-   * Begins loading the model from the given URL. The delegate will be messaged
-   * when the load
-   * completes or fails.
+   * Begins loading the model from the given URL. The delegate will be messaged when the load completes or fails.
    *
    * @param url The URL of the JSON file describing the media hierarchy.
    */
   func load(from url: URL) {
     rootItem = nil
-    request = URLRequest(url: url)
-    connection = NSURLConnection(request: request, delegate: self)
-    responseData = nil
-    connection.start()
-    GCKLogger.sharedInstance().delegate?.logMessage?("loading media list from URL \(url)", at: .debug, fromFunction: #function, location: "MediaListModel.class")
-  }
+    GCKLogger.sharedInstance().delegate?.logMessage?("loading media list from URL \(url)",
+                                                     at: .debug, fromFunction: #function,
+                                                     location: "MediaListModel.class")
 
-  override init() {
-    super.init()
+    dataTask?.cancel()
 
-    trackStyle = GCKMediaTextTrackStyle.createDefault()
-  }
+    dataTask = session.dataTask(with: url) { [weak self] data, response, error in
+      defer {
+        self?.dataTask = nil
+      }
 
-  func cancelLoad() {
-    if request != nil {
-      connection.cancel()
-      request = nil
-      connection = nil
-      responseData = nil
+      guard let strongSelf = self, let response = response as? HTTPURLResponse else {
+        GCKLogger.sharedInstance().delegate?.logMessage?("httpRequest failed",
+                                                         at: .debug,
+                                                         fromFunction: #function,
+                                                         location: "MediaListModel.class")
+        return
+      }
+
+      if let error = error {
+        GCKLogger.sharedInstance().delegate?.logMessage?("httpRequest failed with \(error)",
+                                                         at: .debug,
+                                                         fromFunction: #function,
+                                                         location: "MediaListModel.class")
+        DispatchQueue.main.async {
+          self?.delegate?.mediaListModel(strongSelf, didFailToLoadWithError: error)
+        }
+      } else if let responseData = data, response.statusCode == 200 {
+        GCKLogger.sharedInstance().delegate?.logMessage?("httpRequest completed with \(response.statusCode)",
+                                                         at: .debug,
+                                                         fromFunction: #function,
+                                                         location: "MediaListModel.class")
+
+        let jsonData = (try? JSONSerialization.jsonObject(with: responseData,
+                                                          options: .mutableContainers)) as? NSDictionary
+        self?.rootItem = self?.decodeMediaTree(fromJSON: jsonData!)
+        self?.isLoaded = true
+
+        DispatchQueue.main.async {
+          self?.delegate?.mediaListModelDidLoad(strongSelf)
+        }
+      } else {
+        let error = NSError(domain: "HTTP", code: response.statusCode, userInfo: nil)
+        DispatchQueue.main.async {
+          self?.delegate?.mediaListModel(strongSelf, didFailToLoadWithError: error)
+        }
+      }
     }
-  }
 
-  // MARK: - NSURLConnectionDelegate
-
-  func connection(_: NSURLConnection, didFailWithError error: Error) {
-    request = nil
-    responseData = nil
-    connection = nil
-    GCKLogger.sharedInstance().delegate?.logMessage?("httpRequest failed with \(error)", at: .debug, fromFunction: #function, location: "MediaListModel.class")
-    delegate?.mediaListModel(self, didFailToLoadWithError: error)
-  }
-
-  // MARK: - NSURLConnectionDataDelegate
-
-  internal func connection(_: NSURLConnection, didReceive response: URLResponse) {
-    if let response = response as? HTTPURLResponse {
-      responseStatus = response.statusCode
-    }
-  }
-
-  func connection(_: NSURLConnection, didReceive data: Data) {
-    if responseData == nil {
-      responseData = Data()
-    }
-    responseData.append(data)
-  }
-
-  func connectionDidFinishLoading(_: NSURLConnection) {
-    GCKLogger.sharedInstance().delegate?.logMessage?("httpRequest completed with \(responseStatus)", at: .debug, fromFunction: #function, location: "MediaListModel.class")
-
-    if responseStatus == 200 {
-      let jsonData = (try? JSONSerialization.jsonObject(with: responseData,
-                                                        options: .mutableContainers)) as? NSDictionary
-      rootItem = decodeMediaTree(fromJSON: jsonData!)
-      isLoaded = true
-      delegate?.mediaListModelDidLoad(self)
-    } else {
-      let error = NSError(domain: "HTTP", code: responseStatus, userInfo: nil)
-      delegate?.mediaListModel(self, didFailToLoadWithError: error)
-    }
+    dataTask?.resume()
   }
 
   // MARK: - JSON decoding
@@ -260,6 +253,7 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
                                            contentType: kDefaultTrackMimeType, type: trackType(from: typeString!),
                                            textSubtype: textTrackSubtype(from: subtypeString!),
                                            name: name, languageCode: language, customData: nil)
+            guard let mediaTrack = mediaTrack else { continue }
             mediaTracks?.append(mediaTrack)
           }
         }
@@ -269,8 +263,6 @@ class MediaListModel: NSObject, NSURLConnectionDelegate, NSURLConnectionDataDele
         }
 
         let mediaInfoBuilder = GCKMediaInformationBuilder(contentURL: url!)
-        // TODO: Remove contentID when sample receiver supports using contentURL
-        mediaInfoBuilder.contentID = url!.absoluteString
         mediaInfoBuilder.streamType = .buffered
         mediaInfoBuilder.streamDuration = TimeInterval(duration!)
         mediaInfoBuilder.contentType = mimeType!

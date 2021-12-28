@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -62,6 +62,14 @@
   _tableView.separatorColor = [UIColor clearColor];
 
   [super viewDidLoad];
+
+  // Ensure both dark mode and light mode have a white title color.
+  if (@available(iOS 13.0, *)) {
+    UINavigationBarAppearance *appearance = [self.navigationController.navigationBar standardAppearance];
+    appearance.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor]};
+    self.navigationController.navigationBar.standardAppearance = appearance;
+    self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -106,12 +114,14 @@
 }
 
 - (void)showErrorMessage:(NSString *)message {
-  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil)
-                                                  message:message
-                                                 delegate:nil
-                                        cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                        otherButtonTitles:nil];
-  [alert show];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error"
+                                                                 message:message
+                                                          preferredStyle:UIAlertControllerStyleAlert];
+  UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK"
+                                                   style:UIAlertActionStyleDefault
+                                                 handler:nil];
+  [alert addAction:action];
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {

@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC. All Rights Reserved.
+// Copyright 2022 Google LLC. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -77,6 +77,15 @@ static NSInteger kToolbarHeight = 44;
 
 @implementation LocalPlayerView
 
+- (instancetype)initWithCoder:(NSCoder *)coder {
+  _controlView = [[UIView alloc] init];
+  self.slider = [[UISlider alloc] init];
+  self.splashPlayButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.totalTime = [[UILabel alloc] init];
+
+  return [super initWithCoder:coder];
+}
+
 - (void)dealloc {
   [self purgeMediaPlayer];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -86,11 +95,6 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)layoutSubviews {
   CGRect frame = self.fullscreen ? [UIScreen mainScreen].bounds : [self fullFrame];
-  if ((NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1) && self.fullscreen) {
-    // Below iOS 8 the bounds don't change with orientation changes.
-    frame.size = CGSizeMake(frame.size.height, frame.size.width);
-  }
-
   (self.splashImage).frame = frame;
   _mediaPlayerLayer.frame = frame;
   (self.controlView).frame = frame;
@@ -110,11 +114,8 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)updateConstraints {
+  self.viewAspectRatio.active = !self.fullscreen;
   [super updateConstraints];
-  // Active is iOS 8 only, so only do this if available.
-  if ([self.viewAspectRatio respondsToSelector:@selector(setActive:)]) {
-    self.viewAspectRatio.active = !self.fullscreen;
-  }
 }
 
 #pragma mark - Public interface
@@ -124,8 +125,8 @@ static NSInteger kToolbarHeight = 44;
      playPosition:(NSTimeInterval)playPosition {
   NSLog(@"loadMedia %d", autoPlay);
 
-  if (media != nil && [self.media.contentID isEqualToString:media.contentID]) {
-    // Don't reinit if we already have the media.
+  if (media != nil && [self.media.contentURL isEqual:media.contentURL]) {
+    // Don't reinit if media already set
     return;
   }
 
@@ -144,7 +145,6 @@ static NSInteger kToolbarHeight = 44;
   [self addSubview:_splashImage];
 
   // Single-tap control view to bring controls back to the front.
-  _controlView = [[UIView alloc] init];
   self.singleFingerTap =
       [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTouchControl:)];
   [_controlView addGestureRecognizer:self.singleFingerTap];
@@ -152,7 +152,6 @@ static NSInteger kToolbarHeight = 44;
 
   // Play overlay that users can tap to get started.
   UIImage *giantPlayButton = [UIImage imageNamed:@"play_circle"];
-  self.splashPlayButton = [UIButton buttonWithType:UIButtonTypeSystem];
   self.splashPlayButton.frame = [self fullFrame];
   self.splashPlayButton.contentMode = UIViewContentModeCenter;
   [self.splashPlayButton setImage:giantPlayButton forState:UIControlStateNormal];
@@ -291,8 +290,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)loadMediaPlayer {
   if (!_mediaPlayer) {
-    NSURL *mediaURL = [NSURL URLWithString:self.media.contentID];
-    _mediaPlayer = [AVPlayer playerWithURL:mediaURL];
+    NSURL *contentURL = self.media.contentURL;
+    _mediaPlayer = [AVPlayer playerWithURL:contentURL];
     _mediaPlayerLayer = [AVPlayerLayer playerLayerWithPlayer:_mediaPlayer];
     _mediaPlayerLayer.frame = [self fullFrame];
     _mediaPlayerLayer.backgroundColor = [UIColor blackColor].CGColor;
@@ -545,7 +544,7 @@ static NSInteger kToolbarHeight = 44;
   gradient.startPoint = CGPointZero;
   gradient.endPoint = CGPointMake(0, 1);
 
-  // Play/Pause button.
+  // Play/Pause button
   self.playButton = [UIButton buttonWithType:UIButtonTypeSystem];
   (self.playButton).frame = CGRectMake(0, 0, 40, 40);
   [self.playButton setImage:self.playImage forState:UIControlStateNormal];
@@ -555,8 +554,7 @@ static NSInteger kToolbarHeight = 44;
   self.playButton.tintColor = [UIColor whiteColor];
   self.playButton.translatesAutoresizingMaskIntoConstraints = NO;
 
-  // Total time.
-  self.totalTime = [[UILabel alloc] init];
+  // Total time
   self.totalTime.clearsContextBeforeDrawing = YES;
   self.totalTime.text = @"00:00";
   (self.totalTime).font = [UIFont fontWithName:@"Helvetica" size:14.0];
@@ -564,10 +562,8 @@ static NSInteger kToolbarHeight = 44;
   self.totalTime.tintColor = [UIColor whiteColor];
   self.totalTime.translatesAutoresizingMaskIntoConstraints = NO;
 
-  // Slider.
-  self.slider = [[UISlider alloc] init];
+  // Slider
   UIImage *thumb = [UIImage imageNamed:@"thumb"];
-  // TODO new image
   [self.slider setThumbImage:thumb forState:UIControlStateNormal];
   [self.slider setThumbImage:thumb forState:UIControlStateHighlighted];
   [self.slider addTarget:self
