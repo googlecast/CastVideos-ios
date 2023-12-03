@@ -221,7 +221,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       mediaQueueItemBuilder.autoplay = !paused
       mediaQueueItemBuilder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
       mediaQueueItemBuilder.startTime = _localPlayerView.streamPosition ?? 0
-      let mediaQueueItem = mediaQueueItemBuilder.build()
+      let mediaQueueItem: GCKMediaQueueItem = mediaQueueItemBuilder.build()!
 
       let queueDataBuilder = GCKMediaQueueDataBuilder(queueType: .generic)
       queueDataBuilder.items = [mediaQueueItem]
@@ -412,7 +412,7 @@ class MediaViewController: UIViewController, GCKSessionManagerListener, GCKRemot
       mediaQueueItemBuilder.mediaInformation = mediaInfo
       mediaQueueItemBuilder.autoplay = true
       mediaQueueItemBuilder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
-      let mediaQueueItem = mediaQueueItemBuilder.build()
+      let mediaQueueItem: GCKMediaQueueItem = mediaQueueItemBuilder.build()!
       if appending {
         let request = remoteMediaClient.queueInsert(mediaQueueItem, beforeItemWithID: kGCKMediaQueueInvalidItemID)
         request.delegate = self

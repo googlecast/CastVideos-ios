@@ -284,7 +284,7 @@ class MediaTableViewController: UITableViewController, GCKSessionManagerListener
       mediaQueueItemBuilder.mediaInformation = selectedItem.mediaInfo
       mediaQueueItemBuilder.autoplay = true
       mediaQueueItemBuilder.preloadTime = TimeInterval(UserDefaults.standard.integer(forKey: kPrefPreloadTime))
-      let mediaQueueItem = mediaQueueItemBuilder.build()
+      let mediaQueueItem: GCKMediaQueueItem = mediaQueueItemBuilder.build()!
       if appending {
         let request = remoteMediaClient.queueInsert(mediaQueueItem, beforeItemWithID: kGCKMediaQueueInvalidItemID)
         request.delegate = self
