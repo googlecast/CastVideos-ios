@@ -120,6 +120,8 @@
 		6FEF798E1CB8222E001211D3 /* playlist@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF798A1CB8222E001211D3 /* playlist@3x.png */; };
 		6FEF79B41CBC340B001211D3 /* play_circle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF79B21CBC340B001211D3 /* play_circle@2x.png */; };
 		6FEF79B51CBC340B001211D3 /* play_circle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6FEF79B31CBC340B001211D3 /* play_circle@3x.png */; };
+		8460AB212BDF73D300F61005 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 8460AB202BDF73D300F61005 /* PrivacyInfo.xcprivacy */; };
+		8460AB222BDF73D300F61005 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 8460AB202BDF73D300F61005 /* PrivacyInfo.xcprivacy */; };
 		CDAAEE47DBD3383E2C4014EB /* Pods_CastVideos_swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ACF8F6F322F6EF276A428650 /* Pods_CastVideos_swift.framework */; };
 		D523CD4D21E4207600F0F8D3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D523CD4C21E4207500F0F8D3 /* LaunchScreen.storyboard */; };
 		D523CD4E21E4207600F0F8D3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D523CD4C21E4207500F0F8D3 /* LaunchScreen.storyboard */; };
@@ -208,6 +210,7 @@
 		6FEF798A1CB8222E001211D3 /* playlist@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "playlist@3x.png"; path = "Resources/playlist@3x.png"; sourceTree = "<group>"; };
 		6FEF79B21CBC340B001211D3 /* play_circle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play_circle@2x.png"; path = "Resources/play_circle@2x.png"; sourceTree = "<group>"; };
 		6FEF79B31CBC340B001211D3 /* play_circle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "play_circle@3x.png"; path = "Resources/play_circle@3x.png"; sourceTree = "<group>"; };
+		8460AB202BDF73D300F61005 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ACF8F6F322F6EF276A428650 /* Pods_CastVideos_swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CastVideos_swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57DA41DA050702FC44C584C /* Pods-CastVideos-objc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CastVideos-objc.release.xcconfig"; path = "Pods/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc.release.xcconfig"; sourceTree = "<group>"; };
 		D523CD4C21E4207500F0F8D3 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Resources/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -375,6 +378,7 @@
 		6FBC43D61CA3138500AAB267 = {
 			isa = PBXGroup;
 			children = (
+				8460AB202BDF73D300F61005 /* PrivacyInfo.xcprivacy */,
 				D5EA0400217544B700013FC8 /* CastVideos-swift */,
 				D5EA03C52175448300013FC8 /* CastVideos-objc */,
 				6F233EB91CA460BB00E484F1 /* Resources */,
@@ -488,8 +492,8 @@
 				10FC9FF11E42A16F00BE6122 /* Sources */,
 				10FC9FF21E42A16F00BE6122 /* Frameworks */,
 				10FC9FF31E42A16F00BE6122 /* Resources */,
-				2F0E09231C002D361A5962CF /* [CP] Embed Pods Frameworks */,
 				E3E6949F276230DBC70E252A /* [CP] Copy Pods Resources */,
+				BD21434D31D400179F83232C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -508,8 +512,8 @@
 				6FBC43DB1CA3138500AAB267 /* Sources */,
 				6FBC43DC1CA3138500AAB267 /* Frameworks */,
 				6FBC43DD1CA3138500AAB267 /* Resources */,
-				CE81906B30D4EAE698E29E43 /* [CP] Embed Pods Frameworks */,
 				740515A2040CE122D107A74E /* [CP] Copy Pods Resources */,
+				598F9B4E45AEEBBCCF3403FA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -532,6 +536,7 @@
 				TargetAttributes = {
 					10FC9FF41E42A16F00BE6122 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = EQHXZ8M8AV;
 						LastSwiftMigration = 1200;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
@@ -579,6 +584,7 @@
 				10FCA0191E42A2A700BE6122 /* closed_captions.png in Resources */,
 				10FCA0211E42A2A700BE6122 /* thumb@2x.png in Resources */,
 				10FCA02E1E42A2A700BE6122 /* Main.storyboard in Resources */,
+				8460AB222BDF73D300F61005 /* PrivacyInfo.xcprivacy in Resources */,
 				10FCA0101E42A2A700BE6122 /* play_circle.png in Resources */,
 				10FCA00D1E42A2A700BE6122 /* pause_circle@3x.png in Resources */,
 				10FCA0271E42A2A700BE6122 /* playlist_white@2x.png in Resources */,
@@ -630,6 +636,7 @@
 				6F3F70BE1CB5CFAE006AF097 /* logo_castvideos@2x.png in Resources */,
 				6FE3DCFB1CC056690064C1E9 /* volume3@2x.png in Resources */,
 				6FCE60C41CC6CB24000129A3 /* pause@3.png in Resources */,
+				8460AB212BDF73D300F61005 /* PrivacyInfo.xcprivacy in Resources */,
 				6F3F70BD1CB5CFAE006AF097 /* logo_castvideos.png in Resources */,
 				6FE3DCFF1CC056690064C1E9 /* closed_captions.png in Resources */,
 				6FE3DCFD1CC056690064C1E9 /* closed_captions@3x.png in Resources */,
@@ -695,13 +702,13 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2F0E09231C002D361A5962CF /* [CP] Embed Pods Frameworks */ = {
+		598F9B4E45AEEBBCCF3403FA /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -710,7 +717,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		67FFA091359A54C9DEC8711E /* [CP] Check Pods Manifest.lock */ = {
@@ -738,26 +745,30 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-resources.sh",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.7.0_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.7.0_static/GoogleCast.framework/GoogleCastUIResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/Resources/GoogleCastCoreResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/Resources/GoogleCastUIResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/Resources/MaterialDialogs.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/google-cast-sdk/GoogleCast.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastCoreResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastUIResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialDialogs.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCast.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CE81906B30D4EAE698E29E43 /* [CP] Embed Pods Frameworks */ = {
+		BD21434D31D400179F83232C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -766,7 +777,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CastVideos-objc/Pods-CastVideos-objc-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E3E6949F276230DBC70E252A /* [CP] Copy Pods Resources */ = {
@@ -776,13 +787,17 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CastVideos-swift/Pods-CastVideos-swift-resources.sh",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.7.0_static/GoogleCast.framework/GoogleCastCoreResources.bundle",
-				"${PODS_ROOT}/google-cast-sdk/GoogleCastSDK-ios-4.7.0_static/GoogleCast.framework/GoogleCastUIResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/Resources/GoogleCastCoreResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/Resources/GoogleCastUIResources.bundle",
+				"${PODS_ROOT}/google-cast-sdk/Resources/MaterialDialogs.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/google-cast-sdk/GoogleCast.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastCoreResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCastUIResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialDialogs.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleCast.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -842,14 +857,16 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CODE_SIGN_ENTITLEMENTS = "CastVideos-swift/CastVideos-swift.entitlements";
 				CODE_SIGN_STYLE = Manual;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = EQHXZ8M8AV;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.GoogleCast.CastVideos.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Google Cast Cast Videos Dev";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Google Cast Media Player Dev";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -870,14 +887,16 @@
 				CODE_SIGN_ENTITLEMENTS = "CastVideos-swift/CastVideos-swift.entitlements";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = EQHXZ8M8AV;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = EQHXZ8M8AV;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.GoogleCast.CastVideos.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Google Cast Cast Videos Dev";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Google Cast Media Player Dev";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -996,15 +1015,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "CastVideos-objc/CastVideos-objc.entitlements";
 				CODE_SIGN_STYLE = Manual;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = EQHXZ8M8AV;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.GoogleCast.CastVideos.dev;
 				PRODUCT_NAME = "CastVideos-objc";
 				PROVISIONING_PROFILE_SPECIFIER = "Google Cast Cast Videos Dev";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Google Cast Media Player Dev";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1016,15 +1037,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "CastVideos-objc/CastVideos-objc.entitlements";
 				CODE_SIGN_STYLE = Manual;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = EQHXZ8M8AV;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.google.GoogleCast.CastVideos.dev;
 				PRODUCT_NAME = "CastVideos-objc";
 				PROVISIONING_PROFILE_SPECIFIER = "Google Cast Cast Videos Dev";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Google Cast Media Player Dev";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
